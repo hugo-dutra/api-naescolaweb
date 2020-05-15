@@ -22,6 +22,10 @@ import { GrupoAcessoModule } from './modules/grupo-acesso/grupo-acesso.module';
 import { MenuAcessoModule } from './modules/menu-acesso/menu-acesso.module';
 import { PermissaoAcessoModule } from './modules/permissao-acesso/permissao-acesso.module';
 import { PerfilPermissaoModule } from './modules/perfil-permissao/perfil-permissao.module';
+import { MapaMensaoNotaModule } from './modules/mapa-mensao-nota/mapa-mensao-nota.module';
+import { EntidadeEstudantilModule } from './modules/entidade-estudantil/entidade-estudantil.module';
+import { ModeloCartaoModule } from './modules/modelo-cartao/modelo-cartao.module';
+import { BoletoPedidoCartaoModule } from './modules/boleto-pedido-cartao/boleto-pedido-cartao.module';
 
 
 @Module({
@@ -48,6 +52,10 @@ import { PerfilPermissaoModule } from './modules/perfil-permissao/perfil-permiss
     MenuAcessoModule,
     PermissaoAcessoModule,
     PerfilPermissaoModule,
+    MapaMensaoNotaModule,
+    EntidadeEstudantilModule,
+    ModeloCartaoModule,
+    BoletoPedidoCartaoModule,
   ],
 })
 export class AppModule { }
