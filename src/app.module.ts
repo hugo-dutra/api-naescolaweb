@@ -14,6 +14,14 @@ import { BoletoMensalidadeModule } from './modules/boleto-mensalidade/boleto-men
 import { EstudanteModule } from './modules/estudante/estudante.module';
 import { EstudanteTurmaModule } from './modules/estudante-turma/estudante-turma.module';
 import { TelefoneContatoEstudanteModule } from './modules/telefone-contato-estudante/telefone-contato-estudante.module';
+import { UsuarioModule } from './modules/usuario/usuario.module';
+import { EscopoPerfilUsuarioModule } from './modules/escopo-perfil-usuario/escopo-perfil-usuario.module';
+import { PerfilUsuarioModule } from './modules/perfil-usuario/perfil-usuario.module';
+import { UsuarioEscolaModule } from './modules/usuario-escola/usuario-escola.module';
+import { GrupoAcessoModule } from './modules/grupo-acesso/grupo-acesso.module';
+import { MenuAcessoModule } from './modules/menu-acesso/menu-acesso.module';
+import { PermissaoAcessoModule } from './modules/permissao-acesso/permissao-acesso.module';
+import { PerfilPermissaoModule } from './modules/perfil-permissao/perfil-permissao.module';
 
 
 @Module({
@@ -32,6 +40,14 @@ import { TelefoneContatoEstudanteModule } from './modules/telefone-contato-estud
     EstudanteModule,
     EstudanteTurmaModule,
     TelefoneContatoEstudanteModule,
+    UsuarioModule,
+    EscopoPerfilUsuarioModule,
+    PerfilUsuarioModule,
+    UsuarioEscolaModule,
+    GrupoAcessoModule,
+    MenuAcessoModule,
+    PermissaoAcessoModule,
+    PerfilPermissaoModule,
   ],
 })
 export class AppModule { }

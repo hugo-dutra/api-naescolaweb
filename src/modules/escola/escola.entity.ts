@@ -1,3 +1,5 @@
+import { UsuarioEscola } from './../usuario-escola/usuario-escola.entity';
+import { PerfilUsuario } from './../perfil-usuario/perfil-usuario.entity';
 import { BoletoMensalidade } from './../boleto-mensalidade/boleto-mensalidade.entity';
 import { RedeEnsino } from '../rede-ensino/rede-ensino.entity';
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
@@ -46,14 +48,14 @@ export class Escola extends BaseEntity {
   @Column({ name: 'ren_id_int' })
   ren_id: number;
   /* RELACIONAMENTOS */
-  @OneToMany(type => DiretorEscola, diretorEscola => diretorEscola.diretor, { eager: true })
-  diretoresEscolas: DiretorEscola[]
   @ManyToOne(type => RegiaoEscola, regiaoEscola => regiaoEscola.escolas, { eager: false })
   @JoinColumn({ name: "ree_id_int" })
   regiaoEscola: RegiaoEscola;
   @ManyToOne(type => RedeEnsino, redeEnsino => redeEnsino.escolas, { eager: false })
   @JoinColumn({ name: "ren_id_int" })
   redeEnsino: RedeEnsino;
+  @OneToMany(type => DiretorEscola, diretorEscola => diretorEscola.diretor, { eager: true })
+  diretoresEscolas: DiretorEscola[]
   @OneToMany(type => Turno, turno => turno.escola, { eager: true })
   turnos: Turno[];
   @OneToMany(type => Turma, turma => turma.escola, { eager: true })
@@ -62,6 +64,10 @@ export class Escola extends BaseEntity {
   boletosMensalidades: BoletoMensalidade[];
   @OneToMany(type => Estudante, estudante => estudante.escola, { eager: true })
   estudantes: Estudante[];
+  @OneToMany(type => PerfilUsuario, perfilUsuario => perfilUsuario.escola, { eager: true })
+  perfisUsuarios: PerfilUsuario[];
+  @OneToMany(type => UsuarioEscola, usuarioEscola => usuarioEscola.escola, { eager: false })
+  usuariosEscolas: UsuarioEscola[];
 
 
 
