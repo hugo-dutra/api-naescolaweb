@@ -1,9 +1,11 @@
+import { BoletoMensalidade } from './../boleto-mensalidade/boleto-mensalidade.entity';
 import { RedeEnsino } from '../rede-ensino/rede-ensino.entity';
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { RegiaoEscola } from "../regiao-escola/regiao-escola.entity";
 import { DiretorEscola } from '../diretor-escola/diretor-escola.entity';
 import { Turno } from '../turno/turno.entity';
 import { Turma } from '../turma/turma.entity';
+import { Estudante } from '../estudante/estudante.entity';
 
 @Entity('escola_esc')
 export class Escola extends BaseEntity {
@@ -56,6 +58,10 @@ export class Escola extends BaseEntity {
   turnos: Turno[];
   @OneToMany(type => Turma, turma => turma.escola, { eager: true })
   turmas: Turma[]
+  @OneToMany(type => BoletoMensalidade, boletoMensalidade => boletoMensalidade.escola, { eager: true })
+  boletosMensalidades: BoletoMensalidade[];
+  @OneToMany(type => Estudante, estudante => estudante.escola, { eager: true })
+  estudantes: Estudante[];
 
 
 

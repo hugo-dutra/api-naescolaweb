@@ -10,6 +10,10 @@ import { TurnoModule } from './modules/turno/turno.module';
 import { EtapaEnsinoModule } from './modules/etapa-ensino/etapa-ensino.module';
 import { SerieModule } from './modules/serie/serie.module';
 import { TurmaModule } from './modules/turma/turma.module';
+import { BoletoMensalidadeModule } from './modules/boleto-mensalidade/boleto-mensalidade.module';
+import { EstudanteModule } from './modules/estudante/estudante.module';
+import { EstudanteTurmaModule } from './modules/estudante-turma/estudante-turma.module';
+import { TelefoneContatoEstudanteModule } from './modules/telefone-contato-estudante/telefone-contato-estudante.module';
 
 
 @Module({
@@ -24,6 +28,10 @@ import { TurmaModule } from './modules/turma/turma.module';
     EtapaEnsinoModule,
     SerieModule,
     TurmaModule,
+    BoletoMensalidadeModule,
+    EstudanteModule,
+    EstudanteTurmaModule,
+    TelefoneContatoEstudanteModule,
   ],
 })
 export class AppModule { }

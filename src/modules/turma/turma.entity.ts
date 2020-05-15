@@ -1,4 +1,5 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { EstudanteTurma } from './../estudante-turma/estudante-turma.entity';
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { Serie } from "../serie/serie.entity";
 import { Turno } from "../turno/turno.entity";
 import { Escola } from "../escola/escola.entity";
@@ -22,6 +23,8 @@ export class Turma extends BaseEntity {
   @ManyToOne(type => Escola, escola => escola.turmas, { eager: false })
   @JoinColumn({ name: 'esc_id_int' })
   escola: Escola;
+  @OneToMany(type => EstudanteTurma, estudanteTurma => estudanteTurma.turma, { eager: true })
+  estudantesTurmas: EstudanteTurma[]
 
 
 
