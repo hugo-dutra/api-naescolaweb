@@ -26,6 +26,12 @@ import { MapaMensaoNotaModule } from './modules/mapa-mensao-nota/mapa-mensao-not
 import { EntidadeEstudantilModule } from './modules/entidade-estudantil/entidade-estudantil.module';
 import { ModeloCartaoModule } from './modules/modelo-cartao/modelo-cartao.module';
 import { BoletoPedidoCartaoModule } from './modules/boleto-pedido-cartao/boleto-pedido-cartao.module';
+import { PedidoCartaoModule } from './modules/pedido-cartao/pedido-cartao.module';
+import { CartaoPedidoModule } from './modules/cartao-pedido/cartao-pedido.module';
+import { ObservacaoEstudanteModule } from './modules/observacao-estudante/observacao-estudante.module';
+import { ObservacaoTurmaModule } from './modules/observacao-turma/observacao-turma.module';
+import { AtestadoMedicoModule } from './modules/atestado-medico/atestado-medico.module';
+import { PendenciaCarteirinhaModule } from './modules/pendencia-carteirinha/pendencia-carteirinha.module';
 
 
 @Module({
@@ -56,6 +62,12 @@ import { BoletoPedidoCartaoModule } from './modules/boleto-pedido-cartao/boleto-
     EntidadeEstudantilModule,
     ModeloCartaoModule,
     BoletoPedidoCartaoModule,
+    PedidoCartaoModule,
+    CartaoPedidoModule,
+    ObservacaoEstudanteModule,
+    ObservacaoTurmaModule,
+    AtestadoMedicoModule,
+    PendenciaCarteirinhaModule,
   ],
 })
 export class AppModule { }

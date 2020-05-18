@@ -1,3 +1,7 @@
+import { PendenciaCarteirinha } from './../pendencia-carteirinha/pendencia-carteirinha.entity';
+import { AtestadoMedico } from './../atestado-medico/atestado-medico.entity';
+import { ObservacaoEstudante } from './../observacao-estudante/observacao-estudante.entity';
+import { CartaoPedido } from './../cartao-pedido/cartao-pedido.entity';
 import { TelefoneContatoEstudante } from './../telefone-contato-estudante/telefone-contato-estudante.entity';
 import { EstudanteTurma } from './../estudante-turma/estudante-turma.entity';
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
@@ -46,12 +50,13 @@ export class Estudante extends BaseEntity {
   estudantesTurmas: EstudanteTurma[];
   @OneToMany(type => TelefoneContatoEstudante, telefoneContatoEstudante => telefoneContatoEstudante.estudante, { eager: true })
   telefonesContatoEstudantes: TelefoneContatoEstudante[]
-
-
-
-
-
-
-
+  @OneToMany(type => CartaoPedido, cartaoPedido => cartaoPedido.estudante, { eager: true })
+  cartoesPedidos: CartaoPedido[];
+  @OneToMany(type => ObservacaoEstudante, observacaoEstudante => observacaoEstudante.estudante, { eager: true })
+  observacoesEstudantes: ObservacaoEstudante[];
+  @OneToMany(type => AtestadoMedico, atestadoMedico => atestadoMedico.estudante, { eager: true })
+  atestadosMedicos: AtestadoMedico[];
+  @OneToMany(type => PendenciaCarteirinha, pendenciaCarteirinha => pendenciaCarteirinha.estudante, { eager: true })
+  pendenciasCarteirinhas: PendenciaCarteirinha[];
 
 }

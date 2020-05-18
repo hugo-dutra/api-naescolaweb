@@ -1,3 +1,4 @@
+import { PedidoCartao } from './../pedido-cartao/pedido-cartao.entity';
 import { UsuarioEscola } from './../usuario-escola/usuario-escola.entity';
 import { PerfilUsuario } from './../perfil-usuario/perfil-usuario.entity';
 import { BoletoMensalidade } from './../boleto-mensalidade/boleto-mensalidade.entity';
@@ -68,6 +69,8 @@ export class Escola extends BaseEntity {
   perfisUsuarios: PerfilUsuario[];
   @OneToMany(type => UsuarioEscola, usuarioEscola => usuarioEscola.escola, { eager: false })
   usuariosEscolas: UsuarioEscola[];
+  @OneToMany(type => PedidoCartao, pedidoCartao => pedidoCartao.escola, { eager: true })
+  pedidosCartoes: PedidoCartao[];
 
 
 

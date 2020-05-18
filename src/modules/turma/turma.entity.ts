@@ -1,3 +1,4 @@
+import { ObservacaoTurma } from './../observacao-turma/observacao-turma.entity';
 import { EstudanteTurma } from './../estudante-turma/estudante-turma.entity';
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { Serie } from "../serie/serie.entity";
@@ -24,7 +25,9 @@ export class Turma extends BaseEntity {
   @JoinColumn({ name: 'esc_id_int' })
   escola: Escola;
   @OneToMany(type => EstudanteTurma, estudanteTurma => estudanteTurma.turma, { eager: true })
-  estudantesTurmas: EstudanteTurma[]
+  estudantesTurmas: EstudanteTurma[];
+  @OneToMany(type => ObservacaoTurma, observacaoTurma => observacaoTurma.turma, { eager: true })
+  observacoesTurmas: ObservacaoTurma[];
 
 
 

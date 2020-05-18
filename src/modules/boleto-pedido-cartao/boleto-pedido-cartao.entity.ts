@@ -1,4 +1,5 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { PedidoCartao } from "../pedido-cartao/pedido-cartao.entity";
 
 @Entity('boleto_pedido_cartao_bpc')
 export class BoletoPedidoCartao extends BaseEntity {
@@ -28,9 +29,8 @@ export class BoletoPedidoCartao extends BaseEntity {
   @Column({ name: 'bpc_status_pagamento_int' })
   bpc_status_pagamento: number;
   /* RELACIONAMENTOS */
-
-
-
-
+  @ManyToOne(type => PedidoCartao, pedidoCartao => pedidoCartao.boletosPedidosCartoes, { eager: false })
+  @JoinColumn({ name: 'pec_id_int' })
+  pedidoCartao: PedidoCartao;
 
 }
