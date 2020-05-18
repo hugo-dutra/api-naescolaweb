@@ -1,3 +1,4 @@
+import { AtividadeExtraEstudante } from './../atividade-extra-estudante/atividade-extra-estudante.entity';
 import { PendenciaCarteirinha } from './../pendencia-carteirinha/pendencia-carteirinha.entity';
 import { AtestadoMedico } from './../atestado-medico/atestado-medico.entity';
 import { ObservacaoEstudante } from './../observacao-estudante/observacao-estudante.entity';
@@ -58,5 +59,7 @@ export class Estudante extends BaseEntity {
   atestadosMedicos: AtestadoMedico[];
   @OneToMany(type => PendenciaCarteirinha, pendenciaCarteirinha => pendenciaCarteirinha.estudante, { eager: true })
   pendenciasCarteirinhas: PendenciaCarteirinha[];
+  @OneToMany(type => AtividadeExtraEstudante, atividadeExtraEstudante => atividadeExtraEstudante.estudante, { eager: true })
+  atividadesExtraEstudante: AtividadeExtraEstudante[];
 
 }

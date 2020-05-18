@@ -5,6 +5,7 @@ import { ObservacaoEstudante } from './../observacao-estudante/observacao-estuda
 import { UsuarioEscola } from './../usuario-escola/usuario-escola.entity';
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne } from "typeorm";
 import { PedidoCartao } from '../pedido-cartao/pedido-cartao.entity';
+import { AtividadeExtraClasse } from '../atividade-extra-classe/atividade-extra-classe.entity';
 
 @Entity('usuario_usr')
 export class Usuario extends BaseEntity {
@@ -34,4 +35,6 @@ export class Usuario extends BaseEntity {
   atestadosMedicos: AtestadoMedico[];
   @OneToMany(type => PendenciaCarteirinha, pendenciaCarteirinha => pendenciaCarteirinha.usuario, { eager: true })
   pendenciasCarteirinhas: PendenciaCarteirinha[];
+  @OneToMany(type => AtividadeExtraClasse, atividadeExtraClasse => atividadeExtraClasse.usuario, { eager: true })
+  atividadesExtraClasse: AtividadeExtraClasse[];
 }

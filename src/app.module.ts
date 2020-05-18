@@ -32,6 +32,9 @@ import { ObservacaoEstudanteModule } from './modules/observacao-estudante/observ
 import { ObservacaoTurmaModule } from './modules/observacao-turma/observacao-turma.module';
 import { AtestadoMedicoModule } from './modules/atestado-medico/atestado-medico.module';
 import { PendenciaCarteirinhaModule } from './modules/pendencia-carteirinha/pendencia-carteirinha.module';
+import { AnexoAtividadeExtraModule } from './modules/anexo-atividade-extra/anexo-atividade-extra.module';
+import { AtividadeExtraClasseModule } from './modules/atividade-extra-classe/atividade-extra-classe.module';
+import { AtividadeExtraEstudanteModule } from './modules/atividade-extra-estudante/atividade-extra-estudante.module';
 
 
 @Module({
@@ -68,6 +71,9 @@ import { PendenciaCarteirinhaModule } from './modules/pendencia-carteirinha/pend
     ObservacaoTurmaModule,
     AtestadoMedicoModule,
     PendenciaCarteirinhaModule,
+    AnexoAtividadeExtraModule,
+    AtividadeExtraClasseModule,
+    AtividadeExtraEstudanteModule,
   ],
 })
 export class AppModule { }
