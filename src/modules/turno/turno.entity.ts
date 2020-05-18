@@ -1,6 +1,7 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { Escola } from "../escola/escola.entity";
 import { Turma } from "../turma/turma.entity";
+import { TurnoPortaria } from "../turno-portaria/turno-portaria.entity";
 
 @Entity('turno_trn')
 export class Turno extends BaseEntity {
@@ -21,6 +22,8 @@ export class Turno extends BaseEntity {
   escola: Escola;
   @OneToMany(type => Turma, turma => turma.turno, { eager: true })
   turmas: Turma[]
+  @OneToMany(type => TurnoPortaria, turnoPortaria => turnoPortaria.turno, { eager: true })
+  turnosPortaria: TurnoPortaria[];
 
 
 }

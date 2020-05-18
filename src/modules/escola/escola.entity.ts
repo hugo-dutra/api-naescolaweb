@@ -1,3 +1,4 @@
+import { SugestaoUsuario } from './../susgestao-usuario/sugestao-usuario.entity';
 import { PedidoCartao } from './../pedido-cartao/pedido-cartao.entity';
 import { UsuarioEscola } from './../usuario-escola/usuario-escola.entity';
 import { PerfilUsuario } from './../perfil-usuario/perfil-usuario.entity';
@@ -9,6 +10,7 @@ import { DiretorEscola } from '../diretor-escola/diretor-escola.entity';
 import { Turno } from '../turno/turno.entity';
 import { Turma } from '../turma/turma.entity';
 import { Estudante } from '../estudante/estudante.entity';
+import { Portaria } from '../portaria/portaria.entity';
 
 @Entity('escola_esc')
 export class Escola extends BaseEntity {
@@ -71,7 +73,10 @@ export class Escola extends BaseEntity {
   usuariosEscolas: UsuarioEscola[];
   @OneToMany(type => PedidoCartao, pedidoCartao => pedidoCartao.escola, { eager: true })
   pedidosCartoes: PedidoCartao[];
-
+  @OneToMany(type => Portaria, portaria => portaria.escola, { eager: true })
+  portarias: Portaria[];
+  @OneToMany(type => SugestaoUsuario, sugestaoUsuario => sugestaoUsuario.escola, { eager: true })
+  sugestoesUsuarios: SugestaoUsuario[];
 
 
 

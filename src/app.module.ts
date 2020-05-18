@@ -35,6 +35,12 @@ import { PendenciaCarteirinhaModule } from './modules/pendencia-carteirinha/pend
 import { AnexoAtividadeExtraModule } from './modules/anexo-atividade-extra/anexo-atividade-extra.module';
 import { AtividadeExtraClasseModule } from './modules/atividade-extra-classe/atividade-extra-classe.module';
 import { AtividadeExtraEstudanteModule } from './modules/atividade-extra-estudante/atividade-extra-estudante.module';
+import { TurnoPortariaModule } from './modules/turno-portaria/turno-portaria.module';
+import { PortariaModule } from './modules/portaria/portaria.module';
+import { CronogramaPortariaModule } from './modules/cronograma-portaria/cronograma-portaria.module';
+import { SusgestaoUsuarioModule } from './modules/susgestao-usuario/susgestao-usuario.module';
+import { SugestaoUsuarioHistoricoModule } from './modules/sugestao-usuario-historico/sugestao-usuario-historico.module';
+import { SaidaAntecipadaEventualModule } from './modules/saida-antecipada-eventual/saida-antecipada-eventual.module';
 
 
 @Module({
@@ -74,6 +80,12 @@ import { AtividadeExtraEstudanteModule } from './modules/atividade-extra-estudan
     AnexoAtividadeExtraModule,
     AtividadeExtraClasseModule,
     AtividadeExtraEstudanteModule,
+    TurnoPortariaModule,
+    PortariaModule,
+    CronogramaPortariaModule,
+    SusgestaoUsuarioModule,
+    SugestaoUsuarioHistoricoModule,
+    SaidaAntecipadaEventualModule,
   ],
 })
 export class AppModule { }
