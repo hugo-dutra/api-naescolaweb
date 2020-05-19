@@ -1,3 +1,6 @@
+import { RegraAlertaUsuario } from './../regra-alerta-usuario/regra-alerta-usuario.entity';
+import { RegraAlerta } from './../regra-alerta/regra-alerta.entity';
+import { SaidaAntecipadaRecorrente } from './../saida-antecipada-recorrente/saida-antecipada-recorrente.entity';
 import { AlertaOcorrenciaVerificada } from './../alerta-ocorrencia-verificada/alerta-ocorrencia-verificada.entity';
 import { OcorrenciaDisciplinar } from './../ocorrencia-disciplinar/ocorrencia-disciplinar.entity';
 import { SugestaoUsuarioHistorico } from './../sugestao-usuario-historico/sugestao-usuario-historico.entity';
@@ -55,5 +58,14 @@ export class Usuario extends BaseEntity {
   ocorrenciasDisciplinares: OcorrenciaDisciplinar[];
   @OneToMany(type => AlertaOcorrenciaVerificada, alertaOcorrenciaVerificada => alertaOcorrenciaVerificada.usuario, { eager: true })
   alertasOcorrenciasVerificadas: AlertaOcorrenciaVerificada[];
+  @OneToMany(type => SaidaAntecipadaRecorrente, saidaAntecipadaRecorrente => saidaAntecipadaRecorrente.usuario, { eager: true })
+  saidasAntecipadasRecorrentes: SaidaAntecipadaRecorrente[];
+  @OneToMany(type => RegraAlerta, regraAlerta => regraAlerta.usuario, { eager: true })
+  regrasAlertas: RegraAlerta[];
+  @OneToMany(type => RegraAlertaUsuario, regraAlertaUsuario => regraAlertaUsuario.usuario, { eager: true })
+  regrasAlertasUsuarios: RegraAlertaUsuario[];
+
+
+
 
 }

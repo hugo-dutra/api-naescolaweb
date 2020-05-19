@@ -1,3 +1,4 @@
+import { SaidaAntecipadaRecorrente } from './../saida-antecipada-recorrente/saida-antecipada-recorrente.entity';
 import { OcorrenciaDisciplinar } from './../ocorrencia-disciplinar/ocorrencia-disciplinar.entity';
 import { SaidaAntecipadaEventual } from './../saida-antecipada-eventual/saida-antecipada-eventual.entity';
 import { AtividadeExtraEstudante } from './../atividade-extra-estudante/atividade-extra-estudante.entity';
@@ -70,5 +71,7 @@ export class Estudante extends BaseEntity {
   entradasPosterioresEstudantes: EntradaPosteriorEstudante[];
   @OneToMany(type => OcorrenciaDisciplinar, ocorrenciaDisciplinar => ocorrenciaDisciplinar.estudante, { eager: true })
   ocorrenciasDisciplinares: OcorrenciaDisciplinar[];
+  @OneToMany(type => SaidaAntecipadaRecorrente, saidaAntecipadaREcorrente => saidaAntecipadaREcorrente.estudante, { eager: true })
+  saidasAntecipadasRecorrentes: SaidaAntecipadaRecorrente[];
 
 }

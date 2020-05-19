@@ -47,6 +47,10 @@ import { TipoOcorrenciaDisciplinarModule } from './modules/tipo-ocorrencia-disci
 import { StatusEntregaMensagemModule } from './modules/status-entrega-mensagem/status-entrega-mensagem.module';
 import { ObservacaoAlertaOcorrenciaVerificadaModule } from './modules/observacao-alerta-ocorrencia-verificada/observacao-alerta-ocorrencia-verificada.module';
 import { AlertaOcorrenciaVerificadaModule } from './modules/alerta-ocorrencia-verificada/alerta-ocorrencia-verificada.module';
+import { SaidaAntecipadaRecorrenteModule } from './modules/saida-antecipada-recorrente/saida-antecipada-recorrente.module';
+import { OperadorAlertaModule } from './modules/operador-alerta/operador-alerta.module';
+import { RegraAlertaModule } from './modules/regra-alerta/regra-alerta.module';
+import { RegraAlertaUsuarioModule } from './modules/regra-alerta-usuario/regra-alerta-usuario.module';
 
 
 @Module({
@@ -98,6 +102,10 @@ import { AlertaOcorrenciaVerificadaModule } from './modules/alerta-ocorrencia-ve
     StatusEntregaMensagemModule,
     ObservacaoAlertaOcorrenciaVerificadaModule,
     AlertaOcorrenciaVerificadaModule,
+    SaidaAntecipadaRecorrenteModule,
+    OperadorAlertaModule,
+    RegraAlertaModule,
+    RegraAlertaUsuarioModule,
   ],
 })
 export class AppModule { }
