@@ -1,3 +1,5 @@
+import { AlertaOcorrenciaVerificada } from './../alerta-ocorrencia-verificada/alerta-ocorrencia-verificada.entity';
+import { OcorrenciaDisciplinar } from './../ocorrencia-disciplinar/ocorrencia-disciplinar.entity';
 import { SugestaoUsuarioHistorico } from './../sugestao-usuario-historico/sugestao-usuario-historico.entity';
 import { SugestaoUsuario } from './../susgestao-usuario/sugestao-usuario.entity';
 import { PendenciaCarteirinha } from './../pendencia-carteirinha/pendencia-carteirinha.entity';
@@ -9,6 +11,7 @@ import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne
 import { PedidoCartao } from '../pedido-cartao/pedido-cartao.entity';
 import { AtividadeExtraClasse } from '../atividade-extra-classe/atividade-extra-classe.entity';
 import { SaidaAntecipadaEventual } from '../saida-antecipada-eventual/saida-antecipada-eventual.entity';
+import { EntradaPosteriorEstudante } from '../entrada-posterior-estudante/entrada-posterior-estudante.entity';
 
 @Entity('usuario_usr')
 export class Usuario extends BaseEntity {
@@ -46,4 +49,11 @@ export class Usuario extends BaseEntity {
   sugestoesUsuariosHistorico: SugestaoUsuarioHistorico[]
   @OneToMany(type => SaidaAntecipadaEventual, saidaAntecipadaEventual => saidaAntecipadaEventual.usuario, { eager: true })
   saidasAntecipadasEventuais: SaidaAntecipadaEventual[];
+  @OneToMany(type => EntradaPosteriorEstudante, entradaPosteriorEstudante => entradaPosteriorEstudante.usuario, { eager: true })
+  entradasPosterioresEstudantes: EntradaPosteriorEstudante[];
+  @OneToMany(type => OcorrenciaDisciplinar, ocorrenciaDisciplinar => ocorrenciaDisciplinar.usuario, { eager: true })
+  ocorrenciasDisciplinares: OcorrenciaDisciplinar[];
+  @OneToMany(type => AlertaOcorrenciaVerificada, alertaOcorrenciaVerificada => alertaOcorrenciaVerificada.usuario, { eager: true })
+  alertasOcorrenciasVerificadas: AlertaOcorrenciaVerificada[];
+
 }

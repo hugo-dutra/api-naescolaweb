@@ -1,0 +1,25 @@
+import { OcorrenciaDisciplinar } from './../ocorrencia-disciplinar/ocorrencia-disciplinar.entity';
+import { ObservacaoAlertaOcorrenciaVerificada } from './../observacao-alerta-ocorrencia-verificada/observacao-alerta-ocorrencia-verificada.entity';
+import { BaseEntity, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
+import { Usuario } from '../usuario/usuario.entity';
+import { Escola } from '../escola/escola.entity';
+
+@Entity('alerta_ocorrencia_verificada_aov')
+export class AlertaOcorrenciaVerificada extends BaseEntity {
+  /* CAMPOS */
+  @PrimaryGeneratedColumn({ name: 'aov_id_int' })
+  id: number;
+  /* RELACIONAMENTOS */
+  @ManyToOne(type => ObservacaoAlertaOcorrenciaVerificada, observacaoAlertaOcorrenciaVerificada => observacaoAlertaOcorrenciaVerificada.alertasOcorrenciasVerificadas, { eager: false })
+  @JoinColumn({ name: 'oov_id_int' })
+  observacaoAlertaOcorrenciaVerificada: ObservacaoAlertaOcorrenciaVerificada;
+  @ManyToOne(type => OcorrenciaDisciplinar, ocorrenciaDisciplinar => ocorrenciaDisciplinar.alertasOcorrenciasVerificadas, { eager: false })
+  @JoinColumn({ name: 'ocd_id_int' })
+  ocorrenciaDisciplinar: OcorrenciaDisciplinar;
+  @ManyToOne(type => Usuario, usuario => usuario.alertasOcorrenciasVerificadas, { eager: false })
+  @JoinColumn({ name: 'usr_id_int' })
+  usuario: Usuario;
+  @ManyToOne(type => Escola, escola => escola.alertasOcorrenciasVerificadas, { eager: false })
+  @JoinColumn({ name: 'esc_id_int' })
+  escola: Escola;
+}

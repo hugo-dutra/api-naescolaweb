@@ -41,6 +41,12 @@ import { CronogramaPortariaModule } from './modules/cronograma-portaria/cronogra
 import { SusgestaoUsuarioModule } from './modules/susgestao-usuario/susgestao-usuario.module';
 import { SugestaoUsuarioHistoricoModule } from './modules/sugestao-usuario-historico/sugestao-usuario-historico.module';
 import { SaidaAntecipadaEventualModule } from './modules/saida-antecipada-eventual/saida-antecipada-eventual.module';
+import { EntradaPosteriorEstudanteModule } from './modules/entrada-posterior-estudante/entrada-posterior-estudante.module';
+import { OcorrenciaDisciplinarModule } from './modules/ocorrencia-disciplinar/ocorrencia-disciplinar.module';
+import { TipoOcorrenciaDisciplinarModule } from './modules/tipo-ocorrencia-disciplinar/tipo-ocorrencia-disciplinar.module';
+import { StatusEntregaMensagemModule } from './modules/status-entrega-mensagem/status-entrega-mensagem.module';
+import { ObservacaoAlertaOcorrenciaVerificadaModule } from './modules/observacao-alerta-ocorrencia-verificada/observacao-alerta-ocorrencia-verificada.module';
+import { AlertaOcorrenciaVerificadaModule } from './modules/alerta-ocorrencia-verificada/alerta-ocorrencia-verificada.module';
 
 
 @Module({
@@ -86,6 +92,12 @@ import { SaidaAntecipadaEventualModule } from './modules/saida-antecipada-eventu
     SusgestaoUsuarioModule,
     SugestaoUsuarioHistoricoModule,
     SaidaAntecipadaEventualModule,
+    EntradaPosteriorEstudanteModule,
+    OcorrenciaDisciplinarModule,
+    TipoOcorrenciaDisciplinarModule,
+    StatusEntregaMensagemModule,
+    ObservacaoAlertaOcorrenciaVerificadaModule,
+    AlertaOcorrenciaVerificadaModule,
   ],
 })
 export class AppModule { }

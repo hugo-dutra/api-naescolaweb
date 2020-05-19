@@ -1,3 +1,4 @@
+import { OcorrenciaDisciplinar } from './../ocorrencia-disciplinar/ocorrencia-disciplinar.entity';
 import { SaidaAntecipadaEventual } from './../saida-antecipada-eventual/saida-antecipada-eventual.entity';
 import { AtividadeExtraEstudante } from './../atividade-extra-estudante/atividade-extra-estudante.entity';
 import { PendenciaCarteirinha } from './../pendencia-carteirinha/pendencia-carteirinha.entity';
@@ -8,6 +9,7 @@ import { TelefoneContatoEstudante } from './../telefone-contato-estudante/telefo
 import { EstudanteTurma } from './../estudante-turma/estudante-turma.entity';
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { Escola } from "../escola/escola.entity";
+import { EntradaPosteriorEstudante } from '../entrada-posterior-estudante/entrada-posterior-estudante.entity';
 
 @Entity('estudante_est')
 export class Estudante extends BaseEntity {
@@ -64,5 +66,9 @@ export class Estudante extends BaseEntity {
   atividadesExtraEstudante: AtividadeExtraEstudante[];
   @OneToMany(type => SaidaAntecipadaEventual, saidaAntecipadaEventual => saidaAntecipadaEventual.estudante, { eager: true })
   saidasAntecipadasEventuais: SaidaAntecipadaEventual[];
+  @OneToMany(type => EntradaPosteriorEstudante, entradaPosteriorEstudante => entradaPosteriorEstudante.estudante, { eager: false })
+  entradasPosterioresEstudantes: EntradaPosteriorEstudante[];
+  @OneToMany(type => OcorrenciaDisciplinar, ocorrenciaDisciplinar => ocorrenciaDisciplinar.estudante, { eager: true })
+  ocorrenciasDisciplinares: OcorrenciaDisciplinar[];
 
 }

@@ -1,3 +1,4 @@
+import { AlertaOcorrenciaVerificada } from './../alerta-ocorrencia-verificada/alerta-ocorrencia-verificada.entity';
 import { SugestaoUsuario } from './../susgestao-usuario/sugestao-usuario.entity';
 import { PedidoCartao } from './../pedido-cartao/pedido-cartao.entity';
 import { UsuarioEscola } from './../usuario-escola/usuario-escola.entity';
@@ -11,6 +12,7 @@ import { Turno } from '../turno/turno.entity';
 import { Turma } from '../turma/turma.entity';
 import { Estudante } from '../estudante/estudante.entity';
 import { Portaria } from '../portaria/portaria.entity';
+import { EntradaPosteriorEstudante } from '../entrada-posterior-estudante/entrada-posterior-estudante.entity';
 
 @Entity('escola_esc')
 export class Escola extends BaseEntity {
@@ -77,7 +79,9 @@ export class Escola extends BaseEntity {
   portarias: Portaria[];
   @OneToMany(type => SugestaoUsuario, sugestaoUsuario => sugestaoUsuario.escola, { eager: true })
   sugestoesUsuarios: SugestaoUsuario[];
-
-
+  @OneToMany(type => EntradaPosteriorEstudante, entradaPosteriorEstudante => entradaPosteriorEstudante.escola, { eager: true })
+  entradasPosterioresEstudantes: EntradaPosteriorEstudante[];
+  @OneToMany(type => AlertaOcorrenciaVerificada, alertaOcorrenciaVerificada => alertaOcorrenciaVerificada.escola, { eager: true })
+  alertasOcorrenciasVerificadas: AlertaOcorrenciaVerificada[];
 
 }
