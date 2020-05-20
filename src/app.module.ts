@@ -55,6 +55,19 @@ import { ProfessorModule } from './modules/professor/professor.module';
 import { UsuarioProfessorModule } from './modules/usuario-professor/usuario-professor.module';
 import { ProfessorEscolaModule } from './modules/professor-escola/professor-escola.module';
 import { ProfessorDisciplinaModule } from './modules/professor-disciplina/professor-disciplina.module';
+import { ProfessorTurmaModule } from './modules/professor-turma/professor-turma.module';
+import { DisciplinaModule } from './modules/disciplina/disciplina.module';
+import { AreaConhecimentoModule } from './modules/area-conhecimento/area-conhecimento.module';
+import { ResultadoBoletimModule } from './modules/resultado-boletim/resultado-boletim.module';
+import { DiarioProfessorModule } from './modules/diario-professor/diario-professor.module';
+import { DiarioObservacoesGeraisModule } from './modules/diario-observacoes-gerais/diario-observacoes-gerais.module';
+import { DiarioObservacaoEstudanteModule } from './modules/diario-observacao-estudante/diario-observacao-estudante.module';
+import { DiarioAvaliacaoDiagnosticaModule } from './modules/diario-avaliacao-diagnostica/diario-avaliacao-diagnostica.module';
+import { RegistroDiarioModule } from './modules/registro-diario/registro-diario.module';
+import { DiarioAvaliacaoModule } from './modules/diario-avaliacao/diario-avaliacao.module';
+import { RegistroFrequenciaModule } from './modules/registro-frequencia/registro-frequencia.module';
+import { ComunicadoDiversoModule } from './modules/comunicado-diverso/comunicado-diverso.module';
+import { FrequenciaPortariaModule } from './modules/frequencia-portaria/frequencia-portaria.module';
 
 
 @Module({
@@ -114,6 +127,19 @@ import { ProfessorDisciplinaModule } from './modules/professor-disciplina/profes
     UsuarioProfessorModule,
     ProfessorEscolaModule,
     ProfessorDisciplinaModule,
+    ProfessorTurmaModule,
+    DisciplinaModule,
+    AreaConhecimentoModule,
+    ResultadoBoletimModule,
+    DiarioProfessorModule,
+    DiarioObservacoesGeraisModule,
+    DiarioObservacaoEstudanteModule,
+    DiarioAvaliacaoDiagnosticaModule,
+    RegistroDiarioModule,
+    DiarioAvaliacaoModule,
+    RegistroFrequenciaModule,
+    ComunicadoDiversoModule,
+    FrequenciaPortariaModule,
   ],
 })
 export class AppModule { }

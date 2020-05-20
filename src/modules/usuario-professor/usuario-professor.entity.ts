@@ -1,9 +1,11 @@
 import { Usuario } from './../usuario/usuario.entity';
-import { BaseEntity, Entity, ManyToOne, JoinColumn } from 'typeorm';
+import { BaseEntity, Entity, ManyToOne, JoinColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { Professor } from '../professor/professor.entity';
 
 @Entity('usuario_professor_upr')
 export class UsuarioProfessor extends BaseEntity {
+  /* CAMPOS */
+  @PrimaryGeneratedColumn({ name: 'upr_id_int' })
   /* RELACIONAMENTOS */
   @ManyToOne(type => Usuario, usuario => usuario.usuariosProfessores, { eager: false })
   @JoinColumn({ name: 'usr_id_int' })
@@ -11,5 +13,4 @@ export class UsuarioProfessor extends BaseEntity {
   @ManyToOne(type => Professor, professor => professor.usuariosProfessores, { eager: false })
   @JoinColumn({ name: 'prf_id_int' })
   professor: Professor;
-
 }

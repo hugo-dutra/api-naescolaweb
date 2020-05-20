@@ -1,3 +1,4 @@
+import { ProfessorDisciplina } from './../professor-disciplina/professor-disciplina.entity';
 import { AtividadeExtraEstudante } from './../atividade-extra-estudante/atividade-extra-estudante.entity';
 import { AnexoAtividadeExtra } from './../anexo-atividade-extra/anexo-atividade-extra.entity';
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn } from "typeorm";
@@ -24,6 +25,9 @@ export class AtividadeExtraClasse extends BaseEntity {
   @ManyToOne(type => Usuario, usuario => usuario.atividadesExtraClasse, { eager: false })
   @JoinColumn({ name: 'usr_id_int' })
   usuario: Usuario;
+  @ManyToOne(type => ProfessorDisciplina, professorDisciplina => professorDisciplina.atividadesExtraClasse, { eager: false })
+  @JoinColumn({ name: 'prd_id_int' })
+  professorDisciplina: ProfessorDisciplina;
 
 
 

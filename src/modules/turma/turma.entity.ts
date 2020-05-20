@@ -1,9 +1,11 @@
+import { DiarioProfessor } from './../diario-professor/diario-professor.entity';
 import { ObservacaoTurma } from './../observacao-turma/observacao-turma.entity';
 import { EstudanteTurma } from './../estudante-turma/estudante-turma.entity';
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { Serie } from "../serie/serie.entity";
 import { Turno } from "../turno/turno.entity";
 import { Escola } from "../escola/escola.entity";
+import { ProfessorTurma } from '../professor-turma/professor-turma.entity';
 
 @Entity('turma_trm')
 export class Turma extends BaseEntity {
@@ -28,7 +30,10 @@ export class Turma extends BaseEntity {
   estudantesTurmas: EstudanteTurma[];
   @OneToMany(type => ObservacaoTurma, observacaoTurma => observacaoTurma.turma, { eager: true })
   observacoesTurmas: ObservacaoTurma[];
-
+  @OneToMany(type => ProfessorTurma, professorTurma => professorTurma.turma, { eager: true })
+  professoresTurmas: ProfessorTurma[];
+  @OneToMany(type => DiarioProfessor, diarioProfessor => diarioProfessor.turma, { eager: true })
+  diariosProfessores: DiarioProfessor[];
 
 
 }

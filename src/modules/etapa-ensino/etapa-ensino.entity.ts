@@ -1,5 +1,6 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany, JoinColumn } from "typeorm";
 import { Serie } from "../serie/serie.entity";
+import { Disciplina } from "../disciplina/disciplina.entity";
 
 @Entity('etapa_ensino_ete')
 export class EtapaEnsino extends BaseEntity {
@@ -13,5 +14,7 @@ export class EtapaEnsino extends BaseEntity {
   /* RELACIONAMENTOS */
   @OneToMany(type => Serie, serie => serie.etapaEnsino, { eager: true })
   series: Serie[]
+  @OneToMany(type => Disciplina, disciplina => disciplina.etapaEnsino, { eager: true })
+  disciplinas: Disciplina[];
 
 }

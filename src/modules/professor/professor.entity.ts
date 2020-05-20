@@ -1,3 +1,4 @@
+import { ProfessorDisciplina } from './../professor-disciplina/professor-disciplina.entity';
 import { ProfessorEscola } from './../professor-escola/professor-escola.entity';
 import { UsuarioProfessor } from './../usuario-professor/usuario-professor.entity';
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
@@ -22,5 +23,6 @@ export class Professor extends BaseEntity {
   usuariosProfessores: UsuarioProfessor[];
   @OneToMany(type => ProfessorEscola, professorEscola => professorEscola.professor, { eager: true })
   professoresEscolas: ProfessorEscola[];
-
+  @OneToMany(type => ProfessorDisciplina, professorDisciplina => professorDisciplina.professor, { eager: true })
+  professoresDisciplinas: ProfessorDisciplina[];
 }

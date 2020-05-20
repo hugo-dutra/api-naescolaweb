@@ -1,3 +1,4 @@
+import { ComunicadoDiverso } from './../comunicado-diverso/comunicado-diverso.entity';
 import { RegraAlertaUsuario } from './../regra-alerta-usuario/regra-alerta-usuario.entity';
 import { RegraAlerta } from './../regra-alerta/regra-alerta.entity';
 import { SaidaAntecipadaRecorrente } from './../saida-antecipada-recorrente/saida-antecipada-recorrente.entity';
@@ -67,7 +68,6 @@ export class Usuario extends BaseEntity {
   regrasAlertasUsuarios: RegraAlertaUsuario[];
   @OneToMany(type => UsuarioProfessor, usuarioProfessor => usuarioProfessor.usuario, { eager: true })
   usuariosProfessores: UsuarioProfessor[];
-
-
-
+  @OneToMany(type => ComunicadoDiverso, comunicadoDiverso => comunicadoDiverso.usuario, { eager: true })
+  comunicadosDiversos: ComunicadoDiverso[];
 }

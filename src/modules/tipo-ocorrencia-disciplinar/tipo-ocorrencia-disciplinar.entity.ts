@@ -1,6 +1,7 @@
 import { RegraAlerta } from './../regra-alerta/regra-alerta.entity';
 import { OcorrenciaDisciplinar } from './../ocorrencia-disciplinar/ocorrencia-disciplinar.entity';
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn } from "typeorm";
+import { Escola } from '../escola/escola.entity';
 
 @Entity('tipo_ocorrencia_disciplinar_tod')
 export class TipoOcorrenciaDisciplinar extends BaseEntity {
@@ -16,6 +17,9 @@ export class TipoOcorrenciaDisciplinar extends BaseEntity {
   ocorrenciasDisciplinares: OcorrenciaDisciplinar[];
   @OneToMany(type => RegraAlerta, regraAlerta => regraAlerta.tipoOcorrenciaDisciplinar, { eager: true })
   regrasAlertas: RegraAlerta[];
+  @ManyToOne(type => Escola, escola => escola.tiposOcorrenciasDisciplinares, { eager: false })
+  @JoinColumn({ name: 'esc_id_int' })
+  escola: Escola;
 
 
 }

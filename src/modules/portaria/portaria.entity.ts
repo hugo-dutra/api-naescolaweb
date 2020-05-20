@@ -1,3 +1,4 @@
+import { FrequenciaPortaria } from './../frequencia-portaria/frequencia-portaria.entity';
 import { CronogramaPortaria } from './../cronograma-portaria/cronograma-portaria.entity';
 import { TurnoPortaria } from './../turno-portaria/turno-portaria.entity';
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn } from "typeorm";
@@ -18,5 +19,7 @@ export class Portaria extends BaseEntity {
   escola: Escola;
   @OneToMany(type => CronogramaPortaria, cronogramaPortaria => cronogramaPortaria.portaria, { eager: true })
   cronogramasPortaria: CronogramaPortaria[];
+  @OneToMany(type => FrequenciaPortaria, frequenciaPortaria => frequenciaPortaria.portaria, { eager: true })
+  frequenciasPortarias: FrequenciaPortaria[];
 
 }

@@ -1,3 +1,4 @@
+import { TipoOcorrenciaDisciplinar } from './../tipo-ocorrencia-disciplinar/tipo-ocorrencia-disciplinar.entity';
 import { ProfessorEscola } from './../professor-escola/professor-escola.entity';
 import { RegraAlertaUsuario } from './../regra-alerta-usuario/regra-alerta-usuario.entity';
 import { RegraAlerta } from './../regra-alerta/regra-alerta.entity';
@@ -16,6 +17,7 @@ import { Turma } from '../turma/turma.entity';
 import { Estudante } from '../estudante/estudante.entity';
 import { Portaria } from '../portaria/portaria.entity';
 import { EntradaPosteriorEstudante } from '../entrada-posterior-estudante/entrada-posterior-estudante.entity';
+import { ProfessorTurma } from '../professor-turma/professor-turma.entity';
 
 @Entity('escola_esc')
 export class Escola extends BaseEntity {
@@ -92,4 +94,9 @@ export class Escola extends BaseEntity {
   regrasAlertasUsuarios: RegraAlertaUsuario[];
   @OneToMany(type => ProfessorEscola, professorEscola => professorEscola.escola, { eager: true })
   professoresEscolas: ProfessorEscola[];
+  @OneToMany(type => ProfessorTurma, professorTurma => professorTurma.escola, { eager: true })
+  professoresTurmas: ProfessorTurma[];
+  @OneToMany(type => TipoOcorrenciaDisciplinar, tipoOcorrenciaDisciplinar => tipoOcorrenciaDisciplinar.escola, { eager: true })
+  tiposOcorrenciasDisciplinares: TipoOcorrenciaDisciplinar[];
+
 }
