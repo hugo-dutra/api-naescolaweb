@@ -1,3 +1,5 @@
+import { AvaliacaoEstudante } from './../avaliacao-estudante/avaliacao-estudante.entity';
+import { BoletimEscolar } from './../boletim-escolar/boletim-escolar.entity';
 import { FrequenciaPortaria } from './../frequencia-portaria/frequencia-portaria.entity';
 import { ComunicadoDiverso } from './../comunicado-diverso/comunicado-diverso.entity';
 import { RegistroFrequencia } from './../registro-frequencia/registro-frequencia.entity';
@@ -88,5 +90,9 @@ export class Estudante extends BaseEntity {
   comunicadosDiversos: ComunicadoDiverso[];
   @OneToMany(type => FrequenciaPortaria, frequenciaPortaria => frequenciaPortaria.estudante, { eager: true })
   frequenciasPortarias: FrequenciaPortaria[];
+  @OneToMany(type => BoletimEscolar, boletimEscolar => boletimEscolar.estudante, { eager: true })
+  boletinsEscolares: BoletimEscolar[];
+  @OneToMany(type => AvaliacaoEstudante, avaliacaoEstudante => avaliacaoEstudante.estudante, { eager: true })
+  avaliacoesEstudantes: AvaliacaoEstudante[];
 
 }

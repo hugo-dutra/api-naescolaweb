@@ -1,3 +1,5 @@
+import { BoletimEscolar } from './../boletim-escolar/boletim-escolar.entity';
+import { PeriodoLetivo } from './../periodo-letivo/periodo-letivo.entity';
 import { Disciplina } from './../disciplina/disciplina.entity';
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 
@@ -14,6 +16,12 @@ export class ResultadoBoletim extends BaseEntity {
   @ManyToOne(type => Disciplina, disciplina => disciplina.resultadosBoletins, { eager: false })
   @JoinColumn({ name: 'dsp_id_int' })
   disciplina: Disciplina;
+  @ManyToOne(type => PeriodoLetivo, periodoLetivo => periodoLetivo.resultadosBoletins, { eager: false })
+  @JoinColumn({ name: 'prl_id_int' })
+  periodoLetivo: PeriodoLetivo;
+  @ManyToOne(type => BoletimEscolar, boletimEscolar => boletimEscolar.resultadosBoletins, { eager: false })
+  @JoinColumn({ name: 'bes_id_int' })
+  boletimEscolar: BoletimEscolar;
 
 
 

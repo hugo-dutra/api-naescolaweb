@@ -1,5 +1,7 @@
+import { AvaliacaoEstudante } from './../avaliacao-estudante/avaliacao-estudante.entity';
+import { PeriodoLetivo } from './../periodo-letivo/periodo-letivo.entity';
 import { DiarioProfessor } from './../diario-professor/diario-professor.entity';
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 
 @Entity('diario_avaliacao_dav')
 export class DiarioAvaliacao extends BaseEntity {
@@ -20,4 +22,9 @@ export class DiarioAvaliacao extends BaseEntity {
   @ManyToOne(type => DiarioProfessor, diarioProfessor => diarioProfessor.diariosAvaliacoes, { eager: false })
   @JoinColumn({ name: 'diariosAvaliacoes' })
   diarioProfessor: DiarioProfessor;
+  @ManyToOne(type => PeriodoLetivo, periodoLetivo => periodoLetivo.diariosAvaliacoes, { eager: false })
+  @JoinColumn({ name: 'prl_id_int' })
+  periodoLetivo: PeriodoLetivo;
+  @OneToMany(type => AvaliacaoEstudante, avaliacaoEstudante => avaliacaoEstudante.diarioAvaliacao, { eager: false })
+  avaliacoesEstudantes: AvaliacaoEstudante[];
 }

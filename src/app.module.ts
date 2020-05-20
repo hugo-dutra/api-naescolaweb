@@ -68,6 +68,9 @@ import { DiarioAvaliacaoModule } from './modules/diario-avaliacao/diario-avaliac
 import { RegistroFrequenciaModule } from './modules/registro-frequencia/registro-frequencia.module';
 import { ComunicadoDiversoModule } from './modules/comunicado-diverso/comunicado-diverso.module';
 import { FrequenciaPortariaModule } from './modules/frequencia-portaria/frequencia-portaria.module';
+import { PeriodoLetivoModule } from './modules/periodo-letivo/periodo-letivo.module';
+import { BoletimEscolarModule } from './modules/boletim-escolar/boletim-escolar.module';
+import { AvaliacaoEstudanteModule } from './modules/avaliacao-estudante/avaliacao-estudante.module';
 
 
 @Module({
@@ -140,6 +143,9 @@ import { FrequenciaPortariaModule } from './modules/frequencia-portaria/frequenc
     RegistroFrequenciaModule,
     ComunicadoDiversoModule,
     FrequenciaPortariaModule,
+    PeriodoLetivoModule,
+    BoletimEscolarModule,
+    AvaliacaoEstudanteModule,
   ],
 })
 export class AppModule { }
