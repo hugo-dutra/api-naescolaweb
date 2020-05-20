@@ -2,7 +2,7 @@ import { PendenciaCarteirinha } from './../pendencia-carteirinha/pendencia-carte
 import { CartaoPedido } from './../cartao-pedido/cartao-pedido.entity';
 import { ModeloCartao } from './../modelo-cartao/modelo-cartao.entity';
 import { BoletoPedidoCartao } from './../boleto-pedido-cartao/boleto-pedido-cartao.entity';
-import { BaseEntity, Entity, PrimaryGeneratedColumn, OneToMany, Column, ManyToMany, JoinColumn, ManyToOne } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, OneToMany, Column, JoinColumn, ManyToOne } from "typeorm";
 import { Usuario } from '../usuario/usuario.entity';
 import { Escola } from '../escola/escola.entity';
 
@@ -24,7 +24,7 @@ export class PedidoCartao extends BaseEntity {
   /* RELACIONAMENTOS */
   @OneToMany(type => BoletoPedidoCartao, boletoPedidoCartao => boletoPedidoCartao.pedidoCartao, { eager: true })
   boletosPedidosCartoes: BoletoPedidoCartao[];
-  @ManyToMany(type => Usuario, usuario => usuario.pedidosCartoes, { eager: false })
+  @ManyToOne(type => Usuario, usuario => usuario.pedidosCartoes, { eager: false })
   @JoinColumn({ name: 'usr_id_int' })
   usuario: Usuario;
   @ManyToOne(type => Escola, escola => escola => escola.pedidosCartoes, { eager: false })

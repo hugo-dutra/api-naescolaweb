@@ -32,7 +32,7 @@ export class Escola extends BaseEntity {
   telefone: string;
   @Column({ length: 200, name: 'esc_endereco_txt' })
   endereco: string;
-  @Column({ length: 200, name: 'esc_logo_txt' })
+  @Column({ length: 2000, name: 'esc_logo_txt' })
   logo: string;
   @Column({ length: 40, name: 'esc_inep_txt' })
   inep: string;
@@ -46,7 +46,7 @@ export class Escola extends BaseEntity {
   valor_mensalidade: number;
   @Column({ name: 'esc_desconto_assiduidade_num' })
   desconto_assiduidade: number;
-  @Column({ name: 'esc_juros_diario_num' })
+  @Column({ name: 'esc_valor_juros_diario_num' })
   juros_diario: number;
   @Column({ length: 50, name: 'esc_nome_abreviado_txt' })
   nome_abreviado: string;

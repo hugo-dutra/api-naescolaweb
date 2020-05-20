@@ -26,7 +26,7 @@ export class FrequenciaPortaria extends BaseEntity {
   @JoinColumn({ name: 'est_id_int' })
   estudante: Estudante;
   @ManyToOne(type => StatusEntregaMensagem, statusEntregaMensagem => statusEntregaMensagem.frequenciasPortarias, { eager: false })
-  @JoinColumn({ name: 'sem_status_entrega_id' })
+  @JoinColumn({ name: 'frp_status_entrega_int' })
   statusEntregaMensagem: StatusEntregaMensagem;
 
 }

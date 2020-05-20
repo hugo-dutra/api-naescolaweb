@@ -20,7 +20,7 @@ export class DiarioAvaliacao extends BaseEntity {
   dav_peso: number;
   /* RELACIONAMENTOS */
   @ManyToOne(type => DiarioProfessor, diarioProfessor => diarioProfessor.diariosAvaliacoes, { eager: false })
-  @JoinColumn({ name: 'diariosAvaliacoes' })
+  @JoinColumn({ name: 'dip_id_int' })
   diarioProfessor: DiarioProfessor;
   @ManyToOne(type => PeriodoLetivo, periodoLetivo => periodoLetivo.diariosAvaliacoes, { eager: false })
   @JoinColumn({ name: 'prl_id_int' })

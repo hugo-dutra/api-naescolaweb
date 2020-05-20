@@ -5,7 +5,7 @@ import { Estudante } from "../estudante/estudante.entity";
 export class TelefoneContatoEstudante extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'tce_id_int' })
   id: number;
-  @Column({ length: 25, name: 'tce_telefone_txt' })
+  @Column({ length: 25, name: 'tce_telefone_int' })
   tct_telefone: string;
   @ManyToOne(type => Estudante, estudante => estudante.telefonesContatoEstudantes, { eager: false })
   @JoinColumn({ name: 'est_id_int' })

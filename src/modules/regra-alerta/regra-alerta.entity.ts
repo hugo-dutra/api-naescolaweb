@@ -16,6 +16,9 @@ export class RegraAlerta extends BaseEntity {
   ral_data_inicio: Date;
   @Column({ name: 'ral_data_fim_dte' })
   ral_data_fim: Date;
+  @Column({ name: 'ral_valor_referencia_int' })
+  ral_valor_referencia: number;
+
   /* RELACIONAMENTOS */
   @ManyToOne(type => OperadorAlerta, operadorAlerta => operadorAlerta.regrasAlertas, { eager: false })
   @JoinColumn({ name: 'opa_id_int' })

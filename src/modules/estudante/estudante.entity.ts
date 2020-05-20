@@ -42,7 +42,7 @@ export class Estudante extends BaseEntity {
   est_tipo_sanguineo: string;
   @Column({ name: 'est_envio_msg_status_int', default: 1 })
   est_envio_msg_status: number;
-  @Column({ name: 'est_envio_ativo_int', default: 1 })
+  @Column({ name: 'est_status_ativo_int', default: 1 })
   est_envio_ativo: number;
   @Column({ name: 'est_nascimento_dte' })
   est_nascimento: Date;

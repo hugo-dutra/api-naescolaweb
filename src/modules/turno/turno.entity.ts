@@ -6,7 +6,7 @@ import { TurnoPortaria } from "../turno-portaria/turno-portaria.entity";
 @Entity('turno_trn')
 export class Turno extends BaseEntity {
   /* CAMPOS */
-  @PrimaryGeneratedColumn({ name: 'trm_id_int' })
+  @PrimaryGeneratedColumn({ name: 'trn_id_int' })
   id: number;
   @Column({ length: 45, name: 'trn_nome_txt' })
   trn_nome: string;

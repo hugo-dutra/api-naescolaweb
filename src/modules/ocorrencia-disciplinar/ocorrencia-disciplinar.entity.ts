@@ -1,7 +1,7 @@
 import { AlertaOcorrenciaVerificada } from './../alerta-ocorrencia-verificada/alerta-ocorrencia-verificada.entity';
 import { StatusEntregaMensagem } from './../status-entrega-mensagem/status-entrega-mensagem.entity';
 import { TipoOcorrenciaDisciplinar } from './../tipo-ocorrencia-disciplinar/tipo-ocorrencia-disciplinar.entity';
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { Estudante } from "../estudante/estudante.entity";
 import { Usuario } from "../usuario/usuario.entity";
 

@@ -14,5 +14,6 @@ export class ObservacaoTurma extends BaseEntity {
   @JoinColumn({ name: 'usr_id_int' })
   usuario: Usuario;
   @ManyToOne(type => Turma, turma => turma.observacoesTurmas, { eager: false })
+  @JoinColumn({ name: 'trm_id_int' })
   turma: Turma;
 }

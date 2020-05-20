@@ -1,5 +1,5 @@
 import { Usuario } from './../usuario/usuario.entity';
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, ManyToMany } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { Estudante } from "../estudante/estudante.entity";
 import { Escola } from "../escola/escola.entity";
 

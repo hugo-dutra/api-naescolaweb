@@ -27,7 +27,7 @@ export class ComunicadoDiverso extends BaseEntity {
   @JoinColumn({ name: 'usr_id_int' })
   usuario: Usuario;
   @ManyToOne(type => StatusEntregaMensagem, statusEntregaMensagem => statusEntregaMensagem.comunicadosDiversos, { eager: false })
-  @JoinColumn({ name: 'sem_status_entrega_id' })
+  @JoinColumn({ name: 'cdi_status_int' })
   statusEntregaMensagem: StatusEntregaMensagem;
 
 }

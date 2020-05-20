@@ -2,7 +2,7 @@ import { BaseEntity, EntityRepository, Entity, PrimaryGeneratedColumn, ManyToOne
 import { Escola } from '../escola/escola.entity';
 import { Professor } from '../professor/professor.entity';
 
-@Entity('professor_repository_pre')
+@Entity('professor_escola_pre')
 export class ProfessorEscola extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'pre_id_int' })
   id: number;

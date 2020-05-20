@@ -5,7 +5,7 @@ import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, OneToMany } from "t
 
 @Entity('status_entrega_mensagem_sem')
 export class StatusEntregaMensagem extends BaseEntity {
-  @PrimaryGeneratedColumn({ name: 'sem_status_entrega_id' })
+  @PrimaryGeneratedColumn({ name: 'sem_status_entrega_id_int' })
   id: number;
   @Column({ name: 'sem_valor_txt', length: 45 })
   sem_valor: string;
