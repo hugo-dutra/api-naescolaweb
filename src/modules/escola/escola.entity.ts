@@ -1,3 +1,4 @@
+import { ProfessorEscola } from './../professor-escola/professor-escola.entity';
 import { RegraAlertaUsuario } from './../regra-alerta-usuario/regra-alerta-usuario.entity';
 import { RegraAlerta } from './../regra-alerta/regra-alerta.entity';
 import { AlertaOcorrenciaVerificada } from './../alerta-ocorrencia-verificada/alerta-ocorrencia-verificada.entity';
@@ -89,4 +90,6 @@ export class Escola extends BaseEntity {
   regrasAlertas: RegraAlerta[];
   @OneToMany(type => RegraAlertaUsuario, regraAlertaUsuario => regraAlertaUsuario.escola, { eager: true })
   regrasAlertasUsuarios: RegraAlertaUsuario[];
+  @OneToMany(type => ProfessorEscola, professorEscola => professorEscola.escola, { eager: true })
+  professoresEscolas: ProfessorEscola[];
 }

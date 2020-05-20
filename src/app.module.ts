@@ -51,6 +51,10 @@ import { SaidaAntecipadaRecorrenteModule } from './modules/saida-antecipada-reco
 import { OperadorAlertaModule } from './modules/operador-alerta/operador-alerta.module';
 import { RegraAlertaModule } from './modules/regra-alerta/regra-alerta.module';
 import { RegraAlertaUsuarioModule } from './modules/regra-alerta-usuario/regra-alerta-usuario.module';
+import { ProfessorModule } from './modules/professor/professor.module';
+import { UsuarioProfessorModule } from './modules/usuario-professor/usuario-professor.module';
+import { ProfessorEscolaModule } from './modules/professor-escola/professor-escola.module';
+import { ProfessorDisciplinaModule } from './modules/professor-disciplina/professor-disciplina.module';
 
 
 @Module({
@@ -106,6 +110,10 @@ import { RegraAlertaUsuarioModule } from './modules/regra-alerta-usuario/regra-a
     OperadorAlertaModule,
     RegraAlertaModule,
     RegraAlertaUsuarioModule,
+    ProfessorModule,
+    UsuarioProfessorModule,
+    ProfessorEscolaModule,
+    ProfessorDisciplinaModule,
   ],
 })
 export class AppModule { }

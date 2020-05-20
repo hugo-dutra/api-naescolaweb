@@ -15,6 +15,7 @@ import { PedidoCartao } from '../pedido-cartao/pedido-cartao.entity';
 import { AtividadeExtraClasse } from '../atividade-extra-classe/atividade-extra-classe.entity';
 import { SaidaAntecipadaEventual } from '../saida-antecipada-eventual/saida-antecipada-eventual.entity';
 import { EntradaPosteriorEstudante } from '../entrada-posterior-estudante/entrada-posterior-estudante.entity';
+import { UsuarioProfessor } from '../usuario-professor/usuario-professor.entity';
 
 @Entity('usuario_usr')
 export class Usuario extends BaseEntity {
@@ -64,7 +65,8 @@ export class Usuario extends BaseEntity {
   regrasAlertas: RegraAlerta[];
   @OneToMany(type => RegraAlertaUsuario, regraAlertaUsuario => regraAlertaUsuario.usuario, { eager: true })
   regrasAlertasUsuarios: RegraAlertaUsuario[];
-
+  @OneToMany(type => UsuarioProfessor, usuarioProfessor => usuarioProfessor.usuario, { eager: true })
+  usuariosProfessores: UsuarioProfessor[];
 
 
 
