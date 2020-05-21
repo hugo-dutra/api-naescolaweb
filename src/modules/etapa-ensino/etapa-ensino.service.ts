@@ -3,12 +3,11 @@ import { EtapaEnsino } from './etapa-ensino.entity';
 import { EtapaEnsinoRepository } from './etapa-ensino.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { InsertResult, DeleteResult } from 'typeorm';
+import { InsertResult, DeleteResult, UpdateResult } from 'typeorm';
 
 @Injectable()
 export class EtapaEnsinoService {
   constructor(@InjectRepository(EtapaEnsinoRepository) private etapaEnsinoRepository: EtapaEnsinoRepository) { }
-
 
   public inserirEtapaEnsino(etapaEnsinoDto: EtapaEnsinoDto): Promise<InsertResult> {
     return new Promise((resolve, reject) => {
@@ -20,11 +19,31 @@ export class EtapaEnsinoService {
     });
   }
 
+  public inserirEtapaEnsinoIntegracao(etapasEnsinoDto: EtapaEnsinoDto[]): Promise<EtapaEnsinoDto[]> {
+    return new Promise((resolve, reject) => {
+      this.etapaEnsinoRepository.save(etapasEnsinoDto).then((updateResult: EtapaEnsinoDto[]) => {
+        resolve(updateResult);
+      }).catch((reason: any) => {
+        reject(reason);
+      });
+    });
+  }
+
   public listarEtapasEnsino(): Promise<EtapaEnsino[]> {
     return new Promise((resolve, reject) => {
       this.etapaEnsinoRepository.find().then((etapasEnsino: EtapaEnsino[]) => {
         resolve(etapasEnsino);
-      }).catch((reason: any) => { 
+      }).catch((reason: any) => {
+        reject(reason);
+      });
+    });
+  }
+
+  public listarEtapasEnsinoPorId(id: number[]): Promise<EtapaEnsino[]> {
+    return new Promise((resolve, reject) => {
+      this.etapaEnsinoRepository.findByIds(id).then((etapasEnsino: EtapaEnsino[]) => {
+        resolve(etapasEnsino);
+      }).catch((reason: any) => {
         reject(reason);
       });
     });
@@ -42,8 +61,8 @@ export class EtapaEnsinoService {
 
   public excluirEtapaEnsino(id: number): Promise<DeleteResult> {
     return new Promise((resolve, reject) => {
-      console.log(id);
       this.etapaEnsinoRepository.delete(id).then((deleteResult: DeleteResult) => {
+
         resolve(deleteResult);
       }).catch((reason: any) => {
         reject(reason);

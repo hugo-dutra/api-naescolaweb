@@ -44,7 +44,7 @@ export class AreaConhecimentoService {
 
   public excluirAreaConhecimento(id: number): Promise<DeleteResult> {
     return new Promise((resolve, reject) => {
-      console.log(id);
+
       this.areaConhecimentoRepository.delete(id).then((deleteResult: DeleteResult) => {
         resolve(deleteResult);
       }).catch((reason: any) => {

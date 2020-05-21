@@ -9,13 +9,15 @@ export class Turno extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'trn_id_int' })
   id: number;
   @Column({ length: 45, name: 'trn_nome_txt' })
-  trn_nome: string;
+  nome: string;
   @Column({ name: 'trn_hora_inicio_tmr' })
-  trn_hora_inicio: string;
+  horaInicio: string;
   @Column({ name: 'trn_hora_fim_tmr' })
-  trn_hora_fim: string;
+  horaFim: string;
   @Column({ length: 5, name: 'trn_abreviatura_txt' })
-  trn_abreviatura: string;
+  abreviatura: string;
+  @Column({ name: 'esc_id_int' })
+  esc_id: number;
   /* RELACIONAMENTOS */
   @ManyToOne(type => Escola, escola => escola.turnos)
   @JoinColumn({ name: 'esc_id_int' })
