@@ -12,7 +12,7 @@ export class AtividadeExtraEstudante extends BaseEntity {
   @Column({ name: 'aee_status_entrega', default: 0 })
   aee_status_entrega: number;
   /* RELACIONAMENTO */
-  @ManyToOne(type => Estudante, estudante => estudante.atividadesExtraEstudante, { eager: false })
+  @ManyToOne(type => Estudante, estudante => estudante.atividadesExtraEstudante)
   @JoinColumn({ name: 'est_id_int' })
   estudante: Estudante;
   @ManyToOne(type => AtividadeExtraClasse, atividadeExtraClasse => atividadeExtraClasse.atividadesExtraEstudante)

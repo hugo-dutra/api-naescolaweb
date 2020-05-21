@@ -19,10 +19,10 @@ export class Professor extends BaseEntity {
   @Column({ name: 'prf_telefone_txt', length: 20 })
   prf_telefone: string;
   /* RELACIONAMENTOS */
-  @OneToMany(type => UsuarioProfessor, usuarioProfessor => usuarioProfessor.usuario, { eager: true })
+  @OneToMany(type => UsuarioProfessor, usuarioProfessor => usuarioProfessor.usuario)
   usuariosProfessores: UsuarioProfessor[];
-  @OneToMany(type => ProfessorEscola, professorEscola => professorEscola.professor, { eager: true })
+  @OneToMany(type => ProfessorEscola, professorEscola => professorEscola.professor)
   professoresEscolas: ProfessorEscola[];
-  @OneToMany(type => ProfessorDisciplina, professorDisciplina => professorDisciplina.professor, { eager: true })
+  @OneToMany(type => ProfessorDisciplina, professorDisciplina => professorDisciplina.professor)
   professoresDisciplinas: ProfessorDisciplina[];
 }

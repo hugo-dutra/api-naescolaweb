@@ -12,10 +12,10 @@ export class ObservacaoEstudante extends BaseEntity {
   @Column({ name: 'obe_data_hora_dtm', nullable: false })
   obe_data_hora: Date;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Usuario, usuario => usuario.observacoesEstudantes, { eager: false })
+  @ManyToOne(type => Usuario, usuario => usuario.observacoesEstudantes)
   @JoinColumn({ name: 'usr_id_int' })
   usuario: Usuario;
-  @ManyToOne(type => Estudante, estudante => estudante.observacoesEstudantes, { eager: false })
+  @ManyToOne(type => Estudante, estudante => estudante.observacoesEstudantes)
   @JoinColumn({ name: 'est_id_int' })
   estudante: Estudante;
 }

@@ -15,7 +15,7 @@ export class AnexoAtividadeExtra extends BaseEntity {
   @Column({ name: 'aae_url_txt', length: 2000, nullable: false })
   aae_url: string;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => AtividadeExtraClasse, atividadeExtraClasse => atividadeExtraClasse.anexosAtividadeExtra, { eager: false })
+  @ManyToOne(type => AtividadeExtraClasse, atividadeExtraClasse => atividadeExtraClasse.anexosAtividadeExtra)
   @JoinColumn({ name: 'aec_id_int' })
   atividadeExtraClasse: AtividadeExtraClasse;
 }

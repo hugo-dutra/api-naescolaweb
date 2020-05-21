@@ -14,10 +14,10 @@ export class SaidaAntecipadaEventual extends BaseEntity {
   @Column({ name: 'sae_motivo_txt', length: 500, nullable: false })
   sae_motivo: string;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Estudante, estudante => estudante.saidasAntecipadasEventuais, { eager: false })
+  @ManyToOne(type => Estudante, estudante => estudante.saidasAntecipadasEventuais)
   @JoinColumn({ name: 'est_id_int' })
   estudante: Estudante;
-  @ManyToOne(type => Usuario, usuario => usuario.saidasAntecipadasEventuais, { eager: false })
+  @ManyToOne(type => Usuario, usuario => usuario.saidasAntecipadasEventuais)
   @JoinColumn({ name: 'usr_id_int' })
   usuario: Usuario;
 }

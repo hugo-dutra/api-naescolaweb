@@ -12,14 +12,14 @@ export class Portaria extends BaseEntity {
   por_codigo_cadastro: string;
   @Column({ name: 'por_nome_txt', length: 45 })
   por_nome: string;
-  @OneToMany(type => TurnoPortaria, turnoPortaria => turnoPortaria.portaria, { eager: true })
+  @OneToMany(type => TurnoPortaria, turnoPortaria => turnoPortaria.portaria)
   turnosPortaria: TurnoPortaria[];
-  @ManyToOne(type => Escola, escola => escola.portarias, { eager: false })
+  @ManyToOne(type => Escola, escola => escola.portarias)
   @JoinColumn({ name: 'esc_id_int' })
   escola: Escola;
-  @OneToMany(type => CronogramaPortaria, cronogramaPortaria => cronogramaPortaria.portaria, { eager: true })
+  @OneToMany(type => CronogramaPortaria, cronogramaPortaria => cronogramaPortaria.portaria)
   cronogramasPortaria: CronogramaPortaria[];
-  @OneToMany(type => FrequenciaPortaria, frequenciaPortaria => frequenciaPortaria.portaria, { eager: true })
+  @OneToMany(type => FrequenciaPortaria, frequenciaPortaria => frequenciaPortaria.portaria)
   frequenciasPortarias: FrequenciaPortaria[];
 
 }

@@ -15,6 +15,6 @@ export class Diretor extends BaseEntity {
   foto: string
   @Column({ length: 50, name: 'dir_matricula_txt' })
   matricula: string;
-  @OneToMany(type => DiretorEscola, diretorEscola => diretorEscola.diretor, { eager: true })
+  @OneToMany(type => DiretorEscola, diretorEscola => diretorEscola.diretor)
   diretoresEscolas: DiretorEscola[]
 }

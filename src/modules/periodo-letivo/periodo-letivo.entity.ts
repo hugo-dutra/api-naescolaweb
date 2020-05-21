@@ -14,9 +14,9 @@ export class PeriodoLetivo extends BaseEntity {
   @Column({ name: 'prl_fim_dte' })
   prl_fim: Date;
   /* RELACIONAMENTOS */
-  @OneToMany(type => DiarioAvaliacao, diarioAvaliacao => diarioAvaliacao.periodoLetivo, { eager: true })
+  @OneToMany(type => DiarioAvaliacao, diarioAvaliacao => diarioAvaliacao.periodoLetivo)
   diariosAvaliacoes: DiarioAvaliacao[]
-  @OneToMany(type => ResultadoBoletim, resultadoBoletim => resultadoBoletim.periodoLetivo, { eager: true })
+  @OneToMany(type => ResultadoBoletim, resultadoBoletim => resultadoBoletim.periodoLetivo)
   resultadosBoletins: ResultadoBoletim[];
 
 

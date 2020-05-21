@@ -10,10 +10,10 @@ export class AvaliacaoEstudante extends BaseEntity {
   @Column({ name: 'ave_valor_float' })
   ave_valor: number
   /* RELACIONAMENTOS */
-  @ManyToOne(type => DiarioAvaliacao, diarioAvaliacao => diarioAvaliacao.avaliacoesEstudantes, { eager: false })
+  @ManyToOne(type => DiarioAvaliacao, diarioAvaliacao => diarioAvaliacao.avaliacoesEstudantes)
   @JoinColumn({ name: 'dav_id_int' })
   diarioAvaliacao: DiarioAvaliacao;
-  @ManyToOne(type => Estudante, estudante => estudante.avaliacoesEstudantes, { eager: false })
+  @ManyToOne(type => Estudante, estudante => estudante.avaliacoesEstudantes)
   @JoinColumn({ name: 'est_id_int' })
   estudante: Estudante;
 

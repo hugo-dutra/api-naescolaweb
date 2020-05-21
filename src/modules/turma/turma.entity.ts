@@ -17,22 +17,22 @@ export class Turma extends BaseEntity {
   @Column({ name: 'trm_ano_int' })
   trm_ano: number;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Serie, serie => serie.turmas, { eager: false })
+  @ManyToOne(type => Serie, serie => serie.turmas)
   @JoinColumn({ name: 'sre_id_int' })
   serie: Serie;
-  @ManyToOne(type => Turno, turno => turno.turmas, { eager: false })
+  @ManyToOne(type => Turno, turno => turno.turmas)
   @JoinColumn({ name: 'trn_id_int' })
   turno: Turno;
-  @ManyToOne(type => Escola, escola => escola.turmas, { eager: false })
+  @ManyToOne(type => Escola, escola => escola.turmas)
   @JoinColumn({ name: 'esc_id_int' })
   escola: Escola;
-  @OneToMany(type => EstudanteTurma, estudanteTurma => estudanteTurma.turma, { eager: true })
+  @OneToMany(type => EstudanteTurma, estudanteTurma => estudanteTurma.turma)
   estudantesTurmas: EstudanteTurma[];
-  @OneToMany(type => ObservacaoTurma, observacaoTurma => observacaoTurma.turma, { eager: true })
+  @OneToMany(type => ObservacaoTurma, observacaoTurma => observacaoTurma.turma)
   observacoesTurmas: ObservacaoTurma[];
-  @OneToMany(type => ProfessorTurma, professorTurma => professorTurma.turma, { eager: true })
+  @OneToMany(type => ProfessorTurma, professorTurma => professorTurma.turma)
   professoresTurmas: ProfessorTurma[];
-  @OneToMany(type => DiarioProfessor, diarioProfessor => diarioProfessor.turma, { eager: true })
+  @OneToMany(type => DiarioProfessor, diarioProfessor => diarioProfessor.turma)
   diariosProfessores: DiarioProfessor[];
 
 

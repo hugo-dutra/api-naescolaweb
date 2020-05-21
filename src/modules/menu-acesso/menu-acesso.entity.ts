@@ -20,10 +20,10 @@ export class MenuAcesso extends BaseEntity {
   @Column({ length: 20, name: 'mac_cor_txt' })
   mac_cor: string;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => GrupoAcesso, grupoAcesso => grupoAcesso.menusAcesso, { eager: false })
+  @ManyToOne(type => GrupoAcesso, grupoAcesso => grupoAcesso.menusAcesso)
   @JoinColumn({ name: 'gac_id_int' })
   grupoAcesso: GrupoAcesso
-  @OneToMany(type => PermissaoAcesso, permissaoAcesso => permissaoAcesso.menuAcesso, { eager: true })
+  @OneToMany(type => PermissaoAcesso, permissaoAcesso => permissaoAcesso.menuAcesso)
   permissoesAcesso: PermissaoAcesso[];
 
 }

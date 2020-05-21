@@ -11,17 +11,17 @@ export class ProfessorDisciplina extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'prd_id_int' })
   id: number;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Professor, professor => professor.professoresDisciplinas, { eager: false })
+  @ManyToOne(type => Professor, professor => professor.professoresDisciplinas)
   @JoinColumn({ name: 'prf_id_int' })
   professor: Professor;
-  @ManyToOne(type => Disciplina, disciplina => disciplina.professoresDisciplinas, { eager: false })
+  @ManyToOne(type => Disciplina, disciplina => disciplina.professoresDisciplinas)
   @JoinColumn({ name: 'dsp_id_int' })
   disciplina: Disciplina;
-  @OneToMany(type => ProfessorTurma, professorTurma => professorTurma.professorDisciplina, { eager: true })
+  @OneToMany(type => ProfessorTurma, professorTurma => professorTurma.professorDisciplina)
   professoresTurmas: ProfessorTurma[];
-  @OneToMany(type => AtividadeExtraClasse, atividadeExtraClasse => atividadeExtraClasse.professorDisciplina, { eager: true })
+  @OneToMany(type => AtividadeExtraClasse, atividadeExtraClasse => atividadeExtraClasse.professorDisciplina)
   atividadesExtraClasse: AtividadeExtraClasse[];
-  @OneToMany(type => DiarioProfessor, diariosProfessores => diariosProfessores.professorDisciplina, { eager: true })
+  @OneToMany(type => DiarioProfessor, diariosProfessores => diariosProfessores.professorDisciplina)
   diariosProfessores: DiarioProfessor[];
 
 

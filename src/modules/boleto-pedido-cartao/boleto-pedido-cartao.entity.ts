@@ -29,7 +29,7 @@ export class BoletoPedidoCartao extends BaseEntity {
   @Column({ name: 'bpc_status_pagamento_int' })
   bpc_status_pagamento: number;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => PedidoCartao, pedidoCartao => pedidoCartao.boletosPedidosCartoes, { eager: false })
+  @ManyToOne(type => PedidoCartao, pedidoCartao => pedidoCartao.boletosPedidosCartoes)
   @JoinColumn({ name: 'pec_id_int' })
   pedidoCartao: PedidoCartao;
 

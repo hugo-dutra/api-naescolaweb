@@ -12,9 +12,9 @@ export class Serie extends BaseEntity {
   @Column({ length: 5, name: 'sre_abreviatura_txt' })
   sre_abreviatura: string;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => EtapaEnsino, etapaEnsino => etapaEnsino.series, { eager: false })
+  @ManyToOne(type => EtapaEnsino, etapaEnsino => etapaEnsino.series)
   @JoinColumn({ name: 'ete_id_int' })
   etapaEnsino: EtapaEnsino;
-  @OneToMany(type => Turma, turma => turma.serie, { eager: true })
+  @OneToMany(type => Turma, turma => turma.serie)
   turmas: Turma[]
 }

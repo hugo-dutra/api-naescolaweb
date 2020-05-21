@@ -19,13 +19,13 @@ export class SugestaoUsuario extends BaseEntity {
   @Column({ name: 'sus_status_sugestao_int', nullable: false, default: 0 })
   sus_status_sugestao: number;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Escola, escola => escola.sugestoesUsuarios, { eager: false })
+  @ManyToOne(type => Escola, escola => escola.sugestoesUsuarios)
   @JoinColumn({ name: 'esc_id_int' })
   escola: Escola;
-  @ManyToOne(type => Usuario, usuario => usuario.sugestoesUsuarios, { eager: false })
+  @ManyToOne(type => Usuario, usuario => usuario.sugestoesUsuarios)
   @JoinColumn({ name: 'usr_id_int' })
   usuario: Usuario;
-  @OneToMany(type => SugestaoUsuarioHistorico, sugestaoUsuarioHistorico => sugestaoUsuarioHistorico.sugestaoUsuario, { eager: true })
+  @OneToMany(type => SugestaoUsuarioHistorico, sugestaoUsuarioHistorico => sugestaoUsuarioHistorico.sugestaoUsuario)
   sugestoesUsuariosHistorico: SugestaoUsuarioHistorico[];
 
 

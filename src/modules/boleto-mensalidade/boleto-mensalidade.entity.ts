@@ -29,7 +29,7 @@ export class BoletoMensalidade extends BaseEntity {
   @Column({ name: 'bom_status_pagamento_int' })
   bom_status_pagamento: number;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Escola, escola => escola.boletosMensalidades, { eager: false })
+  @ManyToOne(type => Escola, escola => escola.boletosMensalidades)
   @JoinColumn({ name: 'esc_id_int' })
   escola: Escola;
 

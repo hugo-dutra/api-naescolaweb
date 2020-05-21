@@ -13,10 +13,10 @@ export class DiretorEscola extends BaseEntity {
   @Column({ name: 'esc_id_int' })
   esc_id: number;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Diretor, diretor => diretor.diretoresEscolas, { eager: false })
+  @ManyToOne(type => Diretor, diretor => diretor.diretoresEscolas)
   @JoinColumn({ name: "dir_id_int" })
   diretor: Diretor;
-  @ManyToOne(type => Escola, escola => escola.diretoresEscolas, { eager: false })
+  @ManyToOne(type => Escola, escola => escola.diretoresEscolas)
   @JoinColumn({ name: "esc_id_int" })
   escola: Escola;
 

@@ -12,10 +12,10 @@ export class DiarioAvaliacaoDiagnostica extends BaseEntity {
   @Column({ name: 'dad_data_dte', nullable: false })
   dad_data: Date;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => DiarioProfessor, diarioProfessor => diarioProfessor.diariosAvaliacoesDiagnosticas, { eager: false })
+  @ManyToOne(type => DiarioProfessor, diarioProfessor => diarioProfessor.diariosAvaliacoesDiagnosticas)
   @JoinColumn({ name: 'dip_id_int' })
   diarioProfessor: DiarioProfessor;
-  @ManyToOne(type => Estudante, estudante => estudante.diariosAvaliacoesDiagnosticas, { eager: false })
+  @ManyToOne(type => Estudante, estudante => estudante.diariosAvaliacoesDiagnosticas)
   @JoinColumn({ name: 'est_id_int' })
   estudante: Estudante;
 

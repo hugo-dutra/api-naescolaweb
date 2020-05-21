@@ -26,10 +26,10 @@ export class SaidaAntecipadaRecorrente extends BaseEntity {
   @Column({ name: 'sar_sabado_int' })
   sar_sabado: number;
   /* REPOSITORY */
-  @ManyToOne(type => Estudante, estudante => estudante.saidasAntecipadasRecorrentes, { eager: false })
+  @ManyToOne(type => Estudante, estudante => estudante.saidasAntecipadasRecorrentes)
   @JoinColumn({ name: 'est_id_int' })
   estudante: Estudante;
-  @ManyToOne(type => Usuario, usuario => usuario.saidasAntecipadasRecorrentes, { eager: false })
+  @ManyToOne(type => Usuario, usuario => usuario.saidasAntecipadasRecorrentes)
   @JoinColumn({ name: 'usr_id_int' })
   usuario: Usuario;
 

@@ -9,7 +9,7 @@ export class ModeloCartao extends BaseEntity {
   moc_nome: string;
   @Column({ name: 'moc_valor_num', nullable: false, default: 0 })
   moc_valor: number;
-  @OneToMany(type => CartaoPedido, cartaoPedido => cartaoPedido.modeloCartao, { eager: false })
+  @OneToMany(type => CartaoPedido, cartaoPedido => cartaoPedido.modeloCartao)
   cartoesPedidos: CartaoPedido[];
 
 }

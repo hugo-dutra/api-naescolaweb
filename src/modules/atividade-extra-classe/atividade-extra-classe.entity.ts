@@ -18,14 +18,14 @@ export class AtividadeExtraClasse extends BaseEntity {
   @Column({ name: 'aec_data_entrega_dte', nullable: false })
   aec_data_entrega: Date;
   /* RELACIONAMENTOS */
-  @OneToMany(type => AnexoAtividadeExtra, anexoAtividadeExtra => anexoAtividadeExtra.atividadeExtraClasse, { eager: true })
+  @OneToMany(type => AnexoAtividadeExtra, anexoAtividadeExtra => anexoAtividadeExtra.atividadeExtraClasse)
   anexosAtividadeExtra: AnexoAtividadeExtra[];
-  @OneToMany(type => AtividadeExtraEstudante, atividadeExtraEstudante => atividadeExtraEstudante.atividadeExtraClasse, { eager: true })
+  @OneToMany(type => AtividadeExtraEstudante, atividadeExtraEstudante => atividadeExtraEstudante.atividadeExtraClasse)
   atividadesExtraEstudante: AtividadeExtraEstudante[];
-  @ManyToOne(type => Usuario, usuario => usuario.atividadesExtraClasse, { eager: false })
+  @ManyToOne(type => Usuario, usuario => usuario.atividadesExtraClasse)
   @JoinColumn({ name: 'usr_id_int' })
   usuario: Usuario;
-  @ManyToOne(type => ProfessorDisciplina, professorDisciplina => professorDisciplina.atividadesExtraClasse, { eager: false })
+  @ManyToOne(type => ProfessorDisciplina, professorDisciplina => professorDisciplina.atividadesExtraClasse)
   @JoinColumn({ name: 'prd_id_int' })
   professorDisciplina: ProfessorDisciplina;
 

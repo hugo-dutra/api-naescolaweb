@@ -11,13 +11,13 @@ export class ProfessorTurma extends BaseEntity {
   @Column({ name: 'prt_conselheiro_int' })
   prt_conselheiro: number;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => ProfessorDisciplina, professorDisciplina => professorDisciplina.professoresTurmas, { eager: false })
+  @ManyToOne(type => ProfessorDisciplina, professorDisciplina => professorDisciplina.professoresTurmas)
   @JoinColumn({ name: 'prd_id_int' })
   professorDisciplina: ProfessorDisciplina;
-  @ManyToOne(type => Turma, turma => turma.professoresTurmas, { eager: false })
+  @ManyToOne(type => Turma, turma => turma.professoresTurmas)
   @JoinColumn({ name: 'trm_id_int' })
   turma: Turma;
-  @ManyToOne(type => Escola, escola => escola.professoresTurmas, { eager: false })
+  @ManyToOne(type => Escola, escola => escola.professoresTurmas)
   @JoinColumn({ name: 'esc_id_int' })
   escola: Escola;
 

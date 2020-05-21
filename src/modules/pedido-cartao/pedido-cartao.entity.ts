@@ -22,17 +22,17 @@ export class PedidoCartao extends BaseEntity {
   @Column({ name: 'pec_quantidade_cartao_int' })
   pec_quantidade_cartao: number;
   /* RELACIONAMENTOS */
-  @OneToMany(type => BoletoPedidoCartao, boletoPedidoCartao => boletoPedidoCartao.pedidoCartao, { eager: true })
+  @OneToMany(type => BoletoPedidoCartao, boletoPedidoCartao => boletoPedidoCartao.pedidoCartao)
   boletosPedidosCartoes: BoletoPedidoCartao[];
-  @ManyToOne(type => Usuario, usuario => usuario.pedidosCartoes, { eager: false })
+  @ManyToOne(type => Usuario, usuario => usuario.pedidosCartoes)
   @JoinColumn({ name: 'usr_id_int' })
   usuario: Usuario;
-  @ManyToOne(type => Escola, escola => escola => escola.pedidosCartoes, { eager: false })
+  @ManyToOne(type => Escola, escola => escola => escola.pedidosCartoes)
   @JoinColumn({ name: 'esc_id_int' })
   escola: Escola;
-  @OneToMany(type => CartaoPedido, cartaoPedido => cartaoPedido.pedidoCartao, { eager: true })
+  @OneToMany(type => CartaoPedido, cartaoPedido => cartaoPedido.pedidoCartao)
   cartoesPedidos: CartaoPedido[];
-  @OneToMany(type => PendenciaCarteirinha, pendenciaCarteirinha => pendenciaCarteirinha.pedidoCartao, { eager: true })
+  @OneToMany(type => PendenciaCarteirinha, pendenciaCarteirinha => pendenciaCarteirinha.pedidoCartao)
   pendenciasCarteirinhas: PendenciaCarteirinha[];
 
 

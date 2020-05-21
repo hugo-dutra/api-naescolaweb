@@ -20,13 +20,13 @@ export class ComunicadoDiverso extends BaseEntity {
   @Column({ name: 'cdi_fbdbkey_txt', length: 50 })
   cdi_fbdbkey: string;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Estudante, estudante => estudante.comunicadosDiversos, { eager: false })
+  @ManyToOne(type => Estudante, estudante => estudante.comunicadosDiversos)
   @JoinColumn({ name: 'est_id_int' })
   estudante: Estudante;
-  @ManyToOne(type => Usuario, usuario => usuario.comunicadosDiversos, { eager: false })
+  @ManyToOne(type => Usuario, usuario => usuario.comunicadosDiversos)
   @JoinColumn({ name: 'usr_id_int' })
   usuario: Usuario;
-  @ManyToOne(type => StatusEntregaMensagem, statusEntregaMensagem => statusEntregaMensagem.comunicadosDiversos, { eager: false })
+  @ManyToOne(type => StatusEntregaMensagem, statusEntregaMensagem => statusEntregaMensagem.comunicadosDiversos)
   @JoinColumn({ name: 'cdi_status_int' })
   statusEntregaMensagem: StatusEntregaMensagem;
 

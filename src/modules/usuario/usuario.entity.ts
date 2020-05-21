@@ -34,40 +34,40 @@ export class Usuario extends BaseEntity {
   @Column({ length: 500, name: 'usr_foto_txt' })
   usr_foto: string;
   /* RELACIONAMENTOS */
-  @OneToMany(type => UsuarioEscola, usuarioEscola => usuarioEscola.usuario, { eager: false })
+  @OneToMany(type => UsuarioEscola, usuarioEscola => usuarioEscola.usuario)
   usuariosEscolas: UsuarioEscola[];
-  @OneToOne(type => PedidoCartao, pedidoCartao => pedidoCartao.usuario, { eager: false })
+  @OneToOne(type => PedidoCartao, pedidoCartao => pedidoCartao.usuario)
   pedidosCartoes: PedidoCartao[];
-  @OneToMany(type => ObservacaoEstudante, observacaoEstudante => observacaoEstudante.usuario, { eager: true })
+  @OneToMany(type => ObservacaoEstudante, observacaoEstudante => observacaoEstudante.usuario)
   observacoesEstudantes: ObservacaoEstudante[];
-  @OneToMany(type => ObservacaoTurma, observacaoTurma => observacaoTurma.usuario, { eager: true })
+  @OneToMany(type => ObservacaoTurma, observacaoTurma => observacaoTurma.usuario)
   observacoesTurmas: ObservacaoTurma[];
-  @OneToMany(type => AtestadoMedico, atestadoMedico => atestadoMedico.usuario, { eager: true })
+  @OneToMany(type => AtestadoMedico, atestadoMedico => atestadoMedico.usuario)
   atestadosMedicos: AtestadoMedico[];
-  @OneToMany(type => PendenciaCarteirinha, pendenciaCarteirinha => pendenciaCarteirinha.usuario, { eager: true })
+  @OneToMany(type => PendenciaCarteirinha, pendenciaCarteirinha => pendenciaCarteirinha.usuario)
   pendenciasCarteirinhas: PendenciaCarteirinha[];
-  @OneToMany(type => AtividadeExtraClasse, atividadeExtraClasse => atividadeExtraClasse.usuario, { eager: true })
+  @OneToMany(type => AtividadeExtraClasse, atividadeExtraClasse => atividadeExtraClasse.usuario)
   atividadesExtraClasse: AtividadeExtraClasse[];
-  @OneToMany(type => SugestaoUsuario, sugestaoUsuario => sugestaoUsuario.usuario, { eager: true })
+  @OneToMany(type => SugestaoUsuario, sugestaoUsuario => sugestaoUsuario.usuario)
   sugestoesUsuarios: SugestaoUsuario[];
-  @OneToMany(type => SugestaoUsuarioHistorico, sugestaoUsuarioHistorico => sugestaoUsuarioHistorico.usuario, { eager: true })
+  @OneToMany(type => SugestaoUsuarioHistorico, sugestaoUsuarioHistorico => sugestaoUsuarioHistorico.usuario)
   sugestoesUsuariosHistorico: SugestaoUsuarioHistorico[]
-  @OneToMany(type => SaidaAntecipadaEventual, saidaAntecipadaEventual => saidaAntecipadaEventual.usuario, { eager: true })
+  @OneToMany(type => SaidaAntecipadaEventual, saidaAntecipadaEventual => saidaAntecipadaEventual.usuario)
   saidasAntecipadasEventuais: SaidaAntecipadaEventual[];
-  @OneToMany(type => EntradaPosteriorEstudante, entradaPosteriorEstudante => entradaPosteriorEstudante.usuario, { eager: true })
+  @OneToMany(type => EntradaPosteriorEstudante, entradaPosteriorEstudante => entradaPosteriorEstudante.usuario)
   entradasPosterioresEstudantes: EntradaPosteriorEstudante[];
-  @OneToMany(type => OcorrenciaDisciplinar, ocorrenciaDisciplinar => ocorrenciaDisciplinar.usuario, { eager: true })
+  @OneToMany(type => OcorrenciaDisciplinar, ocorrenciaDisciplinar => ocorrenciaDisciplinar.usuario)
   ocorrenciasDisciplinares: OcorrenciaDisciplinar[];
-  @OneToMany(type => AlertaOcorrenciaVerificada, alertaOcorrenciaVerificada => alertaOcorrenciaVerificada.usuario, { eager: true })
+  @OneToMany(type => AlertaOcorrenciaVerificada, alertaOcorrenciaVerificada => alertaOcorrenciaVerificada.usuario)
   alertasOcorrenciasVerificadas: AlertaOcorrenciaVerificada[];
-  @OneToMany(type => SaidaAntecipadaRecorrente, saidaAntecipadaRecorrente => saidaAntecipadaRecorrente.usuario, { eager: true })
+  @OneToMany(type => SaidaAntecipadaRecorrente, saidaAntecipadaRecorrente => saidaAntecipadaRecorrente.usuario)
   saidasAntecipadasRecorrentes: SaidaAntecipadaRecorrente[];
-  @OneToMany(type => RegraAlerta, regraAlerta => regraAlerta.usuario, { eager: true })
+  @OneToMany(type => RegraAlerta, regraAlerta => regraAlerta.usuario)
   regrasAlertas: RegraAlerta[];
-  @OneToMany(type => RegraAlertaUsuario, regraAlertaUsuario => regraAlertaUsuario.usuario, { eager: true })
+  @OneToMany(type => RegraAlertaUsuario, regraAlertaUsuario => regraAlertaUsuario.usuario)
   regrasAlertasUsuarios: RegraAlertaUsuario[];
-  @OneToMany(type => UsuarioProfessor, usuarioProfessor => usuarioProfessor.usuario, { eager: true })
+  @OneToMany(type => UsuarioProfessor, usuarioProfessor => usuarioProfessor.usuario)
   usuariosProfessores: UsuarioProfessor[];
-  @OneToMany(type => ComunicadoDiverso, comunicadoDiverso => comunicadoDiverso.usuario, { eager: true })
+  @OneToMany(type => ComunicadoDiverso, comunicadoDiverso => comunicadoDiverso.usuario)
   comunicadosDiversos: ComunicadoDiverso[];
 }

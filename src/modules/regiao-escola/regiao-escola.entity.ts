@@ -13,7 +13,7 @@ export class RegiaoEscola extends BaseEntity {
   @Column({ length: 5, name: 'ree_uf_txt' })
   uf: string;
   /* RELACIONAMENTOS */
-  @OneToMany(type => Escola, escola => escola.regiaoEscola, { eager: true })
+  @OneToMany(type => Escola, escola => escola.regiaoEscola)
   escolas: Escola[];
 
 }

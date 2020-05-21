@@ -15,7 +15,7 @@ export class GrupoAcesso extends BaseEntity {
   @Column({ length: 45, name: 'gac_modulo_txt' })
   gac_modulo: string;
   /* RELACIONAMENTOS */
-  @OneToMany(type => MenuAcesso, menuAcesso => menuAcesso.grupoAcesso, { eager: true })
+  @OneToMany(type => MenuAcesso, menuAcesso => menuAcesso.grupoAcesso)
   menusAcesso: MenuAcesso[];
 
 

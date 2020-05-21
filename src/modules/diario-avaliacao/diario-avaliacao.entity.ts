@@ -19,12 +19,12 @@ export class DiarioAvaliacao extends BaseEntity {
   @Column({ name: 'dav_peso_num', nullable: false })
   dav_peso: number;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => DiarioProfessor, diarioProfessor => diarioProfessor.diariosAvaliacoes, { eager: false })
+  @ManyToOne(type => DiarioProfessor, diarioProfessor => diarioProfessor.diariosAvaliacoes)
   @JoinColumn({ name: 'dip_id_int' })
   diarioProfessor: DiarioProfessor;
-  @ManyToOne(type => PeriodoLetivo, periodoLetivo => periodoLetivo.diariosAvaliacoes, { eager: false })
+  @ManyToOne(type => PeriodoLetivo, periodoLetivo => periodoLetivo.diariosAvaliacoes)
   @JoinColumn({ name: 'prl_id_int' })
   periodoLetivo: PeriodoLetivo;
-  @OneToMany(type => AvaliacaoEstudante, avaliacaoEstudante => avaliacaoEstudante.diarioAvaliacao, { eager: false })
+  @OneToMany(type => AvaliacaoEstudante, avaliacaoEstudante => avaliacaoEstudante.diarioAvaliacao)
   avaliacoesEstudantes: AvaliacaoEstudante[];
 }

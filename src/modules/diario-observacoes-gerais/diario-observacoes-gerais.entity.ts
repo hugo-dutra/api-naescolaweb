@@ -11,7 +11,7 @@ export class DiarioObservacoesGerais extends BaseEntity {
   @Column({ name: 'dog_data_dte', nullable: false })
   dog_data: Date;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => DiarioProfessor, diarioProfessor => diarioProfessor.diariosObservacoesGerais, { eager: false })
+  @ManyToOne(type => DiarioProfessor, diarioProfessor => diarioProfessor.diariosObservacoesGerais)
   @JoinColumn({ name: 'dip_id_int' })
   diarioProfessor: DiarioProfessor;
 

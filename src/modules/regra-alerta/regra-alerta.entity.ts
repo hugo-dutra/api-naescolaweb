@@ -20,19 +20,19 @@ export class RegraAlerta extends BaseEntity {
   ral_valor_referencia: number;
 
   /* RELACIONAMENTOS */
-  @ManyToOne(type => OperadorAlerta, operadorAlerta => operadorAlerta.regrasAlertas, { eager: false })
+  @ManyToOne(type => OperadorAlerta, operadorAlerta => operadorAlerta.regrasAlertas)
   @JoinColumn({ name: 'opa_id_int' })
   operadorAlerta: OperadorAlerta;
-  @ManyToOne(type => TipoOcorrenciaDisciplinar, tipoOcorrenciaDisciplinar => tipoOcorrenciaDisciplinar.regrasAlertas, { eager: false })
+  @ManyToOne(type => TipoOcorrenciaDisciplinar, tipoOcorrenciaDisciplinar => tipoOcorrenciaDisciplinar.regrasAlertas)
   @JoinColumn({ name: 'tod_id_int' })
   tipoOcorrenciaDisciplinar: TipoOcorrenciaDisciplinar;
-  @ManyToOne(type => Usuario, usuario => usuario.regrasAlertas, { eager: false })
+  @ManyToOne(type => Usuario, usuario => usuario.regrasAlertas)
   @JoinColumn({ name: 'usr_id_int' })
   usuario: Usuario;
-  @ManyToOne(type => Escola, escola => escola.regrasAlertas, { eager: false })
+  @ManyToOne(type => Escola, escola => escola.regrasAlertas)
   @JoinColumn({ name: 'esc_id_int' })
   escola: Escola;
-  @OneToMany(type => RegraAlertaUsuario, regraAlertaUsuario => regraAlertaUsuario.regraAlerta, { eager: true })
+  @OneToMany(type => RegraAlertaUsuario, regraAlertaUsuario => regraAlertaUsuario.regraAlerta)
   regrasAlertasUsuarios: RegraAlertaUsuario[];
 
 

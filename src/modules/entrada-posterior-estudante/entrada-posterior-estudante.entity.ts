@@ -27,13 +27,13 @@ export class EntradaPosteriorEstudante extends BaseEntity {
   @Column({ name: 'epe_sabado_int', default: 0 })
   epe_sabado: number;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Usuario, usuario => usuario.entradasPosterioresEstudantes, { eager: false })
+  @ManyToOne(type => Usuario, usuario => usuario.entradasPosterioresEstudantes)
   @JoinColumn({ name: 'usr_id_int' })
   usuario: Usuario;
-  @ManyToOne(type => Estudante, estudante => estudante.entradasPosterioresEstudantes, { eager: false })
+  @ManyToOne(type => Estudante, estudante => estudante.entradasPosterioresEstudantes)
   @JoinColumn({ name: 'est_id_int' })
   estudante: Estudante;
-  @ManyToOne(type => Escola, escola => escola.entradasPosterioresEstudantes, { eager: false })
+  @ManyToOne(type => Escola, escola => escola.entradasPosterioresEstudantes)
   @JoinColumn({ name: 'esc_id_int' })
   escola: Escola;
 

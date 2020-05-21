@@ -13,13 +13,13 @@ export class ResultadoBoletim extends BaseEntity {
   @Column({ name: 'reb_falta_int', nullable: false })
   reb_falta: number;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Disciplina, disciplina => disciplina.resultadosBoletins, { eager: false })
+  @ManyToOne(type => Disciplina, disciplina => disciplina.resultadosBoletins)
   @JoinColumn({ name: 'dsp_id_int' })
   disciplina: Disciplina;
-  @ManyToOne(type => PeriodoLetivo, periodoLetivo => periodoLetivo.resultadosBoletins, { eager: false })
+  @ManyToOne(type => PeriodoLetivo, periodoLetivo => periodoLetivo.resultadosBoletins)
   @JoinColumn({ name: 'prl_id_int' })
   periodoLetivo: PeriodoLetivo;
-  @ManyToOne(type => BoletimEscolar, boletimEscolar => boletimEscolar.resultadosBoletins, { eager: false })
+  @ManyToOne(type => BoletimEscolar, boletimEscolar => boletimEscolar.resultadosBoletins)
   @JoinColumn({ name: 'bes_id_int' })
   boletimEscolar: BoletimEscolar;
 

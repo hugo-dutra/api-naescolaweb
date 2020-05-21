@@ -13,7 +13,7 @@ export class CronogramaPortaria extends BaseEntity {
   @Column({ name: 'crp_modo_portaria_txt', length: 45, nullable: false })
   crp_modo_portaria: string;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Portaria, portaria => portaria.cronogramasPortaria, { eager: false })
+  @ManyToOne(type => Portaria, portaria => portaria.cronogramasPortaria)
   @JoinColumn({ name: 'por_id_int' })
   portaria: Portaria;
 }

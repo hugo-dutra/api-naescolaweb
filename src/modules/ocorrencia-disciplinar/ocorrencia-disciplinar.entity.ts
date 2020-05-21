@@ -19,18 +19,18 @@ export class OcorrenciaDisciplinar extends BaseEntity {
   @Column({ name: 'ocd_firebase_dbkey_administrativo_txt', length: 50 })
   ocd_firebase_dbkey_administrativo: string;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Usuario, usuario => usuario.ocorrenciasDisciplinares, { eager: false })
+  @ManyToOne(type => Usuario, usuario => usuario.ocorrenciasDisciplinares)
   @JoinColumn({ name: 'usr_id_int' })
   usuario: Usuario;
-  @ManyToOne(type => Estudante, estudante => estudante.ocorrenciasDisciplinares, { eager: false })
+  @ManyToOne(type => Estudante, estudante => estudante.ocorrenciasDisciplinares)
   @JoinColumn({ name: 'est_id_int' })
   estudante: Estudante;
-  @ManyToOne(type => TipoOcorrenciaDisciplinar, tipoOcorrenciaDisciplinar => tipoOcorrenciaDisciplinar.ocorrenciasDisciplinares, { eager: false })
+  @ManyToOne(type => TipoOcorrenciaDisciplinar, tipoOcorrenciaDisciplinar => tipoOcorrenciaDisciplinar.ocorrenciasDisciplinares)
   @JoinColumn({ name: 'tod_id_int' })
   tipoOcorrenciaDisciplinar: TipoOcorrenciaDisciplinar;
-  @ManyToOne(type => StatusEntregaMensagem, statusEntregaMensagem => statusEntregaMensagem.ocorrenciasDisciplinares, { eager: false })
+  @ManyToOne(type => StatusEntregaMensagem, statusEntregaMensagem => statusEntregaMensagem.ocorrenciasDisciplinares)
   @JoinColumn({ name: 'ocd_status_entrega_int' })
   statusEntregaMensagem: StatusEntregaMensagem;
-  @OneToMany(type => AlertaOcorrenciaVerificada, alertaOcorrenciaVerificada => alertaOcorrenciaVerificada.ocorrenciaDisciplinar, { eager: true })
+  @OneToMany(type => AlertaOcorrenciaVerificada, alertaOcorrenciaVerificada => alertaOcorrenciaVerificada.ocorrenciaDisciplinar)
   alertasOcorrenciasVerificadas: AlertaOcorrenciaVerificada[];
 }

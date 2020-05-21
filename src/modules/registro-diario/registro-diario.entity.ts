@@ -14,10 +14,10 @@ export class RegistroDiario extends BaseEntity {
   @Column({ name: 'rdi_data_gravacao_dte', nullable: false })
   rdi_data_gravacao: Date;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => DiarioProfessor, diarioProfessor => diarioProfessor.registrosDiarios, { eager: false })
+  @ManyToOne(type => DiarioProfessor, diarioProfessor => diarioProfessor.registrosDiarios)
   @JoinColumn({ name: 'dip_id_int' })
   diarioProfessor: DiarioProfessor;
-  @OneToMany(type => RegistroFrequencia, registroFrequencia => registroFrequencia.registroDiario, { eager: true })
+  @OneToMany(type => RegistroFrequencia, registroFrequencia => registroFrequencia.registroDiario)
   registrosFrequencias: RegistroFrequencia[]
 
 

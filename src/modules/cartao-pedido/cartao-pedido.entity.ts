@@ -7,13 +7,13 @@ import { BaseEntity, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } fro
 export class CartaoPedido extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'cap_id_int' })
   id: number;
-  @ManyToOne(type => ModeloCartao, modeloCartao => modeloCartao.cartoesPedidos, { eager: false })
+  @ManyToOne(type => ModeloCartao, modeloCartao => modeloCartao.cartoesPedidos)
   @JoinColumn({ name: 'moc_id_int' })
   modeloCartao: ModeloCartao;
-  @ManyToOne(type => Estudante, estudante => estudante.cartoesPedidos, { eager: false })
+  @ManyToOne(type => Estudante, estudante => estudante.cartoesPedidos)
   @JoinColumn({ name: 'est_id_int' })
   estudante: Estudante;
-  @ManyToOne(type => PedidoCartao, pedidoCartao => pedidoCartao.cartoesPedidos, { eager: false })
+  @ManyToOne(type => PedidoCartao, pedidoCartao => pedidoCartao.cartoesPedidos)
   @JoinColumn({ name: 'pec_id_int' })
   pedidoCartao: PedidoCartao;
 }

@@ -11,7 +11,7 @@ export class OperadorAlerta extends BaseEntity {
   @Column({ name: 'opa_simbolo_txt', length: 0, nullable: false })
   opa_simbolo: string;
   /* REPOSITORY */
-  @OneToMany(type => RegraAlerta, regraAlerta => regraAlerta.operadorAlerta, { eager: false })
+  @OneToMany(type => RegraAlerta, regraAlerta => regraAlerta.operadorAlerta)
   regrasAlertas: RegraAlerta[];
 
 

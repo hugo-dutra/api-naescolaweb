@@ -7,10 +7,10 @@ export class UsuarioProfessor extends BaseEntity {
   /* CAMPOS */
   @PrimaryGeneratedColumn({ name: 'upr_id_int' })
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Usuario, usuario => usuario.usuariosProfessores, { eager: false })
+  @ManyToOne(type => Usuario, usuario => usuario.usuariosProfessores)
   @JoinColumn({ name: 'usr_id_int' })
   usuario: Usuario;
-  @ManyToOne(type => Professor, professor => professor.usuariosProfessores, { eager: false })
+  @ManyToOne(type => Professor, professor => professor.usuariosProfessores)
   @JoinColumn({ name: 'prf_id_int' })
   professor: Professor;
 }

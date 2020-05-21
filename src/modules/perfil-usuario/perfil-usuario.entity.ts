@@ -12,15 +12,15 @@ export class PerfilUsuario extends BaseEntity {
   @Column({ length: 45, name: 'pru_perfil_usuario_txt', nullable: false })
   pru_perfil_usuario: string;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => EscopoPerfilUsuario, escopoPerfilUsuario => escopoPerfilUsuario.perfilUsuario, { eager: false })
+  @ManyToOne(type => EscopoPerfilUsuario, escopoPerfilUsuario => escopoPerfilUsuario.perfilUsuario)
   @JoinColumn({ name: 'epu_id_int' })
   escoposPerfisUsuarios: EscopoPerfilUsuario[];
-  @ManyToOne(type => Escola, escola => escola.perfisUsuarios, { eager: false })
+  @ManyToOne(type => Escola, escola => escola.perfisUsuarios)
   @JoinColumn({ name: 'esc_id_int' })
   escola: Escola;
-  @OneToMany(type => UsuarioEscola, usuarioEscola => usuarioEscola.perfilUsuario, { eager: false })
+  @OneToMany(type => UsuarioEscola, usuarioEscola => usuarioEscola.perfilUsuario)
   usuariosEscolas: UsuarioEscola[];
-  @OneToMany(type => PerfilPermissao, perfilPermissao => perfilPermissao.perfilUsuario, { eager: true })
+  @OneToMany(type => PerfilPermissao, perfilPermissao => perfilPermissao.perfilUsuario)
   perfisPermissao: PerfilPermissao[];
 
 }

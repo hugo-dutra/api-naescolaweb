@@ -13,11 +13,11 @@ export class TipoOcorrenciaDisciplinar extends BaseEntity {
   @Column({ name: 'tod_valor_num' })
   tod_valor: number;
   /* RELACIONAMENTOS */
-  @OneToMany(type => OcorrenciaDisciplinar, ocorrenciaDisciplinar => ocorrenciaDisciplinar.tipoOcorrenciaDisciplinar, { eager: true })
+  @OneToMany(type => OcorrenciaDisciplinar, ocorrenciaDisciplinar => ocorrenciaDisciplinar.tipoOcorrenciaDisciplinar)
   ocorrenciasDisciplinares: OcorrenciaDisciplinar[];
-  @OneToMany(type => RegraAlerta, regraAlerta => regraAlerta.tipoOcorrenciaDisciplinar, { eager: true })
+  @OneToMany(type => RegraAlerta, regraAlerta => regraAlerta.tipoOcorrenciaDisciplinar)
   regrasAlertas: RegraAlerta[];
-  @ManyToOne(type => Escola, escola => escola.tiposOcorrenciasDisciplinares, { eager: false })
+  @ManyToOne(type => Escola, escola => escola.tiposOcorrenciasDisciplinares)
   @JoinColumn({ name: 'esc_id_int' })
   escola: Escola;
 

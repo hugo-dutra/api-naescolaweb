@@ -12,9 +12,9 @@ export class BoletimEscolar extends BaseEntity {
   @Column({ name: 'est_matricula_txt', length: 50 })
   est_matricula: string;
   /* RELACIONAMENTOS */
-  @OneToMany(type => ResultadoBoletim, resultadoBoletim => resultadoBoletim.boletimEscolar, { eager: true })
+  @OneToMany(type => ResultadoBoletim, resultadoBoletim => resultadoBoletim.boletimEscolar)
   resultadosBoletins: ResultadoBoletim[];
-  @ManyToOne(type => Estudante, estudante => estudante.boletinsEscolares, { eager: false })
+  @ManyToOne(type => Estudante, estudante => estudante.boletinsEscolares)
   @JoinColumn({ name: 'est_id_int' })
   estudante: Estudante;
 

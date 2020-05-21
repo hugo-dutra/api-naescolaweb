@@ -17,21 +17,21 @@ export class DiarioProfessor extends BaseEntity {
   @Column({ name: 'dip_criacao_dte', nullable: false })
   dip_criacao: Date;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => ProfessorDisciplina, professorDisciplina => professorDisciplina.diariosProfessores, { eager: false })
+  @ManyToOne(type => ProfessorDisciplina, professorDisciplina => professorDisciplina.diariosProfessores)
   @JoinColumn({ name: 'prd_id_int' })
   professorDisciplina: ProfessorDisciplina;
-  @ManyToOne(type => Turma, turma => turma.diariosProfessores, { eager: false })
+  @ManyToOne(type => Turma, turma => turma.diariosProfessores)
   @JoinColumn({ name: 'trm_id_int' })
   turma: Turma;
-  @OneToMany(type => DiarioObservacoesGerais, diarioObservacoesGerais => diarioObservacoesGerais.diarioProfessor, { eager: true })
+  @OneToMany(type => DiarioObservacoesGerais, diarioObservacoesGerais => diarioObservacoesGerais.diarioProfessor)
   diariosObservacoesGerais: DiarioObservacoesGerais[];
-  @OneToMany(type => DiarioObservacaoEstudante, diarioObservacaoEstudante => diarioObservacaoEstudante.diarioProfessor, { eager: true })
+  @OneToMany(type => DiarioObservacaoEstudante, diarioObservacaoEstudante => diarioObservacaoEstudante.diarioProfessor)
   diariosObservacoesEstudantes: DiarioObservacaoEstudante[];
-  @OneToMany(type => DiarioAvaliacaoDiagnostica, diarioAvaliacaoDiagnostica => diarioAvaliacaoDiagnostica.diarioProfessor, { eager: false })
+  @OneToMany(type => DiarioAvaliacaoDiagnostica, diarioAvaliacaoDiagnostica => diarioAvaliacaoDiagnostica.diarioProfessor)
   diariosAvaliacoesDiagnosticas: DiarioAvaliacaoDiagnostica[];
-  @OneToMany(type => RegistroDiario, registroDiario => registroDiario.diarioProfessor, { eager: false })
+  @OneToMany(type => RegistroDiario, registroDiario => registroDiario.diarioProfessor)
   registrosDiarios: RegistroDiario[];
-  @OneToMany(type => DiarioAvaliacao, diarioAvaliacao => diarioAvaliacao.diarioProfessor, { eager: true })
+  @OneToMany(type => DiarioAvaliacao, diarioAvaliacao => diarioAvaliacao.diarioProfessor)
   diariosAvaliacoes: DiarioAvaliacao[];
 
 }

@@ -14,10 +14,10 @@ export class RegistroFrequencia extends BaseEntity {
   @Column({ name: 'ref_status_push_int', default: 0, nullable: false })
   ref_status_push: number;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => RegistroDiario, registroDiario => registroDiario.registrosFrequencias, { eager: false })
+  @ManyToOne(type => RegistroDiario, registroDiario => registroDiario.registrosFrequencias)
   @JoinColumn({ name: 'rdi_id_int' })
   registroDiario: RegistroDiario;
-  @ManyToOne(type => Estudante, estudante => estudante.registrosFrequencias, { eager: false })
+  @ManyToOne(type => Estudante, estudante => estudante.registrosFrequencias)
   @JoinColumn({ name: 'est_id_int' })
   estudante: Estudante;
 }

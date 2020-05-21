@@ -14,14 +14,14 @@ export class Disciplina extends BaseEntity {
   @Column({ name: 'dsp_abreviatura_txt', length: 5, nullable: false })
   dsp_abreviatura: string;
   /* RELACIONAMENTOS */
-  @OneToMany(type => ResultadoBoletim, resultadoBoletim => resultadoBoletim.disciplina, { eager: false })
+  @OneToMany(type => ResultadoBoletim, resultadoBoletim => resultadoBoletim.disciplina)
   resultadosBoletins: ResultadoBoletim[];
-  @OneToMany(type => ProfessorDisciplina, professorDisciplina => professorDisciplina.disciplina, { eager: false })
+  @OneToMany(type => ProfessorDisciplina, professorDisciplina => professorDisciplina.disciplina)
   professoresDisciplinas: ProfessorDisciplina;
-  @ManyToOne(type => EtapaEnsino, etapaEnsino => etapaEnsino.disciplinas, { eager: false })
+  @ManyToOne(type => EtapaEnsino, etapaEnsino => etapaEnsino.disciplinas)
   @JoinColumn({ name: 'ete_id_int' })
   etapaEnsino: EtapaEnsino;
-  @ManyToOne(type => AreaConhecimento, areaConhecimento => areaConhecimento.disciplinas, { eager: false })
+  @ManyToOne(type => AreaConhecimento, areaConhecimento => areaConhecimento.disciplinas)
   @JoinColumn({ name: 'arc_id_int' })
   areaConhecimento: AreaConhecimento;
 

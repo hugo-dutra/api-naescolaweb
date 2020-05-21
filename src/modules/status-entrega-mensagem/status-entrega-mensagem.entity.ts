@@ -9,11 +9,11 @@ export class StatusEntregaMensagem extends BaseEntity {
   id: number;
   @Column({ name: 'sem_valor_txt', length: 45 })
   sem_valor: string;
-  @OneToMany(type => OcorrenciaDisciplinar, ocorrenciaDisciplinar => ocorrenciaDisciplinar.statusEntregaMensagem, { eager: true })
+  @OneToMany(type => OcorrenciaDisciplinar, ocorrenciaDisciplinar => ocorrenciaDisciplinar.statusEntregaMensagem)
   ocorrenciasDisciplinares: OcorrenciaDisciplinar[];
-  @OneToMany(type => ComunicadoDiverso, comunicadoDiverso => comunicadoDiverso.statusEntregaMensagem, { eager: true })
+  @OneToMany(type => ComunicadoDiverso, comunicadoDiverso => comunicadoDiverso.statusEntregaMensagem)
   comunicadosDiversos: ComunicadoDiverso[];
-  @OneToMany(type => FrequenciaPortaria, frequenciaPortaria => frequenciaPortaria.statusEntregaMensagem, { eager: true })
+  @OneToMany(type => FrequenciaPortaria, frequenciaPortaria => frequenciaPortaria.statusEntregaMensagem)
   frequenciasPortarias: FrequenciaPortaria[];
 
 }

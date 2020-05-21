@@ -12,10 +12,10 @@ export class PermissaoAcesso extends BaseEntity {
   @Column({ nullable: false, length: 150, name: 'pac_rota_txt' })
   pac_rota: string;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => MenuAcesso, menuAcesso => menuAcesso.permissoesAcesso, { eager: false })
+  @ManyToOne(type => MenuAcesso, menuAcesso => menuAcesso.permissoesAcesso)
   @JoinColumn({ name: 'mac_id_int' })
   menuAcesso: MenuAcesso;
-  @OneToMany(type => PerfilPermissao, perfilPermissao => perfilPermissao.permissaoAcesso, { eager: true })
+  @OneToMany(type => PerfilPermissao, perfilPermissao => perfilPermissao.permissaoAcesso)
   perfisPermissao: PerfilPermissao[]
 
 }

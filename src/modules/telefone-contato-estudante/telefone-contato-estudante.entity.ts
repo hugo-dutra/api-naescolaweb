@@ -7,7 +7,7 @@ export class TelefoneContatoEstudante extends BaseEntity {
   id: number;
   @Column({ length: 25, name: 'tce_telefone_int' })
   tct_telefone: string;
-  @ManyToOne(type => Estudante, estudante => estudante.telefonesContatoEstudantes, { eager: false })
+  @ManyToOne(type => Estudante, estudante => estudante.telefonesContatoEstudantes)
   @JoinColumn({ name: 'est_id_int' })
   estudante: Estudante;
 }

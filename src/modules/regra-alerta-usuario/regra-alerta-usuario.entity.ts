@@ -9,13 +9,13 @@ export class RegraAlertaUsuario extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'rau_id_int' })
   id: number;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => RegraAlerta, regraAlerta => regraAlerta.regrasAlertasUsuarios, { eager: false })
+  @ManyToOne(type => RegraAlerta, regraAlerta => regraAlerta.regrasAlertasUsuarios)
   @JoinColumn({ name: 'ral_id_int' })
   regraAlerta: RegraAlerta;
-  @ManyToOne(type => Usuario, usuario => usuario.regrasAlertasUsuarios, { eager: false })
+  @ManyToOne(type => Usuario, usuario => usuario.regrasAlertasUsuarios)
   @JoinColumn({ name: 'usr_id_int' })
   usuario: Usuario;
-  @ManyToOne(type => Escola, escola => escola.regrasAlertasUsuarios, { eager: false })
+  @ManyToOne(type => Escola, escola => escola.regrasAlertasUsuarios)
   @JoinColumn({ name: 'esc_id_int' })
   escola: Escola;
 }

@@ -14,10 +14,10 @@ export class SugestaoUsuarioHistorico extends BaseEntity {
   @Column({ name: 'suh_observacao_txt', length: 1000 })
   suh_observacao: string;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => SugestaoUsuario, sugestaoUsuario => sugestaoUsuario.sugestoesUsuariosHistorico, { eager: false })
+  @ManyToOne(type => SugestaoUsuario, sugestaoUsuario => sugestaoUsuario.sugestoesUsuariosHistorico)
   @JoinColumn({ name: 'sus_id_int' })
   sugestaoUsuario: SugestaoUsuario;
-  @ManyToOne(type => Usuario, usuario => usuario.sugestoesUsuariosHistorico, { eager: false })
+  @ManyToOne(type => Usuario, usuario => usuario.sugestoesUsuariosHistorico)
   @JoinColumn({ name: 'usr_id_int' })
   usuario: Usuario;
 

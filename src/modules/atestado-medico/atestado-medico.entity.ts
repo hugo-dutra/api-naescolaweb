@@ -18,10 +18,10 @@ export class AtestadoMedico extends BaseEntity {
   @Column({ name: 'atm_quantidade_dias_letivos_int', nullable: false })
   atm_quantidade_dias_letivos: number;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Estudante, estudante => estudante.atestadosMedicos, { eager: false })
+  @ManyToOne(type => Estudante, estudante => estudante.atestadosMedicos)
   @JoinColumn({ name: 'est_id_int' })
   estudante: Estudante;
-  @ManyToOne(type => Usuario, usuario => usuario.atestadosMedicos, { eager: false })
+  @ManyToOne(type => Usuario, usuario => usuario.atestadosMedicos)
   @JoinColumn({ name: 'usr_id_int' })
   usuario: Usuario;
 }

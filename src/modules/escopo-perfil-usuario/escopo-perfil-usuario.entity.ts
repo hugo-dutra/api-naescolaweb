@@ -11,6 +11,6 @@ export class EscopoPerfilUsuario extends BaseEntity {
   @Column({ nullable: false, name: 'epu_nivel_int', default: 100 })
   epu_nivel: string;
   /* RELACIONAMENTOS */
-  @OneToMany(type => PerfilUsuario, perfilUsuario => perfilUsuario.escoposPerfisUsuarios, { eager: true })
+  @OneToMany(type => PerfilUsuario, perfilUsuario => perfilUsuario.escoposPerfisUsuarios)
   perfilUsuario: PerfilUsuario
 }

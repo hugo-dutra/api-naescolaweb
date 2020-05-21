@@ -15,13 +15,13 @@ export class PendenciaCarteirinha extends BaseEntity {
   @Column({ name: 'pen_status_int', nullable: false, default: 0 })
   pen_status: number;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Estudante, estudante => estudante.pendenciasCarteirinhas, { eager: false })
+  @ManyToOne(type => Estudante, estudante => estudante.pendenciasCarteirinhas)
   @JoinColumn({ name: 'est_id_int' })
   estudante: Estudante;
-  @ManyToOne(type => Usuario, usuario => usuario.pendenciasCarteirinhas, { eager: false })
+  @ManyToOne(type => Usuario, usuario => usuario.pendenciasCarteirinhas)
   @JoinColumn({ name: 'usr_id_int' })
   usuario: Usuario;
-  @ManyToOne(type => PedidoCartao, pedidoCartao => pedidoCartao.pendenciasCarteirinhas, { eager: false })
+  @ManyToOne(type => PedidoCartao, pedidoCartao => pedidoCartao.pendenciasCarteirinhas)
   @JoinColumn({ name: 'pec_id_int' })
   pedidoCartao: PedidoCartao;
 

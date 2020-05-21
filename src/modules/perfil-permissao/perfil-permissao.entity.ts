@@ -8,10 +8,10 @@ export class PerfilPermissao extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'pep_id_int' })
   id: number;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => PermissaoAcesso, permissaoAcesso => permissaoAcesso.perfisPermissao, { eager: false })
+  @ManyToOne(type => PermissaoAcesso, permissaoAcesso => permissaoAcesso.perfisPermissao)
   @JoinColumn({ name: 'pac_id_int' })
   permissaoAcesso: PermissaoAcesso;
-  @ManyToOne(type => PerfilUsuario, perfilUsuario => perfilUsuario.perfisPermissao, { eager: false })
+  @ManyToOne(type => PerfilUsuario, perfilUsuario => perfilUsuario.perfisPermissao)
   @JoinColumn({ name: 'pru_id_int' })
   perfilUsuario: PerfilUsuario;
 }

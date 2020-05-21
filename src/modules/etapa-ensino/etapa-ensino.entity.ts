@@ -8,13 +8,13 @@ export class EtapaEnsino extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'ete_id_int' })
   id: number
   @Column({ length: 500, name: 'ete_nome_txt', nullable: false })
-  ete_nome: string;
+  nome: string;
   @Column({ length: 50, name: 'ete_abreviatura_txt', nullable: false })
-  ete_abreviatura: string;
+  abreviatura: string;
   /* RELACIONAMENTOS */
-  @OneToMany(type => Serie, serie => serie.etapaEnsino, { eager: true })
+  @OneToMany(type => Serie, serie => serie.etapaEnsino)
   series: Serie[]
-  @OneToMany(type => Disciplina, disciplina => disciplina.etapaEnsino, { eager: true })
+  @OneToMany(type => Disciplina, disciplina => disciplina.etapaEnsino)
   disciplinas: Disciplina[];
 
 }

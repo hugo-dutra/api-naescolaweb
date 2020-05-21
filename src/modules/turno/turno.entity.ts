@@ -17,12 +17,12 @@ export class Turno extends BaseEntity {
   @Column({ length: 5, name: 'trn_abreviatura_txt' })
   trn_abreviatura: string;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Escola, escola => escola.turnos, { eager: false })
+  @ManyToOne(type => Escola, escola => escola.turnos)
   @JoinColumn({ name: 'esc_id_int' })
   escola: Escola;
-  @OneToMany(type => Turma, turma => turma.turno, { eager: true })
+  @OneToMany(type => Turma, turma => turma.turno)
   turmas: Turma[]
-  @OneToMany(type => TurnoPortaria, turnoPortaria => turnoPortaria.turno, { eager: true })
+  @OneToMany(type => TurnoPortaria, turnoPortaria => turnoPortaria.turno)
   turnosPortaria: TurnoPortaria[];
 
 

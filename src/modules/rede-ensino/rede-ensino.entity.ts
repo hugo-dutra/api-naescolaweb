@@ -23,6 +23,6 @@ export class RedeEnsino extends BaseEntity {
   @Column({ length: 500, name: 'ren_logo_txt' })
   logo: string;
   /* RELACIONAMENTOS */
-  @OneToMany(type => Escola, escola => escola.redeEnsino, { eager: true })
+  @OneToMany(type => Escola, escola => escola.redeEnsino)
   escolas: Escola[]
 }

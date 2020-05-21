@@ -55,44 +55,44 @@ export class Estudante extends BaseEntity {
   @Column({ name: 'usr_id_foto_int' }) // Depois, transformar isso num relacionamento
   usr_id_foto: number;;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Escola, escola => escola.estudantes, { eager: false })
+  @ManyToOne(type => Escola, escola => escola.estudantes)
   @JoinColumn({ name: 'esc_id_int' })
   escola: Escola;
-  @OneToMany(type => EstudanteTurma, estudanteTurma => estudanteTurma.estudante, { eager: true })
+  @OneToMany(type => EstudanteTurma, estudanteTurma => estudanteTurma.estudante)
   estudantesTurmas: EstudanteTurma[];
-  @OneToMany(type => TelefoneContatoEstudante, telefoneContatoEstudante => telefoneContatoEstudante.estudante, { eager: true })
+  @OneToMany(type => TelefoneContatoEstudante, telefoneContatoEstudante => telefoneContatoEstudante.estudante)
   telefonesContatoEstudantes: TelefoneContatoEstudante[]
-  @OneToMany(type => CartaoPedido, cartaoPedido => cartaoPedido.estudante, { eager: true })
+  @OneToMany(type => CartaoPedido, cartaoPedido => cartaoPedido.estudante)
   cartoesPedidos: CartaoPedido[];
-  @OneToMany(type => ObservacaoEstudante, observacaoEstudante => observacaoEstudante.estudante, { eager: true })
+  @OneToMany(type => ObservacaoEstudante, observacaoEstudante => observacaoEstudante.estudante)
   observacoesEstudantes: ObservacaoEstudante[];
-  @OneToMany(type => AtestadoMedico, atestadoMedico => atestadoMedico.estudante, { eager: true })
+  @OneToMany(type => AtestadoMedico, atestadoMedico => atestadoMedico.estudante)
   atestadosMedicos: AtestadoMedico[];
-  @OneToMany(type => PendenciaCarteirinha, pendenciaCarteirinha => pendenciaCarteirinha.estudante, { eager: true })
+  @OneToMany(type => PendenciaCarteirinha, pendenciaCarteirinha => pendenciaCarteirinha.estudante)
   pendenciasCarteirinhas: PendenciaCarteirinha[];
-  @OneToMany(type => AtividadeExtraEstudante, atividadeExtraEstudante => atividadeExtraEstudante.estudante, { eager: true })
+  @OneToMany(type => AtividadeExtraEstudante, atividadeExtraEstudante => atividadeExtraEstudante.estudante)
   atividadesExtraEstudante: AtividadeExtraEstudante[];
-  @OneToMany(type => SaidaAntecipadaEventual, saidaAntecipadaEventual => saidaAntecipadaEventual.estudante, { eager: true })
+  @OneToMany(type => SaidaAntecipadaEventual, saidaAntecipadaEventual => saidaAntecipadaEventual.estudante)
   saidasAntecipadasEventuais: SaidaAntecipadaEventual[];
-  @OneToMany(type => EntradaPosteriorEstudante, entradaPosteriorEstudante => entradaPosteriorEstudante.estudante, { eager: true })
+  @OneToMany(type => EntradaPosteriorEstudante, entradaPosteriorEstudante => entradaPosteriorEstudante.estudante)
   entradasPosterioresEstudantes: EntradaPosteriorEstudante[];
-  @OneToMany(type => OcorrenciaDisciplinar, ocorrenciaDisciplinar => ocorrenciaDisciplinar.estudante, { eager: true })
+  @OneToMany(type => OcorrenciaDisciplinar, ocorrenciaDisciplinar => ocorrenciaDisciplinar.estudante)
   ocorrenciasDisciplinares: OcorrenciaDisciplinar[];
-  @OneToMany(type => SaidaAntecipadaRecorrente, saidaAntecipadaREcorrente => saidaAntecipadaREcorrente.estudante, { eager: true })
+  @OneToMany(type => SaidaAntecipadaRecorrente, saidaAntecipadaREcorrente => saidaAntecipadaREcorrente.estudante)
   saidasAntecipadasRecorrentes: SaidaAntecipadaRecorrente[];
-  @OneToMany(type => DiarioObservacaoEstudante, diarioObservacaoEstudante => diarioObservacaoEstudante.estudante, { eager: true })
+  @OneToMany(type => DiarioObservacaoEstudante, diarioObservacaoEstudante => diarioObservacaoEstudante.estudante)
   diariosObservacoesEstudantes: DiarioObservacaoEstudante[]
-  @OneToMany(type => DiarioAvaliacaoDiagnostica, diarioAvaliacaoDiagnostica => diarioAvaliacaoDiagnostica.estudante, { eager: true })
+  @OneToMany(type => DiarioAvaliacaoDiagnostica, diarioAvaliacaoDiagnostica => diarioAvaliacaoDiagnostica.estudante)
   diariosAvaliacoesDiagnosticas: DiarioAvaliacaoDiagnostica[];
-  @OneToMany(type => RegistroFrequencia, registroFrequencia => registroFrequencia.estudante, { eager: true })
+  @OneToMany(type => RegistroFrequencia, registroFrequencia => registroFrequencia.estudante)
   registrosFrequencias: RegistroFrequencia[];
-  @OneToMany(type => ComunicadoDiverso, comunicadoDiverso => comunicadoDiverso.estudante, { eager: true })
+  @OneToMany(type => ComunicadoDiverso, comunicadoDiverso => comunicadoDiverso.estudante)
   comunicadosDiversos: ComunicadoDiverso[];
-  @OneToMany(type => FrequenciaPortaria, frequenciaPortaria => frequenciaPortaria.estudante, { eager: true })
+  @OneToMany(type => FrequenciaPortaria, frequenciaPortaria => frequenciaPortaria.estudante)
   frequenciasPortarias: FrequenciaPortaria[];
-  @OneToMany(type => BoletimEscolar, boletimEscolar => boletimEscolar.estudante, { eager: true })
+  @OneToMany(type => BoletimEscolar, boletimEscolar => boletimEscolar.estudante)
   boletinsEscolares: BoletimEscolar[];
-  @OneToMany(type => AvaliacaoEstudante, avaliacaoEstudante => avaliacaoEstudante.estudante, { eager: true })
+  @OneToMany(type => AvaliacaoEstudante, avaliacaoEstudante => avaliacaoEstudante.estudante)
   avaliacoesEstudantes: AvaliacaoEstudante[];
 
 }

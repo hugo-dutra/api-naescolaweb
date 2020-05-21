@@ -12,10 +12,10 @@ export class TurnoPortaria extends BaseEntity {
   @Column({ name: 'tup_tolerancia_fim', comment: 'Tolerancia em minutos' })
   tup_toleracia_fim: number;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Turno, turno => turno.turnosPortaria, { eager: false })
+  @ManyToOne(type => Turno, turno => turno.turnosPortaria)
   @JoinColumn({ name: 'trn_id_int' })
   turno: Turno;
-  @ManyToOne(type => Portaria, portaria => portaria.turnosPortaria, { eager: false })
+  @ManyToOne(type => Portaria, portaria => portaria.turnosPortaria)
   @JoinColumn({ name: 'por_id_int' })
   portaria: Portaria;
 

@@ -12,10 +12,10 @@ export class EstudanteTurma extends BaseEntity {
   @Column({ name: 'etu_turma_atual_int', default: 1 })
   etu_turma_atual: number;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Estudante, estudante => estudante.estudantesTurmas, { eager: false })
+  @ManyToOne(type => Estudante, estudante => estudante.estudantesTurmas)
   @JoinColumn({ name: 'est_id_int' })
   estudante: Estudante;
-  @ManyToOne(type => Turma, turma => turma.estudantesTurmas, { eager: false })
+  @ManyToOne(type => Turma, turma => turma.estudantesTurmas)
   @JoinColumn({ name: 'trm_id_int' })
   turma: Turma;
 

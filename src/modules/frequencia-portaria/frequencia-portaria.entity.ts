@@ -19,13 +19,13 @@ export class FrequenciaPortaria extends BaseEntity {
   @Column({ name: 'frp_firebase_admin_db_key_txt', length: 50 })
   frp_firebase_admin_db_key: string;
   /* RELACIONAMENTOS */
-  @ManyToOne(type => Portaria, portaria => portaria.frequenciasPortarias, { eager: false })
+  @ManyToOne(type => Portaria, portaria => portaria.frequenciasPortarias)
   @JoinColumn({ name: 'por_id_int' })
   portaria: Portaria;
-  @ManyToOne(type => Estudante, estudante => estudante.frequenciasPortarias, { eager: false })
+  @ManyToOne(type => Estudante, estudante => estudante.frequenciasPortarias)
   @JoinColumn({ name: 'est_id_int' })
   estudante: Estudante;
-  @ManyToOne(type => StatusEntregaMensagem, statusEntregaMensagem => statusEntregaMensagem.frequenciasPortarias, { eager: false })
+  @ManyToOne(type => StatusEntregaMensagem, statusEntregaMensagem => statusEntregaMensagem.frequenciasPortarias)
   @JoinColumn({ name: 'frp_status_entrega_int' })
   statusEntregaMensagem: StatusEntregaMensagem;
 
