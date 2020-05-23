@@ -68,6 +68,23 @@ export class TurnoService {
     })
   }
 
+  /**
+   *
+   * @param esc_id
+   * @param nome
+   */
+  public listarIdTurnoPorEscolaNomeTurno(esc_id: number, nome: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this.turnoRepository
+        .find({ where: { esc_id: esc_id, nome: nome } })
+        .then((turnos: Turno[]) => {
+          resolve(turnos[0].id);
+        }).catch((reason: any) => {
+          reject(reason);
+        });
+    });
+  }
+
   public alterarTurno(turnoDto: TurnoDto): Promise<UpdateResult> {
     return new Promise((resolve, reject) => {
       createQueryBuilder().update(Turno).set({

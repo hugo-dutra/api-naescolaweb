@@ -17,4 +17,6 @@ export class EtapaEnsino extends BaseEntity {
   @OneToMany(type => Disciplina, disciplina => disciplina.etapaEnsino)
   disciplinas: Disciplina[];
 
+
+
 }

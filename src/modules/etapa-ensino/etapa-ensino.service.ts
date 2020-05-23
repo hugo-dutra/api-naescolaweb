@@ -20,9 +20,10 @@ export class EtapaEnsinoService {
   }
 
   public inserirEtapaEnsinoIntegracao(etapasEnsinoDto: EtapaEnsinoDto[]): Promise<EtapaEnsinoDto[]> {
+
     return new Promise((resolve, reject) => {
-      this.etapaEnsinoRepository.save(etapasEnsinoDto).then((updateResult: EtapaEnsinoDto[]) => {
-        resolve(updateResult);
+      this.etapaEnsinoRepository.save(etapasEnsinoDto).then((etapaEnsinoDto: EtapaEnsinoDto[]) => {
+        resolve(etapaEnsinoDto);
       }).catch((reason: any) => {
         reject(reason);
       });

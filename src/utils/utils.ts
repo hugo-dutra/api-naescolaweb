@@ -13,4 +13,16 @@ export class Utils {
     return termoCompleto.substr(0, tamanho);
   }
 
+  public TryParseInt(str: any, defaultValue: any) {
+    var retValue = defaultValue;
+    if (str !== null) {
+      if (str.length > 0) {
+        if (!isNaN(str)) {
+          retValue = parseInt(str);
+        }
+      }
+    }
+    return retValue;
+  }
+
 }
