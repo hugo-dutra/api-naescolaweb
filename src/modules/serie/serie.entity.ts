@@ -8,9 +8,11 @@ export class Serie extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'sre_id_int' })
   id: number;
   @Column({ length: 45, name: 'sre_nome_txt' })
-  sre_nome: string;
+  nome: string;
   @Column({ length: 5, name: 'sre_abreviatura_txt' })
-  sre_abreviatura: string;
+  abreviatura: string;
+  @Column({ name: 'ete_id_int' })
+  ete_id: number;
   /* RELACIONAMENTOS */
   @ManyToOne(type => EtapaEnsino, etapaEnsino => etapaEnsino.series)
   @JoinColumn({ name: 'ete_id_int' })

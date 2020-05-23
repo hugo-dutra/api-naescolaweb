@@ -9,4 +9,8 @@ export class Utils {
     return termoAbreviado;
   }
 
+  public extrairSubString(termoCompleto: string, tamanho: number): string {
+    return termoCompleto.substr(0, tamanho);
+  }
+
 }

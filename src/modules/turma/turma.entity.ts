@@ -13,9 +13,15 @@ export class Turma extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'trm_id_int' })
   id: number;
   @Column({ length: 50, name: 'trm_nome_txt', nullable: false })
-  trm_nome: string;
+  nome: string;
   @Column({ name: 'trm_ano_int' })
-  trm_ano: number;
+  ano: number;
+  @Column({ name: 'sre_id_int' })
+  sre_id: number;
+  @Column({ name: 'trn_id_int' })
+  trn_id: number;
+  @Column({ name: 'esc_id_int' })
+  esc_id: number;
   /* RELACIONAMENTOS */
   @ManyToOne(type => Serie, serie => serie.turmas)
   @JoinColumn({ name: 'sre_id_int' })

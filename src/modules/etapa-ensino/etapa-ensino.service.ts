@@ -62,7 +62,6 @@ export class EtapaEnsinoService {
   public excluirEtapaEnsino(id: number): Promise<DeleteResult> {
     return new Promise((resolve, reject) => {
       this.etapaEnsinoRepository.delete(id).then((deleteResult: DeleteResult) => {
-
         resolve(deleteResult);
       }).catch((reason: any) => {
         reject(reason);
