@@ -19,6 +19,7 @@ export class RegiaoEscolaController {
 
   @Patch()
   public alterarRegiaoEscola(@Body() regiaoEscola: RegiaoEscola): Promise<RegiaoEscola> {
+    console.log(regiaoEscola);
     return this.regiaoEscolaService.alterarRegiaoEscola(regiaoEscola);
   }
 

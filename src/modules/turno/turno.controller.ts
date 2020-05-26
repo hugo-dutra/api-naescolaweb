@@ -39,7 +39,7 @@ export class TurnoController {
   }
 
   @Patch()
-  public alterarTurnos(@Body() turnoDto: TurnoDto): Promise<UpdateResult> {
+  public alterarTurnos(@Body() turnoDto: TurnoDto): Promise<TurnoDto> {
     return this.turnoService.alterarTurno(turnoDto);
   }
 

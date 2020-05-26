@@ -53,7 +53,6 @@ export class TurmaController {
     return this.turmaService.filtrarTurmasPorNomeEscola(valor, limit, offset, esc_id);
   }
 
-  //@Get('/completo-ano-esc/ano/:ano/esc_id/:esc_id')
   @Get('/completo/:ano/:esc_id')
   public listarTodasAno(@Param('ano') ano: number, @Param('esc_id') esc_id: number): Promise<Turma[]> {
     return this.turmaService.listarTodasAno(ano, esc_id);
@@ -71,10 +70,6 @@ export class TurmaController {
     @Param('ano') ano: number, ): Promise<Turma[]> {
     return this.turmaService.listarTurmasPorTurno(trn_id, esc_id, ano);
   }
-
-
-
-
 
   @Patch()
   public alterarTurma(@Body() turma: Turma): Promise<Turma> {

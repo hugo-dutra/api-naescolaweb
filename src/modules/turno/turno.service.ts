@@ -85,18 +85,13 @@ export class TurnoService {
     });
   }
 
-  public alterarTurno(turnoDto: TurnoDto): Promise<UpdateResult> {
+  public alterarTurno(turnoDto: TurnoDto): Promise<TurnoDto> {
     return new Promise((resolve, reject) => {
-      createQueryBuilder().update(Turno).set({
-        abreviatura: turnoDto.abreviatura,
-        horaFim: turnoDto.horaFim,
-        horaInicio: turnoDto.horaInicio,
-        nome: turnoDto.nome,
-      }).where("id = :id", { id: turnoDto.id }).execute().then((updateResult: UpdateResult) => {
-        resolve(updateResult);
+      this.turnoRepository.save(turnoDto).then((turnoAlterado: Turno) => {
+        resolve(turnoAlterado)
       }).catch((reason: any) => {
         reject(reason);
-      })
+      });
     });
   }
 
