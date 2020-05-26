@@ -207,9 +207,6 @@ export class DiretorService {
     })
   }
 
-
-
-
   public alterar(diretor: Diretor): Promise<Diretor> {
     return new Promise((resolve, reject) => {
       this.diretorRepositoty.save(diretor).then((diretor: Diretor) => {
