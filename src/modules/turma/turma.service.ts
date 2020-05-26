@@ -8,6 +8,7 @@ import { Utils } from '../../utils/utils';
 import { TurnoService } from '../turno/turno.service';
 import { TurmaIntegracaoNomeDto } from './dto/turma-integracao-nomes.dto';
 
+
 @Injectable()
 export class TurmaService {
   private utils = new Utils();
@@ -51,42 +52,89 @@ export class TurmaService {
    * Insere novas turmas a partir da integração com o IEducar
    * @param turmas
    */
-  public inserirTurmaIntegracao(turmas: TurmaIntegracaoNomeDto[]): Promise<Turma[]> {
-    const novasTurmas = new Array<Turma>();
+  public inserirTurmaIntegracao(turmas: TurmaIntegracaoNomeDto[]): Promise<TurmaIntegracaoNomeDto[]> {
     return new Promise((resolve, reject) => {
-      let contaTurma = 0;
-      turmas.forEach((turmaIntegracao: TurmaIntegracaoNomeDto) => {
-        contaTurma++;
-        this.turnoService.listarIdTurnoPorEscolaNomeTurno(turmaIntegracao.esc_id, turmaIntegracao.trn_nome).then((trn_id: number) => {
-          const novaTurma = new Turma();
-          novaTurma.ano = turmaIntegracao.ano;
-          novaTurma.esc_id = turmaIntegracao.esc_id;
-          novaTurma.id = turmaIntegracao.id;
-          novaTurma.nome = turmaIntegracao.nome;
-          novaTurma.sre_id = turmaIntegracao.sre_id;
-          novaTurma.trn_id = trn_id;
-          this.verificarExistenciaTurma(novaTurma).then((existe: boolean) => {
-            if (!existe) {
-              this.turmaRepository.save(novaTurma).then((novaTurma: Turma) => {
-                novasTurmas.push(novaTurma);
-                if (contaTurma == turmas.length) {
-                  console.clear();
-                  console.log(novasTurmas);
-                  resolve(novasTurmas);
-                }
-              }).catch((reason: any) => {
-                reject(reason);
-              });
-            } else {
-              if (contaTurma == turmas.length) {
-                resolve(null);
-              }
-            }
-          }).catch((reason: any) => {
-            reject(reason);
-          });
-        })
+      let contaTurmasInseridas = 0;
+      let arrayTurmasInseridas = new Array<TurmaIntegracaoNomeDto>();
+      turmas.forEach((turma: TurmaIntegracaoNomeDto) => {
+        this.verificarExistenciaIntegracao(turma).then((existe: boolean) => {
+          contaTurmasInseridas++
+          if (!existe) {
+            this.turnoService.listarIdTurnoPorEscolaNomeTurno(turma.esc_id, turma.trn_nome).then((turnoId: number) => {
+              turma.trn_id = turnoId;
+              const queryString = 'insert into turma_trm (trm_id_int, trm_nome_txt, sre_id_int, trn_id_int, trm_ano_int, esc_id_int) values ($1, $2, $3, $4, $5, $6)';
+              this.turmaRepository.query(queryString,
+                [turma.id, turma.nome, turma.sre_id, turma.trn_id, turma.ano, turma.esc_id])
+                .then(() => {
+                  arrayTurmasInseridas.push(turma);
+                  if (contaTurmasInseridas == turmas.length) {
+                    resolve(arrayTurmasInseridas);
+                  }
+                });
+            })
+          } else {
+            resolve(null)
+          }
+        }).catch((reason: any) => {
+          reject(reason);
+        });
       });
+    });
+  }
+
+  public listarTodasAno(ano: number, esc_id: number): Promise<Turma[]> {
+    return new Promise((resolve, reject) => {
+
+      /* this.turmaRepository.find({ where: { ano: ano, esc_id: esc_id } }).then((turmas: Turma[]) => {
+        console.log(turmas);
+        resolve(turmas);
+      }) */
+
+      const campos = [
+        'trm.trm_id_int as id',
+        'trm.trm_nome_txt as nome',
+        'trm.sre_id_int as sre_id',
+        'sre.sre_nome_txt as serie',
+        'trm.trn_id_int as trn_id',
+        'trn.trn_nome_txt as turno',
+        'trm.trm_ano_int as ano',
+        'trm.esc_id_int as esc_id',
+        'esc.esc_nome_txt as escola',
+        'ete.ete_abreviatura_txt as etapa',
+        'count(est.est_id_int) as matriculados',
+        'sre.sre_abreviatura_txt as serie_abv',
+        'trn.trn_abreviatura_txt as turno_abv'
+      ];
+
+      this.turmaRepository
+        .createQueryBuilder('trm')
+        .leftJoin('trm.serie', 'sre')
+        .leftJoin('trm.escola', 'esc')
+        .leftJoin('esc.redeEnsino', 'ren')
+        .leftJoin('sre.etapaEnsino', 'ete')
+        .leftJoin('trm.turno', 'trn')
+        .leftJoin('trm.estudantesTurmas', 'etu')
+        .leftJoin('etu.estudante', 'est')
+        .select(campos)
+        .andWhere('trm.trm_ano_int = :ano', { ano: ano })
+        .andWhere('esc.esc_id_int = :esc_id', { esc_id: esc_id })
+        .addGroupBy('trm.trm_id_int')
+        .addGroupBy('sre.sre_id_int')
+        .addGroupBy('esc.esc_id_int')
+        .addGroupBy('ren.ren_id_int')
+        .addGroupBy('ete.ete_id_int')
+        .addGroupBy('trn.trn_id_int')
+        .addGroupBy('etu.etu_id_int')
+        .addGroupBy('est.est_id_int')
+        .getRawMany().then((turmas: any[]) => {
+          const matriculados = turmas.length;
+          let turmasFiltrado = Utils.eliminaValoresRepetidos(turmas, 'id');
+          turmasFiltrado = <Turma[]>turmasFiltrado.map(turma => {
+            turma['matriculados'] = matriculados;
+            return turma;
+          })
+          resolve(<Turma[]>turmasFiltrado);
+        })
     });
   }
 
@@ -130,10 +178,12 @@ export class TurmaService {
           });
       }
     });
+
+
   }
 
   // Precisa de estudantes enturmados para verificar se está ok.
-  /* public listarTurmasPorAno(ano: number, esc_id: number): Promise<Turma[]> {
+  public listarTurmasPorAno(ano: number, esc_id: number): Promise<Turma[]> {
     return new Promise((resolve, reject) => {
       this.turmaRepository.createQueryBuilder('trm').select([
         'trm.trm_id_int as id',
@@ -156,7 +206,7 @@ export class TurmaService {
         .leftJoin('sre.etapa', 'ete')
         .leftJoin('trm.estudantesTurmas', 'etuete')
     })
-  } */
+  }
 
 
 
@@ -328,8 +378,6 @@ export class TurmaService {
     });
   }
 
-
-
   public verificarExistenciaTurma(turma: Turma): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.turmaRepository.find({
@@ -341,6 +389,20 @@ export class TurmaService {
           ano: turma.ano
         }
       }).then((turmas: Turma[]) => {
+        if (turmas.length == 0) {
+          resolve(false);
+        } else {
+          resolve(true);
+        }
+      }).catch((reason: any) => {
+        reject(reason);
+      });
+    });
+  }
+
+  public verificarExistenciaIntegracao(turma: TurmaIntegracaoNomeDto): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.turmaRepository.findByIds([turma.id]).then((turmas: Turma[]) => {
         if (turmas.length == 0) {
           resolve(false);
         } else {

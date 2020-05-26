@@ -25,4 +25,11 @@ export class Utils {
     return retValue;
   }
 
+  public static eliminaValoresRepetidos(arrayAlvo: Object[], campo: string): Object[] {
+    return Array.from(new Set(arrayAlvo.map(a => a[campo])))
+      .map(id => {
+        return arrayAlvo.find(a => a[campo] == id);
+      });
+  }
+
 }

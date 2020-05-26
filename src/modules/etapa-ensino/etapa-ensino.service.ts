@@ -20,15 +20,33 @@ export class EtapaEnsinoService {
   }
 
   public inserirEtapaEnsinoIntegracao(etapasEnsinoDto: EtapaEnsinoDto[]): Promise<EtapaEnsinoDto[]> {
-
     return new Promise((resolve, reject) => {
-      this.etapaEnsinoRepository.save(etapasEnsinoDto).then((etapaEnsinoDto: EtapaEnsinoDto[]) => {
-        resolve(etapaEnsinoDto);
-      }).catch((reason: any) => {
-        reject(reason);
+      let contaEtapasInseridas = 0;
+      let arrayEtapasInseridas = new Array<EtapaEnsinoDto>();
+      etapasEnsinoDto.forEach((etapaEnsinoDto: EtapaEnsinoDto) => {
+        this.verificarExistencia(etapaEnsinoDto).then((existe: boolean) => {
+          contaEtapasInseridas++
+          if (!existe) {
+            const queryString = 'insert into etapa_ensino_ete (ete_id_int, ete_nome_txt,ete_abreviatura_txt) values ($1, $2, $3)'
+            this.etapaEnsinoRepository.query(queryString,
+              [etapaEnsinoDto.id, etapaEnsinoDto.nome, etapaEnsinoDto.abreviatura])
+              .then(() => {
+                arrayEtapasInseridas.push(etapaEnsinoDto);
+                if (contaEtapasInseridas == etapasEnsinoDto.length) {
+                  resolve(arrayEtapasInseridas);
+                }
+              })
+          } else {
+            resolve(null)
+          }
+        }).catch((reason: any) => {
+          reject(reason);
+        });
       });
     });
   }
+
+
 
   public listarEtapasEnsino(): Promise<EtapaEnsino[]> {
     return new Promise((resolve, reject) => {
@@ -47,6 +65,20 @@ export class EtapaEnsinoService {
       }).catch((reason: any) => {
         reject(reason);
       });
+    });
+  }
+
+  public verificarExistencia(etapaEnsinoDto: EtapaEnsinoDto): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.etapaEnsinoRepository.findByIds([etapaEnsinoDto.id]).then((etapasEnsinoEncontradas: EtapaEnsino[]) => {
+        if (etapasEnsinoEncontradas.length == 0) {
+          resolve(false)
+        } else {
+          resolve(true)
+        }
+      }).catch((reason: any) => {
+        reject(reason);
+      })
     });
   }
 

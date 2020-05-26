@@ -1,6 +1,7 @@
 import { EstudanteService } from './estudante.service';
 import { Controller, Post, Body, Param } from '@nestjs/common';
 import { EstudanteIntegracaoDto } from './dto/estudante-integracao.dto';
+import { EstudanteIntegracaoEnturmarDto } from '../estudante-turma/dto/estudante-integracao-enturmar.dto';
 
 @Controller('estudante')
 export class EstudanteController {
@@ -10,4 +11,9 @@ export class EstudanteController {
   public inserirEstudanteIntegracao(@Body() estudantesIntegracaoDto: EstudanteIntegracaoDto[], @Param('esc_id') esc_id: number): Promise<any> {
     return this.estudanteService.inserirEstudanteIntegracao(estudantesIntegracaoDto, esc_id);
   }
+
+
+
+
+
 }

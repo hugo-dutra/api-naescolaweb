@@ -1,4 +1,30 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
+import { EstudanteIntegracaoEnturmarDto } from './dto/estudante-integracao-enturmar.dto';
+import { EstudanteTurmaService } from './estudante-turma.service';
 
 @Controller('estudante-turma')
-export class EstudanteTurmaController {}
+export class EstudanteTurmaController {
+  constructor(private estudanteTurmaService: EstudanteTurmaService) { }
+
+  @Post('/enturmar/integracao')
+  public enturmarEstudanteIntegracao(@Body() estudantesEnturmarIntegracao: any[]): Promise<void> {
+    const esc_id = estudantesEnturmarIntegracao['esc_id']
+    const estudantesTurmas = estudantesEnturmarIntegracao['estudantes'];
+    const estudantesEnturmar: EstudanteIntegracaoEnturmarDto[] = estudantesTurmas.map(estudante => {
+      const estudanteEnturmar = new EstudanteIntegracaoEnturmarDto();
+      estudanteEnturmar.id = estudante['idpes'];
+      estudanteEnturmar.trm_id = estudante['cod_turma'];
+      estudanteEnturmar.numero_chamada = 0;
+      return estudanteEnturmar
+    });
+    return this.estudanteTurmaService.inserirIntegracao(estudantesEnturmar, esc_id);
+  }
+
+  @Post('/desabilitar-turma-estudante-transferido')
+  public desabilitarTransferidos(@Body() parametros: any): Promise<void> {
+    const esc_id = parametros['esc_id'];
+    const listaEstId = parametros['listaEstId'];
+    return this.estudanteTurmaService.desabilitarTransferidos(esc_id, listaEstId);
+  }
+
+}

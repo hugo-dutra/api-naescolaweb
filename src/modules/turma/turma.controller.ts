@@ -1,6 +1,5 @@
 import { TurmaIntegracaoNomeDto } from './dto/turma-integracao-nomes.dto';
 import { DeleteResult } from 'typeorm';
-import { TurmaFiltroDto } from './dto/turma-filtro.dto';
 import { Controller, Get, Body, Param, Post, Patch, Delete } from '@nestjs/common';
 import { TurmaService } from './turma.service';
 import { TurmaPorEscolaDto } from './dto/turma-escola.dto';
@@ -17,7 +16,7 @@ export class TurmaController {
   }
 
   @Post('/integracao')
-  public async inserirTurmaIntegracao(@Body() dadosTurmasIntegracal: TurmaIntegracaoDto[]): Promise<Turma[]> {
+  public async inserirTurmaIntegracao(@Body() dadosTurmasIntegracal: TurmaIntegracaoDto[]): Promise<TurmaIntegracaoNomeDto[]> {
     const turmas: TurmaIntegracaoDto[] = dadosTurmasIntegracal['turmas'];
     const esc_id = dadosTurmasIntegracal['esc_id'];
     const ano = dadosTurmasIntegracal['ano'];
@@ -54,19 +53,28 @@ export class TurmaController {
     return this.turmaService.filtrarTurmasPorNomeEscola(valor, limit, offset, esc_id);
   }
 
+  //@Get('/completo-ano-esc/ano/:ano/esc_id/:esc_id')
+  @Get('/completo/:ano/:esc_id')
+  public listarTodasAno(@Param('ano') ano: number, @Param('esc_id') esc_id: number): Promise<Turma[]> {
+    return this.turmaService.listarTodasAno(ano, esc_id);
+  }
+
   @Get('/todas')
   public listarTodasTurmas(): Promise<TurmaPorEscolaDto[]> {
     return this.turmaService.listarTodasTurmas();
   }
 
-  // Precisa de estudantes enturmados e cadastrados para ser testado
-  /* @Get('/:trn_id/:esc_id/:ano')
+  @Get('/:trn_id/:esc_id/:ano')
   public listarTurmasPorTurno(
     @Param('trn_id') trn_id: number,
     @Param('esc_id') esc_id: number,
     @Param('ano') ano: number, ): Promise<Turma[]> {
     return this.turmaService.listarTurmasPorTurno(trn_id, esc_id, ano);
-  } */
+  }
+
+
+
+
 
   @Patch()
   public alterarTurma(@Body() turma: Turma): Promise<Turma> {

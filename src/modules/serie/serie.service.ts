@@ -40,10 +40,27 @@ export class SerieService {
    */
   public inserirSerieIntegracao(series: Serie[]): Promise<Serie[]> {
     return new Promise((resolve, reject) => {
-      this.serieRepository.save(series).then((serie: Serie[]) => {
-        resolve(serie);
-      }).catch((reason: any) => {
-        reject(reason);
+      let contaSeriesInseridas = 0;
+      let arraySeriesInseridas = new Array<Serie>();
+      series.forEach((serie: Serie) => {
+        this.verificarExistenciaIntegracao(serie).then((existe: boolean) => {
+          contaSeriesInseridas++
+          if (!existe) {
+            const queryString = 'insert into serie_sre (sre_id_int, sre_nome_txt,sre_abreviatura_txt,ete_id_int) values ($1, $2, $3, $4)'
+            this.serieRepository.query(queryString,
+              [serie.id, serie.nome, serie.abreviatura, serie.ete_id])
+              .then(() => {
+                arraySeriesInseridas.push(serie);
+                if (contaSeriesInseridas == series.length) {
+                  resolve(arraySeriesInseridas);
+                }
+              })
+          } else {
+            resolve(null)
+          }
+        }).catch((reason: any) => {
+          reject(reason);
+        });
       });
     });
   }
@@ -114,6 +131,20 @@ export class SerieService {
   public verificarExistenciaSerieNomeEtapa(serie: Serie): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.serieRepository.find({ where: { nome: serie.nome, ete_id: serie.ete_id } }).then((series: Serie[]) => {
+        if (series.length == 0) {
+          resolve(false);
+        } else {
+          resolve(true);
+        }
+      }).catch((reason: any) => {
+        reject(reason);
+      });
+    });
+  }
+
+  public verificarExistenciaIntegracao(serie: Serie): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.serieRepository.findByIds([serie.id]).then((series: Serie[]) => {
         if (series.length == 0) {
           resolve(false);
         } else {
