@@ -11,7 +11,7 @@ export class Diretor extends BaseEntity {
   telefone: string;
   @Column({ length: 200, name: 'dir_email_txt' })
   email: string
-  @Column({ length: 2000, name: 'dir_foto_txt' })
+  @Column({ length: 2000, name: 'dir_foto_txt', nullable: true })
   foto: string
   @Column({ length: 50, name: 'dir_matricula_txt' })
   matricula: string;

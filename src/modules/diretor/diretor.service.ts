@@ -202,9 +202,55 @@ export class DiretorService {
 
   public filtrar(valor: string, limit: number, offset: number): Promise<ListagemDiretorDto[]> {
     return new Promise((resolve, reject) => {
-      console.log(valor, limit, offset);
-      resolve(null);
-    })
+      const campos = [
+        'dir.dir_id_int as  id', 'dir.dir_nome_txt as nome', 'dir.dir_telefone_txt as telefone',
+        'dir.dir_email_txt as email', 'dir.dir_foto_txt as foto', 'dir.dir_matricula_txt as matricula',
+      ];
+
+      if (valor.length >= 3) {
+        this.diretorRepositoty.createQueryBuilder('dir')
+          .select(campos)
+          .orWhere('LOWER(dir.dir_nome_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+          .orWhere('LOWER(dir.dir_email_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+          .orWhere('LOWER(dir.dir_matricula_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+          .orderBy('dir.dir_nome_txt', 'ASC')
+          .limit(limit)
+          .offset(offset).execute().then((diretores: ListagemDiretorDto[]) => {
+            resolve(diretores);
+          }).catch((reason: any) => {
+            reject(reason);
+          });
+      } else {
+        resolve(null)
+      }
+    });
+  }
+
+  public listarSemEscola(): Promise<ListagemDiretorDto[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'dir.dir_id_int as id',
+        'dir.dir_nome_txt as nome',
+        'dir.dir_telefone_txt as telefone',
+        'dir.dir_email_txt as email',
+        'dir.dir_foto_txt as foto',
+        'dir.dir_matricula_txt as matricula'
+      ];
+      this.diretorEscolaRepository.find().then((diretoresEscolas: DiretorEscola[]) => {
+        const dir_ids = diretoresEscolas.map(diretorEscola => {
+          return diretorEscola.dir_id;
+        });
+        this.diretorRepositoty.createQueryBuilder('dir')
+          .select(campos).andWhere('dir.dir_id_int not in (:...dir_ids)', { dir_ids: dir_ids })
+          .execute().then((diretoresSemEscola: any[]) => {
+            resolve(diretoresSemEscola)
+          }).catch((reason: any) => {
+            reject(reason);
+          });
+      }).catch((reason: any) => {
+        reject(reason);
+      });
+    });
   }
 
   public alterar(diretor: Diretor): Promise<Diretor> {

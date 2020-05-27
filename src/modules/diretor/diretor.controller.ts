@@ -48,7 +48,10 @@ export class DiretorController {
     return this.diretorService.filtrarLocal(valor, limit, offset, esc_id);
   }
 
-
+  @Get('/sem-escola')
+  public listarSemEscola(): Promise<ListagemDiretorDto[]> {
+    return this.diretorService.listarSemEscola();
+  }
 
   @Patch()
   public alterar(@Body() diretor: Diretor): Promise<Diretor> {
