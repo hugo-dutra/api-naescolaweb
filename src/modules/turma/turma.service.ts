@@ -128,7 +128,7 @@ export class TurmaService {
         .addGroupBy('est.est_id_int')
         .getRawMany().then((turmas: any[]) => {
           const matriculados = turmas.length;
-          let turmasFiltrado = Utils.eliminaValoresRepetidos(turmas, 'id');
+          let turmasFiltrado = this.utils.eliminaValoresRepetidos(turmas, 'id');
           turmasFiltrado = <Turma[]>turmasFiltrado.map(turma => {
             turma['matriculados'] = matriculados;
             return turma;

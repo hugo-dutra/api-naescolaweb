@@ -1,4 +1,26 @@
+import { EscopoPerfilUsuarioRepository } from './escopo-perfil-usuario.repository';
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
-export class EscopoPerfilUsuarioService {}
+export class EscopoPerfilUsuarioService {
+  constructor(@InjectRepository(EscopoPerfilUsuarioRepository) private escopoPerfilUsuarioRepository: EscopoPerfilUsuarioRepository) { }
+
+  public listarNivelAcessoUsuario(usr_id: number, esc_id: number): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.escopoPerfilUsuarioRepository.createQueryBuilder('epu')
+        .select(['epu.epu_nome_txt as nome'])
+        .innerJoin('epu.perfilUsuario', 'pru')
+        .innerJoin('pru.usuariosEscolas', 'usee')
+        .andWhere('usee.usr_id_int = :usr_id', { usr_id: usr_id })
+        .andWhere('usee.esc_id_int = :esc_id', { esc_id: esc_id })
+        .execute()
+        .then((escopo: string[]) => {
+          resolve(escopo[0]);
+        }).catch((reason: any) => {
+          reject(reason);
+        });
+    });
+  }
+
+}

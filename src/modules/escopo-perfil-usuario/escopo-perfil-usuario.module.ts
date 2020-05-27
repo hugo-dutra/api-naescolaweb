@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   imports: [TypeOrmModule.forFeature([EscopoPerfilUsuarioRepository])],
   providers: [EscopoPerfilUsuarioService],
-  controllers: [EscopoPerfilUsuarioController]
+  controllers: [EscopoPerfilUsuarioController],
+  exports: [EscopoPerfilUsuarioService],
 })
 export class EscopoPerfilUsuarioModule { }

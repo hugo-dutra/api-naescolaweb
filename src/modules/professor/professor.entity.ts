@@ -9,15 +9,15 @@ export class Professor extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'prf_id_int' })
   id: number;
   @Column({ name: 'prf_nome_txt', nullable: false, length: 200 })
-  prf_nome: string;
+  nome: string;
   @Column({ name: 'prf_email_txt', length: 150 })
-  prf_email: string;
+  email: string;
   @Column({ name: 'prf_matricula_txt', length: 20 })
-  prf_matricula: string;
+  matricula: string;
   @Column({ name: 'prf_cpf_txt', length: 20 })
-  prf_cpf: string;
+  cpf: string;
   @Column({ name: 'prf_telefone_txt', length: 20 })
-  prf_telefone: string;
+  telefone: string;
   /* RELACIONAMENTOS */
   @OneToMany(type => UsuarioProfessor, usuarioProfessor => usuarioProfessor.usuario)
   usuariosProfessores: UsuarioProfessor[];

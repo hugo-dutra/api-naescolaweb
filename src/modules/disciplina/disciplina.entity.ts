@@ -10,9 +10,13 @@ export class Disciplina extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'dsp_id_int' })
   id: number;
   @Column({ name: 'dsp_nome_txt', length: 45, nullable: false })
-  dsp_nome: string;
-  @Column({ name: 'dsp_abreviatura_txt', length: 5, nullable: false })
-  dsp_abreviatura: string;
+  nome: string;
+  @Column({ name: 'dsp_abreviatura_txt', length: 15, nullable: false })
+  abreviatura: string;
+  @Column({ name: 'ete_id_int', nullable: false })
+  ete_id: number;
+  @Column({ name: 'arc_id_int', nullable: false })
+  arc_id: number;
   /* RELACIONAMENTOS */
   @OneToMany(type => ResultadoBoletim, resultadoBoletim => resultadoBoletim.disciplina)
   resultadosBoletins: ResultadoBoletim[];
@@ -24,6 +28,5 @@ export class Disciplina extends BaseEntity {
   @ManyToOne(type => AreaConhecimento, areaConhecimento => areaConhecimento.disciplinas)
   @JoinColumn({ name: 'arc_id_int' })
   areaConhecimento: AreaConhecimento;
-
 
 }
