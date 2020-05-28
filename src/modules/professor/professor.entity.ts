@@ -10,13 +10,13 @@ export class Professor extends BaseEntity {
   id: number;
   @Column({ name: 'prf_nome_txt', nullable: false, length: 200 })
   nome: string;
-  @Column({ name: 'prf_email_txt', length: 150 })
+  @Column({ name: 'prf_email_txt', length: 150, nullable: true })
   email: string;
-  @Column({ name: 'prf_matricula_txt', length: 20 })
+  @Column({ name: 'prf_matricula_txt', length: 20, nullable: false })
   matricula: string;
-  @Column({ name: 'prf_cpf_txt', length: 20 })
+  @Column({ name: 'prf_cpf_txt', length: 20, nullable: true })
   cpf: string;
-  @Column({ name: 'prf_telefone_txt', length: 20 })
+  @Column({ name: 'prf_telefone_txt', length: 20, nullable: true })
   telefone: string;
   /* RELACIONAMENTOS */
   @OneToMany(type => UsuarioProfessor, usuarioProfessor => usuarioProfessor.usuario)

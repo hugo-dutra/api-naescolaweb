@@ -84,12 +84,6 @@ export class TurmaService {
 
   public listarTodasAno(ano: number, esc_id: number): Promise<Turma[]> {
     return new Promise((resolve, reject) => {
-
-      /* this.turmaRepository.find({ where: { ano: ano, esc_id: esc_id } }).then((turmas: Turma[]) => {
-        console.log(turmas);
-        resolve(turmas);
-      }) */
-
       const campos = [
         'trm.trm_id_int as id',
         'trm.trm_nome_txt as nome',
@@ -154,7 +148,6 @@ export class TurmaService {
           .orderBy('trm_nome_txt', "ASC")
           .getRawMany().then((turmas: any[]) => {
             console.clear();
-            console.log(turmas);
             resolve(turmas)
           }).catch((reason: any) => {
             reject(reason);
@@ -171,7 +164,6 @@ export class TurmaService {
           .orderBy('trm_nome_txt', "ASC")
           .getRawMany().then((turmas: any[]) => {
             console.clear();
-            console.log(turmas);
             resolve(turmas)
           }).catch((reason: any) => {
             reject(reason);
@@ -350,7 +342,6 @@ export class TurmaService {
       this.verificarExistenciaTurma(turma).then((existe: boolean) => {
         if (!existe) {
           this.turmaRepository.save(turma).then((turmaAlterada: Turma) => {
-            console.log(turmaAlterada);
             resolve(turmaAlterada);
           }).catch((reason: any) => {
             reject(reason);

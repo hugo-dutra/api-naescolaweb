@@ -8,6 +8,8 @@ import { escopo } from './escopo-usuario.enum';
 import { Utils } from 'src/utils/utils';
 import { EscolaRepository } from '../escola/escola.repository';
 import { Escola } from '../escola/escola.entity';
+import { DeleteResult } from 'typeorm';
+import { ProfessorIntegracaoDto } from './dto/professor-integracao.dto';
 
 @Injectable()
 export class ProfessorService {
@@ -33,6 +35,72 @@ export class ProfessorService {
       }).catch((reason: any) => {
         reject(reason);
       })
+    });
+  }
+
+  public inserirIntegracao(professoresIntegracao: ProfessorIntegracaoDto[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const professoresMapeados = professoresIntegracao.map(professorIntegracao => {
+        const professor = new Professor();
+        professor.nome = professorIntegracao.nm_professor;
+        professor.matricula = professorIntegracao.emp_cd_matricula;
+        return professor;
+      })
+      let contaInseridos = 0;
+      professoresMapeados.forEach(professor => {
+        this.verificarExistencia(professor).then(existe => {
+          contaInseridos++;
+          if (!existe) {
+            this.professorRepository.save(professor).then((professor: Professor) => {
+              if (professoresMapeados.length == contaInseridos) {
+                resolve();
+              }
+            }).catch((reason: any) => {
+              reject(reason);
+            });
+          } else {
+            if (professoresMapeados.length == contaInseridos) {
+              resolve();
+            }
+          }
+        }).catch((reason: any) => {
+          reject(reason);
+        });
+      });
+    });
+  }
+
+  public listarDisciplinas(prf_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'dsp.dsp_id_int as dsp_id',
+        'dsp.dsp_nome_txt as disciplina',
+        'dsp.dsp_abreviatura_txt as disciplina_abv',
+        'prf.prf_id_int as prf_id',
+        'prf.prf_nome_txt as professor'
+      ];
+      if (prf_id > 0) {
+        this.professorRepository.createQueryBuilder('prf').select(campos)
+          .innerJoin('prf.professoresDisciplinas', 'prd')
+          .innerJoin('prd.disciplina', 'dsp')
+          .where('prd.prf_id_int = :prf_id', { prf_id: prf_id })
+          .execute()
+          .then((professorDisciplinas: any[]) => {
+            resolve(professorDisciplinas);
+          }).catch((reason: any) => {
+            reject(reason);
+          });
+      } else {
+        this.professorRepository.createQueryBuilder('prf').select(campos)
+          .innerJoin('prf.professoresDisciplinas', 'prd')
+          .innerJoin('prd.disciplina', 'dsp')
+          .execute()
+          .then((professorDisciplinas: any[]) => {
+            resolve(professorDisciplinas);
+          }).catch((reason: any) => {
+            reject(reason);
+          });
+      }
     });
   }
 
@@ -166,6 +234,26 @@ export class ProfessorService {
     });
   }
 
+  public alterar(professor: Professor): Promise<Professor> {
+    return new Promise((resolve, reject) => {
+      this.professorRepository.save(professor).then((professor: Professor) => {
+        resolve(professor);
+      }).catch((reason: any) => {
+        reject(reason);
+      });
+    });
+  }
+
+  public excluir(id: number): Promise<DeleteResult> {
+    return new Promise((resolve, reject) => {
+      this.professorRepository.delete(id).then((deleteResult: DeleteResult) => {
+        resolve(deleteResult);
+      }).catch((reason: any) => {
+        reject(reason);
+      });
+    });
+  }
+
   public verificarExistencia(professor: Professor): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.professorRepository.find({ where: { matricula: professor.matricula } })
@@ -191,7 +279,23 @@ export class ProfessorService {
         resolve(escola.ree_id);
       }).catch((reason: any) => {
         reject(reason);
-      })
-    })
+      });
+    });
   }
+
+  /**
+   * Pegar Id por matricula
+   * @param esc_id
+   */
+  public pegarIdPorMatricula(matricula: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this.professorRepository.findOne({ where: { matricula: matricula } }).then((professor: Professor) => {
+        resolve(professor.id);
+      }).catch((reason: any) => {
+        reject(reason);
+      });
+    });
+  }
+
+
 }

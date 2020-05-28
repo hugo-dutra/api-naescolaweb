@@ -51,4 +51,14 @@ export class Utils {
       });
   }
 
+  public eliminaValoresRepetidosCampos(arrayAlvo: Object[], campo1: string, campo2: string): Object[] {
+    return Array.from(new Set(arrayAlvo.map(a => a[campo1])))
+      .map(id => {
+        return arrayAlvo.find(a => a[campo1] == id);
+      })
+      .map(id2 => {
+        return arrayAlvo.find(b => b[campo2] == id2);
+      })
+  }
+
 }

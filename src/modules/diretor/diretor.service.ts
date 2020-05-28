@@ -151,7 +151,6 @@ export class DiretorService {
               resultado.total = total;
               return resultado;
             })
-            console.log(resultadosComTotal);
             resolve(resultados);
           }).catch((reason: any) => {
             reject(reason);
@@ -164,7 +163,6 @@ export class DiretorService {
 
   public filtrarRegional(valor: string, limit: number, offset: number, esc_id: number): Promise<ListagemDiretorDto[]> {
     return new Promise((resolve, reject) => {
-      console.log(valor, limit, offset, esc_id);
       if (valor.length >= 3) {
         this.pegarIdRegiaoEscolaPorEscolaId(esc_id).then((ree_id: number) => {
           const campos = [
@@ -188,7 +186,6 @@ export class DiretorService {
                 resultado.total = total;
                 return resultado;
               })
-              console.log(resultadosComTotal);
               resolve(resultados);
             }).catch((reason: any) => {
               reject(reason);

@@ -20,6 +20,7 @@ import { EscopoPerfilUsuarioModule } from '../escopo-perfil-usuario/escopo-perfi
     , EscopoPerfilUsuarioModule,
   ],
   providers: [ProfessorService],
-  controllers: [ProfessorController]
+  controllers: [ProfessorController],
+  exports: [ProfessorService]
 })
 export class ProfessorModule { }

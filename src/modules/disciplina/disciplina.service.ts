@@ -12,7 +12,6 @@ export class DisciplinaService {
   constructor(@InjectRepository(DisciplinaRepository) private disciplinaRepository: DisciplinaRepository) { }
 
   public inserir(disciplina: Disciplina): Promise<Disciplina> {
-    console.log(disciplina);
     return new Promise((resolve, reject) => {
       this.verificaExistencia(disciplina).then(existe => {
         if (!existe) {
@@ -53,17 +52,25 @@ export class DisciplinaService {
 
       let contaDisciplinasInseridas = 0;
       disciplinasIntegracaoMapeadas.forEach(disciplinaMapeada => {
-        this.disciplinaRepository.query(queryString,
-          [disciplinaMapeada.nome, disciplinaMapeada.abreviatura,
-          disciplinaMapeada.arc_id, disciplinaMapeada.id, disciplinaMapeada.ete_id])
-          .then(() => {
-            contaDisciplinasInseridas++;
+        this.verificaExistencia(disciplinaMapeada).then(existe => {
+          contaDisciplinasInseridas++;
+          if (!existe) {
+            this.disciplinaRepository.query(queryString,
+              [disciplinaMapeada.nome, disciplinaMapeada.abreviatura,
+              disciplinaMapeada.arc_id, disciplinaMapeada.id, disciplinaMapeada.ete_id])
+              .then(() => {
+                if (contaDisciplinasInseridas == disciplinasIntegracaoMapeadas.length) {
+                  resolve()
+                }
+              }).catch((reason: any) => {
+                reject(reason);
+              });
+          } else {
             if (contaDisciplinasInseridas == disciplinasIntegracaoMapeadas.length) {
               resolve()
             }
-          }).catch((reason: any) => {
-            reject(reason);
-          });
+          }
+        });
       });
     });
   }
@@ -94,7 +101,6 @@ export class DisciplinaService {
 
   public listarIntegracao(esc_id: number): Promise<Disciplina[]> {
     return new Promise((resolve, reject) => {
-      console.log(esc_id);
       resolve(null);
     })
   }
@@ -124,7 +130,7 @@ export class DisciplinaService {
   public verificaExistencia(disciplina: Disciplina): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.disciplinaRepository
-        .find({ where: { nome: disciplina.nome, arc_id: disciplina.arc_id, ete_id: disciplina.arc_id } })
+        .find({ where: { nome: disciplina.nome, ete_id: disciplina.ete_id } })
         .then((disciplinas: Disciplina[]) => {
           if (disciplinas.length != 0) {
             resolve(true);
