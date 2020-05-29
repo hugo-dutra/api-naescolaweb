@@ -1,3 +1,4 @@
+import { ProfessorTurmaRepository } from './../professor-turma/professor-turma.repository';
 import { ProfessorDisciplinaRepository } from './professor-disciplina.repository';
 import { Module } from '@nestjs/common';
 import { ProfessorDisciplinaService } from './professor-disciplina.service';
@@ -6,8 +7,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProfessorModule } from '../professor/professor.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProfessorDisciplinaRepository]), ProfessorModule],
+  imports: [TypeOrmModule.forFeature([ProfessorDisciplinaRepository, ProfessorTurmaRepository]), ProfessorModule],
   providers: [ProfessorDisciplinaService],
-  controllers: [ProfessorDisciplinaController]
+  controllers: [ProfessorDisciplinaController],
+  exports: [ProfessorDisciplinaService],
 })
 export class ProfessorDisciplinaModule { }

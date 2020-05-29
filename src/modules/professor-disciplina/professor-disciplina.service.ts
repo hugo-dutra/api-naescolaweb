@@ -11,12 +11,15 @@ import { ProfessorDisciplinaDto } from './dto/professor-disciplina.dto';
 import { DeleteResult } from 'typeorm';
 import { Disciplina } from '../disciplina/disciplina.entity';
 import { ProfessorDisciplinaEscolaDto } from './dto/professor-disciplina-escola.dto';
+import { ProfessorTurmaRepository } from '../professor-turma/professor-turma.repository';
+import { ProfessorTurma } from '../professor-turma/professor-turma.entity';
 
 @Injectable()
 export class ProfessorDisciplinaService {
   private utils = new Utils();
   constructor(
     @InjectRepository(ProfessorDisciplinaRepository) private professorDisciplinaRepository: ProfessorDisciplinaRepository,
+    @InjectRepository(ProfessorTurmaRepository) private professorTurmaRepository: ProfessorTurmaRepository,
     private professorService: ProfessorService) { }
 
 
@@ -153,7 +156,7 @@ export class ProfessorDisciplinaService {
    * @param todos
    */
   public listarDisciplinas(esc_id: number, todos: boolean): Promise<ProfessorDisciplinaEscolaDto[]> {
-    todos = false; //Remover essa linha
+    todos = false;
     return new Promise((resolve, reject) => {
       if (todos) {
         this.listarTodasDisciplinas(esc_id).then((disciplinas: ProfessorDisciplinaEscolaDto[]) => {
@@ -200,12 +203,51 @@ export class ProfessorDisciplinaService {
     });
   }
 
-  public listarDisciplinasPorEscola(esc_id: number): Promise<ProfessorDisciplinaEscolaDto[]> {
+  public async listarDisciplinasPorEscola(esc_id: number): Promise<ProfessorDisciplinaEscolaDto[]> {
+    const arrayDeIds = await this.pegarIdsProfessorDisciplina();
     return new Promise((resolve, reject) => {
-      resolve(null);
+      const campos = [
+        'prd.prd_id_int as prd_id',
+        'prf.prf_nome_txt as professor',
+        'dsp.dsp_nome_txt as disciplina',
+        'dsp.dsp_abreviatura_txt as disciplina_abreviada',
+        'esc.esc_id_int as esc_id',
+        'esc.esc_nome_txt as escola',
+        'ete.ete_abreviatura_txt as etapa_abrv'
+      ];
+      this.professorDisciplinaRepository.createQueryBuilder('prd')
+        .select(campos)
+        .innerJoin('prd.professor', 'prf')
+        .innerJoin('prd.disciplina', 'dsp')
+        .innerJoin('prf.professoresEscolas', 'pre')
+        .innerJoin('pre.escola', 'esc')
+        .innerJoin('dsp.etapaEnsino', 'ete')
+        .andWhere('prd.prd_id_int not in (:...arrayDeIds)', { arrayDeIds: arrayDeIds })
+        .andWhere('esc.esc_id_int = :esc_id', { esc_id: esc_id })
+        .orderBy('prf.prf_nome_txt', 'ASC')
+        .execute()
+        .then((professorDisciplinaEscolaDto: ProfessorDisciplinaEscolaDto[]) => {
+          resolve(professorDisciplinaEscolaDto)
+        }).catch((reason: any) => {
+          reject(reason);
+        });
     })
   }
 
+  public pegarIdsProfessorDisciplina(): Promise<number[]> {
+    return new Promise((resolve, reject) => {
+      let arrayPrdId = new Array<number>();
+      arrayPrdId = [0];
+      this.professorTurmaRepository.find().then((professoresTurma: ProfessorTurma[]) => {
+        professoresTurma.forEach(professorTurma => {
+          arrayPrdId.push(professorTurma.prd_id);
+        });
+        resolve(arrayPrdId);
+      }).catch((reason: any) => {
+        reject(reason);
+      })
+    })
+  }
 
   /**
    * Ajuste dos dados para serem inseridos.
@@ -223,6 +265,16 @@ export class ProfessorDisciplinaService {
       });
     });
     return professoresDisciplinasDto;
+  }
+
+  public pegarPrdIdPorDisciplinaProfessor(dsp_id: number, prf_id: number): Promise<ProfessorDisciplina> {
+    return new Promise((resolve, reject) => {
+      this.professorDisciplinaRepository.find({ where: { dsp_id: dsp_id, prf_id: prf_id } }).then((professoresDisciplinas: ProfessorDisciplina[]) => {
+        resolve(professoresDisciplinas[0]);
+      }).catch((reason: any) => {
+        reject(reason);
+      });
+    });
   }
 
   /**
