@@ -6,6 +6,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProfessorDisciplinaTurmaEscola } from './dto/professor-turma-escola.dto';
 import { ProfessorTurma } from './professor-turma.entity';
+import { ProfessorTurmaDisciplinaDto } from './dto/professor-turma-disciplina.dto';
 
 @Injectable()
 export class ProfessorTurmaService {
@@ -14,6 +15,33 @@ export class ProfessorTurmaService {
     private professorService: ProfessorService,
     private professorDisciplinaService: ProfessorDisciplinaService,
   ) { }
+
+  public listarProfessorDisciplina(prd_id: number, esc_id: number): Promise<ProfessorTurmaDisciplinaDto[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'prt.prd_id_int as prd_id',
+        'prt.trm_id_int as trm_id',
+        'sre.sre_nome_txt as serie',
+        'ete.ete_nome_txt as etapa',
+        'trm.trm_nome_txt as turma',
+        'trn.trn_nome_txt as turno'
+      ];
+      this.ProfessorTurmaRepository.createQueryBuilder('prt').select(campos)
+        .innerJoin('prt.turma', 'trm')
+        .innerJoin('trm.serie', 'sre')
+        .innerJoin('sre.etapaEnsino', 'ete')
+        .innerJoin('trm.turno', 'trn')
+        .where('prt.prd_id_int = :prd_id', { prd_id: prd_id })
+        .andWhere('prt.esc_id_int = :esc_id', { esc_id: esc_id })
+        .execute()
+        .then((professorTurmaDisciplinaDto: ProfessorTurmaDisciplinaDto[]) => {
+          console.log(professorTurmaDisciplinaDto);
+          resolve(professorTurmaDisciplinaDto);
+        }).catch((reason: any) => {
+          reject(reason);
+        });
+    })
+  }
 
   public inserir(professoresDisciplinasTurmas: ProfessorDisciplinaTurmaEscola[]): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -39,6 +67,10 @@ export class ProfessorTurmaService {
     });
   }
 
+  /**
+   * Vincular professores, disciplinas e turmas vindos do IEducar
+   * @param professoresTurmas
+   */
   public inserirIntegracao(professoresTurmas: any): Promise<void> {
     return new Promise((resolve, reject) => {
       const professoresTurmasIntegracaoDto = <ProfessorTurmaIntegracaoDto[]>professoresTurmas;
