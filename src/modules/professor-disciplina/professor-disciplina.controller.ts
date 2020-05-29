@@ -1,8 +1,11 @@
 
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { ProfessorDisciplinaService } from './professor-disciplina.service';
 import { ProfessorDisciplina } from './professor-disciplina.entity';
 import { ProfessorDisciplinaIntegracaoDto } from './dto/professor-disciplina-integracao.dto';
+import { DeleteResult } from 'typeorm';
+import { Disciplina } from '../disciplina/disciplina.entity';
+import { ProfessorDisciplinaEscolaDto } from './dto/professor-disciplina-escola.dto';
 
 @Controller('professor-disciplina')
 export class ProfessorDisciplinaController {
@@ -21,9 +24,13 @@ export class ProfessorDisciplinaController {
   }
 
   @Post('/desvincular')
-  public desvincular(@Body() prf_id: number, dsp_id: number): Promise<void> {
-    console.log(prf_id, dsp_id);
-    return null;
+  public desvincular(@Body() parametros: any): Promise<DeleteResult> {
+    return this.professorDisciplinaService.desvincular(parametros);
+  }
+
+  @Get('/listar-disciplina/:esc_id/:todos')
+  public listarDisciplina(@Param('esc_id') esc_id: number, @Param('todos') todos: boolean): Promise<ProfessorDisciplinaEscolaDto[]> {
+    return this.professorDisciplinaService.listarDisciplinas(esc_id, todos)
   }
 
 }
