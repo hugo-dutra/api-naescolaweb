@@ -7,6 +7,7 @@ import { EscolaRepository } from './escola.repository';
 @Module({
   imports: [TypeOrmModule.forFeature([EscolaRepository])],
   providers: [EscolaService],
-  controllers: [EscolaController]
+  controllers: [EscolaController],
+  exports: [EscolaService],
 })
 export class EscolaModule { }

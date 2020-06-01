@@ -25,35 +25,35 @@ export class Estudante extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'est_id_int' })
   id: number;
   @Column({ length: 250, name: 'est_nome_txt', nullable: false })
-  est_nome: string;
+  nome: string;
   @Column({ length: 50, name: 'est_matricula_txt', nullable: false })
-  est_matricula: string;
+  matricula: string;
   @Column({ length: 250, name: 'est_pai_txt', nullable: true })
-  est_pai: string;
+  pai: string;
   @Column({ length: 250, name: 'est_mae_txt', nullable: true })
-  est_mae: string;
+  mae: string;
   @Column({ length: 250, name: 'est_responsavel_txt', nullable: true })
-  est_responsavel: string;
+  responsavel: string;
   @Column({ length: 250, name: 'est_email_txt', nullable: true })
-  est_email: string;
+  email: string;
   @Column({ length: 500, name: 'est_endereco_txt', nullable: true })
-  est_endereco: string;
+  endereco: string;
   @Column({ length: 5, name: 'est_tipo_sanguineo_txt', nullable: true })
-  est_tipo_sanguineo: string;
+  tipo_sanguineo: string;
   @Column({ name: 'est_envio_msg_status_int', default: 1 })
-  est_envio_msg_status: number;
+  envio_msg_status: number;
   @Column({ name: 'est_status_ativo_int', default: 1 })
-  est_status_ativo: number;
+  status_ativo: number;
   @Column({ name: 'est_nascimento_dte' })
-  est_nascimento: Date;
+  nascimento: Date;
   @Column({ name: 'est_foto_txt', length: 500, nullable: true })
-  est_foto: string;
+  foto: string;
   @Column({ name: 'est_cep_txt', length: 20, nullable: true })
-  est_cep: string;
+  cep: string;
   @Column({ name: 'est_data_foto_dtm', nullable: true })
-  est_data_foto: Date;
+  data_foto: Date;
   @Column({ name: 'usr_id_foto_int', nullable: true }) // Depois, transformar isso num relacionamento
-  usr_id_foto: number;
+  id_foto: number;
   @Column({ name: 'esc_id_int', nullable: false })
   esc_id: number;
   /* RELACIONAMENTOS */
@@ -98,3 +98,4 @@ export class Estudante extends BaseEntity {
   avaliacoesEstudantes: AvaliacaoEstudante[];
 
 }
+

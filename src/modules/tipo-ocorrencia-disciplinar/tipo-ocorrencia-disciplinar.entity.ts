@@ -9,9 +9,11 @@ export class TipoOcorrenciaDisciplinar extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'tod_id_int' })
   id: number;
   @Column({ name: 'tod_tipo_ocorrencia_txt', length: 50, nullable: false })
-  tod_tipo_ocorrencia: string;
-  @Column({ name: 'tod_valor_num' })
-  tod_valor: number;
+  tipo_ocorrencia: string;
+  @Column({ name: 'tod_valor_num', type: 'float4' })
+  valor: number;
+  @Column({ name: 'esc_id_int' })
+  esc_id: number;
   /* RELACIONAMENTOS */
   @OneToMany(type => OcorrenciaDisciplinar, ocorrenciaDisciplinar => ocorrenciaDisciplinar.tipoOcorrenciaDisciplinar)
   ocorrenciasDisciplinares: OcorrenciaDisciplinar[];
