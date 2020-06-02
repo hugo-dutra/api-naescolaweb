@@ -8,9 +8,13 @@ export class ObservacaoEstudante extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'obe_id_int' })
   id: number;
   @Column({ name: 'obe_observacao_txt', length: 2000, nullable: false })
-  obe_observacao: string;
+  observacao: string;
   @Column({ name: 'obe_data_hora_dtm', nullable: false })
-  obe_data_hora: Date;
+  data_hora: Date;
+  @Column({ name: 'usr_id_int', nullable: false })
+  usr_id: number;
+  @Column({ name: 'est_id_int', nullable: false })
+  est_id: number;
   /* RELACIONAMENTOS */
   @ManyToOne(type => Usuario, usuario => usuario.observacoesEstudantes)
   @JoinColumn({ name: 'usr_id_int' })

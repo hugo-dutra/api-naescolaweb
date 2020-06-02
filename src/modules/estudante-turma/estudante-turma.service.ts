@@ -48,6 +48,31 @@ export class EstudanteTurmaService {
     });
   }
 
+  public listarSerieTurmaTurnoEtapa(est_id: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'etu.est_id_int as est_id',
+        'sre.sre_abreviatura_txt as serie',
+        'trm.trm_nome_txt as turma',
+        'trn.trn_abreviatura_txt as turno',
+        'ete.ete_nome_txt as etapa'
+      ];
+      this.estudanteTurmaRepository.createQueryBuilder('etu').select(campos)
+        .innerJoin('etu.turma', 'trm')
+        .innerJoin('trm.serie', 'sre')
+        .innerJoin('trm.turno', 'trn')
+        .innerJoin('sre.etapaEnsino', 'ete')
+        .where('etu.est_id_int = :est_id', { est_id: est_id })
+        .andWhere('etu_turma_atual_int = 1')
+        .execute()
+        .then(retorno => {
+          resolve(retorno);
+        }).catch(reason => {
+          reject(reason);
+        });
+    });
+  }
+
   /**
    * Desativa o status ativo em todas as turmas do estudante para ativar numa nova
    * @param estudantesIntegracaoEnturmarDto

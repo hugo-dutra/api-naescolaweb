@@ -1,4 +1,13 @@
+import * as moment from 'moment';
+
 export class Utils {
+
+  /**
+   * Pega Data e Hora atual no formato YYYY-MM-DD HH:mm:ss
+   */
+  public agora(): Date {
+    return new Date(moment(moment.now()).format("YYYY-MM-DD HH:mm:ss"));
+  }
 
   /**
    * Cria abreviatura com strings iniciais

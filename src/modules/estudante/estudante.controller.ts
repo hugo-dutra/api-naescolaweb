@@ -19,19 +19,34 @@ export class EstudanteController {
     return this.estudanteService.inserirEstudanteIntegracao(estudantesIntegracaoDto, esc_id);
   }
 
-  @Get('/local/:limit/:offset/:asc/:esc_id')
+  @Get('/listar-local/:limit/:offset/:asc/:esc_id')
   public listarLocal(@Param('limit') limit: number, @Param('offset') offset: number, @Param('asc') asc: boolean, @Param('esc_id') esc_id: number): Promise<any[]> {
     return this.estudanteService.listarLocal(limit, offset, asc, esc_id);
   }
 
-  @Get('/regional/:limit/:offset/:asc/:esc_id')
+  @Get('/listar-regional/:limit/:offset/:asc/:esc_id')
   public listarRegional(@Param('limit') limit: number, @Param('offset') offset: number, @Param('asc') asc: boolean, @Param('esc_id') esc_id: number): Promise<any[]> {
     return this.estudanteService.listarRegional(limit, offset, asc, esc_id);
   }
 
-  @Get('/global/:limit/:offset/:asc')
+  @Get('/listar-global/:limit/:offset/:asc')
   public listarGlobal(@Param('limit') limit: number, @Param('offset') offset: number, @Param('asc') asc: boolean): Promise<any[]> {
     return this.estudanteService.listarGlobal(limit, offset, asc);
+  }
+
+  @Get('/filtrar-local/:valor/:limit/:offset/:esc_id')
+  public filtrarLocal(@Param('valor') valor: string, @Param('limit') limit: number, @Param('offset') offset: number, @Param('esc_id') esc_id: number): Promise<any[]> {
+    return this.estudanteService.filtrarLocal(valor, limit, offset, esc_id);
+  }
+
+  @Get('/filtrar-regional/:valor/:limit/:offset/:esc_id')
+  public filtrarRegional(@Param('valor') valor: string, @Param('limit') limit: number, @Param('offset') offset: number, @Param('esc_id') esc_id: number): Promise<any[]> {
+    return this.estudanteService.filtrarRegional(valor, limit, offset, esc_id);
+  }
+
+  @Get('/filtrar-global/:valor/:limit/:offset')
+  public filtrarGlobal(@Param('valor') valor: string, @Param('limit') limit: number, @Param('offset') offset: number): Promise<any[]> {
+    return this.estudanteService.filtrarGlobal(valor, limit, offset);
   }
 
 

@@ -19,7 +19,6 @@ export class EstudanteService {
       this.verificarExistencia(estudante).then(existe => {
         if (!existe) {
           this.estudanteRepository.save(estudante).then(novoEstudante => {
-            console.log(novoEstudante);
             resolve(novoEstudante);
           })
         } else {
@@ -194,6 +193,176 @@ export class EstudanteService {
       }).catch(reason => {
         reject(reason);
       });
+    });
+  }
+
+  public filtrarLocal(valor: string, limit: number, offset: number, esc_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'est.est_id_int as id', 'est.est_nome_txt as nome', 'est.est_matricula_txt as matricula',
+        'est.est_pai_txt as pai', 'est.est_mae_txt as mae', 'est.est_responsavel_txt as responsavel',
+        'est.est_email_txt as email', 'est.est_endereco_txt as endereco', 'est.est_tipo_sanguineo_txt as tipo_sanguineo',
+        'est.est_envio_msg_status_int as envio_msg_status', 'est.est_status_ativo_int as status_ativo', 'est.est_nascimento_dte as nascimento',
+        'est.est_foto_txt as foto', 'est.est_cep_txt as cep', 'ete.ete_nome_txt as etapa',
+        'ete.ete_abreviatura_txt as etapa_abrv', 'sre.sre_nome_txt as serie', 'sre.sre_abreviatura_txt as serie_abrv',
+        'trm.trm_nome_txt as turma', 'trn.trn_nome_txt as turno', 'trn.trn_abreviatura_txt as turno_abrv'
+      ];
+
+      this.totalFiltroEstudantesLocal(valor, esc_id).then(totalEstudantes => {
+        this.estudanteRepository.createQueryBuilder('est').select(campos)
+          .innerJoin('est.estudantesTurmas', 'etu')
+          .innerJoin('etu.turma', 'trm')
+          .innerJoin('trm.serie', 'sre')
+          .innerJoin('sre.etapaEnsino', 'ete')
+          .innerJoin('trm.turno', 'trn')
+          .orWhere('LOWER(est.est_nome_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+          .orWhere('LOWER(est.est_email_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+          .orWhere('LOWER(est.est_responsavel_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+          .andWhere('est.esc_id_int = :esc_id', { esc_id: esc_id })
+          .orderBy('est.est_nome_txt', 'ASC')
+          .limit(limit)
+          .offset(offset)
+          .execute()
+          .then((estudantes: any[]) => {
+            estudantes = estudantes.map(estudante => {
+              Object.assign(estudante, { total: totalEstudantes })
+              return estudante;
+            });
+            resolve(estudantes);
+          }).catch(reason => {
+            reject(reason);
+          });
+      });
+    });
+  }
+
+  public filtrarGlobal(valor: string, limit: number, offset: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      this.totalFiltroEstudantesGlobal(valor).then(totalGlobal => {
+        const campos = [
+          'est.est_id_int as id', 'est.est_nome_txt as nome', 'est.est_matricula_txt as matricula',
+          'est.est_pai_txt as pai', 'est.est_mae_txt as mae', 'est.est_responsavel_txt as responsavel',
+          'est.est_email_txt as email', 'est.est_endereco_txt as endereco', 'est.est_tipo_sanguineo_txt as tipo_sanguineo',
+          'est.est_envio_msg_status_int as envio_msg_status', 'est.est_status_ativo_int as status_ativo', 'est.est_nascimento_dte as nascimento',
+          'est.est_foto_txt as foto', 'est.est_cep_txt as cep'
+        ];
+
+        this.estudanteRepository.createQueryBuilder('est').select(campos)
+          .innerJoin('est.escola', 'esc')
+          .innerJoin('esc.regiaoEscola', 'ree')
+          .orWhere('LOWER(est.est_nome_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+          .orWhere('LOWER(est.est_email_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+          .orWhere('LOWER(est.est_responsavel_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+          .orderBy('est.est_nome_txt', 'ASC')
+          .limit(limit)
+          .offset(offset)
+          .execute()
+          .then((estudantes: any[]) => {
+            estudantes = estudantes.map(estudante => {
+              Object.assign(estudante, { total: totalGlobal })
+              return estudante;
+            });
+            resolve(estudantes);
+          }).catch(reason => {
+            reject(reason);
+          });
+      }).catch(reason => {
+        reject(reason);
+      });
+    });
+  }
+
+  public filtrarRegional(valor: string, limit: number, offset: number, esc_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'est.est_id_int as id', 'est.est_nome_txt as nome', 'est.est_matricula_txt as matricula',
+        'est.est_pai_txt as pai', 'est.est_mae_txt as mae', 'est.est_responsavel_txt as responsavel',
+        'est.est_email_txt as email', 'est.est_endereco_txt as endereco', 'est.est_tipo_sanguineo_txt as tipo_sanguineo',
+        'est.est_envio_msg_status_int as envio_msg_status', 'est.est_status_ativo_int as status_ativo', 'est.est_nascimento_dte as nascimento',
+        'est.est_foto_txt as foto', 'est.est_cep_txt as cep'
+      ];
+
+      this.escolaService.pegarIdRegiaoEscolaPorEscolaId(esc_id).then(ree_id => {
+        this.totalFiltroEstudantesRegional(valor, ree_id).then(totalEstudantes => {
+          this.estudanteRepository.createQueryBuilder('est').select(campos)
+            .innerJoin('est.escola', 'esc')
+            .innerJoin('esc.regiaoEscola', 'ree')
+            .orWhere('LOWER(est.est_nome_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+            .orWhere('LOWER(est.est_email_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+            .orWhere('LOWER(est.est_responsavel_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+            .andWhere('ree.ree_id_int = :ree_id', { ree_id: ree_id })
+            .orderBy('est.est_nome_txt', 'ASC')
+            .limit(limit)
+            .offset(offset)
+            .execute()
+            .then((estudantes: any[]) => {
+              estudantes = estudantes.map(estudante => {
+                Object.assign(estudante, { total: totalEstudantes })
+                return estudante;
+              });
+              resolve(estudantes);
+            }).catch(reason => {
+              reject(reason);
+            });
+        }).catch(reason => {
+          reject(reason);
+        });
+      }).catch(reason => {
+        reject(reason);
+      });
+    })
+  }
+
+  public totalFiltroEstudantesLocal(valor: string, esc_id: number): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this.estudanteRepository.createQueryBuilder('est')
+        .innerJoin('est.estudantesTurmas', 'etu')
+        .innerJoin('etu.turma', 'trm')
+        .innerJoin('trm.serie', 'sre')
+        .innerJoin('sre.etapaEnsino', 'ete')
+        .innerJoin('trm.turno', 'trn')
+        .orWhere('LOWER(est.est_nome_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+        .orWhere('LOWER(est.est_email_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+        .orWhere('LOWER(est.est_responsavel_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+        .andWhere('est.esc_id_int = :esc_id', { esc_id: esc_id })
+        .orderBy('est.est_nome_txt', 'ASC').getCount().then(total => {
+          resolve(total);
+        }).catch(reason => {
+          reject(reason)
+        });
+    });
+  }
+
+  public totalFiltroEstudantesGlobal(valor: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this.estudanteRepository.createQueryBuilder('est')
+        .innerJoin('est.escola', 'esc')
+        .innerJoin('esc.regiaoEscola', 'ree')
+        .orWhere('LOWER(est.est_nome_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+        .orWhere('LOWER(est.est_email_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+        .orWhere('LOWER(est.est_responsavel_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+        .orderBy('est.est_nome_txt', 'ASC').getCount().then(total => {
+          resolve(total);
+        }).catch(reason => {
+          reject(reason);
+        });
+    });
+  }
+
+  public totalFiltroEstudantesRegional(valor: string, ree_id: number): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this.estudanteRepository.createQueryBuilder('est')
+        .innerJoin('est.escola', 'esc')
+        .innerJoin('esc.regiaoEscola', 'ree')
+        .orWhere('LOWER(est.est_nome_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+        .orWhere('LOWER(est.est_email_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+        .orWhere('LOWER(est.est_responsavel_txt) like LOWER(:nome)', { nome: `%${valor}%` })
+        .andWhere('ree.ree_id_int = :ree_id', { ree_id: ree_id })
+        .orderBy('est.est_nome_txt', 'ASC').getCount().then(total => {
+          resolve(total);
+        }).catch(reason => {
+          reject(reason);
+        });
     });
   }
 
