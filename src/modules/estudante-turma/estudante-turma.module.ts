@@ -8,6 +8,7 @@ import { EstudanteTurmaRepository } from './estudante-turma.repository';
 @Module({
   imports: [TypeOrmModule.forFeature([EstudanteTurmaRepository, EstudanteRepository])],
   providers: [EstudanteTurmaService],
-  controllers: [EstudanteTurmaController]
+  controllers: [EstudanteTurmaController],
+  exports: [EstudanteTurmaService]
 })
 export class EstudanteTurmaModule { }

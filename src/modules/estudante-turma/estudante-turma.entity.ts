@@ -8,9 +8,9 @@ export class EstudanteTurma extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'etu_id_int' })
   id: number;
   @Column({ name: 'etu_numero_chamada_int', default: 0 })
-  etu_numero_chamada: number;
+  numero_chamada: number;
   @Column({ name: 'etu_turma_atual_int', default: 1 })
-  etu_turma_atual: number;
+  turma_atual: number;
   @Column({ name: 'est_id_int' })
   est_id: number;
   @Column({ name: 'trm_id_int' })

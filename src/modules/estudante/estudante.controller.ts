@@ -1,9 +1,10 @@
 import { EstudanteDto } from './dto/estudante.dto';
 import { EstudanteService } from './estudante.service';
-import { Controller, Post, Body, Param, Get } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get, Patch, Delete } from '@nestjs/common';
 import { EstudanteIntegracaoDto } from './dto/estudante-integracao.dto';
 import { EstudanteIntegracaoEnturmarDto } from '../estudante-turma/dto/estudante-integracao-enturmar.dto';
 import { Estudante } from './estudante.entity';
+import { DeleteResult } from 'typeorm';
 
 @Controller('estudante')
 export class EstudanteController {
@@ -17,6 +18,11 @@ export class EstudanteController {
   @Post('/integracao/:esc_id')
   public inserirEstudanteIntegracao(@Body() estudantesIntegracaoDto: EstudanteIntegracaoDto[], @Param('esc_id') esc_id: number): Promise<any> {
     return this.estudanteService.inserirEstudanteIntegracao(estudantesIntegracaoDto, esc_id);
+  }
+
+  @Get('/turma-id/:trm_id')
+  public listarTurmaId(@Param('trm_id') trm_id: number): Promise<any[]> {
+    return this.estudanteService.listarTurmaId(trm_id);
   }
 
   @Get('/listar-local/:limit/:offset/:asc/:esc_id')
@@ -49,9 +55,19 @@ export class EstudanteController {
     return this.estudanteService.filtrarGlobal(valor, limit, offset);
   }
 
+  @Patch()
+  public alterar(@Body() estudante: Estudante): Promise<Estudante> {
+    return this.estudanteService.alterar(estudante);
+  }
 
+  @Patch('/alterar-escola')
+  public alterarEscola(@Body() dados: any): Promise<void> {
+    return this.estudanteService.alterarEscola(dados);
+  }
 
-
-
+  @Delete()
+  public excluir(@Body() est_id: number): Promise<DeleteResult> {
+    return this.estudanteService.excluir(est_id);
+  }
 
 }

@@ -1,3 +1,4 @@
+import { EstudanteTurmaService } from './../estudante-turma/estudante-turma.service';
 import { EscolaService } from './../escola/escola.service';
 import { EstudanteDto } from './dto/estudante.dto';
 import { EstudanteIntegracaoDto } from './dto/estudante-integracao.dto';
@@ -5,12 +6,15 @@ import { EstudanteRepository } from './estudante.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Estudante } from './estudante.entity';
-import { InsertResult } from 'typeorm';
+import { InsertResult, DeleteResult } from 'typeorm';
 import { promises } from 'dns';
 
 @Injectable()
 export class EstudanteService {
-  constructor(@InjectRepository(EstudanteRepository) private estudanteRepository: EstudanteRepository, private escolaService: EscolaService) { }
+  constructor(
+    @InjectRepository(EstudanteRepository) private estudanteRepository: EstudanteRepository,
+    private escolaService: EscolaService,
+    private estudanteTurmaService: EstudanteTurmaService) { }
 
   public inserir(estudante: EstudanteDto): Promise<EstudanteDto> {
     estudante.status_ativo = 1;
@@ -93,6 +97,32 @@ export class EstudanteService {
         });
       });
     });
+  }
+
+  public listarTurmaId(trm_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'est.est_id_int as id',
+        'est.est_nome_txt as nome',
+        'est.est_matricula_txt as matricula',
+        'est.est_foto_txt as foto',
+        'trm.trm_id_int as trm_id',
+        'etu.etu_numero_chamada_int as numero_chamada',
+        'est.est_nascimento_dte as data_nascimento'
+      ];
+      this.estudanteRepository.createQueryBuilder('est').select(campos)
+        .innerJoin('est.estudantesTurmas', 'etu')
+        .innerJoin('etu.turma', 'trm')
+        .where('trm.trm_id_int = :trm_id', { trm_id: trm_id })
+        .andWhere('etu.etu_turma_atual_int = 1')
+        .orderBy('etu.etu_numero_chamada_int', 'ASC')
+        .orderBy('est.est_nome_txt', 'ASC').execute()
+        .then(resultados => {
+          resolve(resultados);
+        }).catch(reason => {
+          reject(reason);
+        })
+    })
   }
 
   public listarLocal(limit: number, offset: number, asc: boolean, esc_id: number): Promise<any[]> {
@@ -313,6 +343,28 @@ export class EstudanteService {
     })
   }
 
+  public alterar(estudante: Estudante): Promise<Estudante> {
+    return new Promise((resolve, reject) => {
+      this.estudanteRepository.save(estudante).then(estudanteAlterado => {
+        resolve(estudante);
+      }).catch(reason => {
+        reject(reason);
+      });
+    });
+  }
+
+  public excluir(est_id: number): Promise<DeleteResult> {
+    const id = est_id['est_id'];
+    console.log(id)
+    return new Promise((resolve, reject) => {
+      this.estudanteRepository.delete(id).then(deleteResult => {
+        resolve(deleteResult);
+      }).catch(reason => {
+        reject(reason);
+      });
+    });
+  }
+
   public totalFiltroEstudantesLocal(valor: string, esc_id: number): Promise<number> {
     return new Promise((resolve, reject) => {
       this.estudanteRepository.createQueryBuilder('est')
@@ -428,9 +480,33 @@ export class EstudanteService {
     });
   }
 
-
-
-
-
+  public alterarEscola(dados: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const estudantes = <any[]>dados['estudantes'];
+      const esc_id = dados['esc_id'];
+      const estudantesEscola = estudantes.map(estudante => {
+        return { esc_id: esc_id, est_id: estudante['id'] };
+      })
+      let contaTransferidos = 0;
+      estudantesEscola.forEach(estudanteEscola => {
+        this.estudanteTurmaService.desenturmarEstudante(estudanteEscola.est_id).then(() => {
+          this.estudanteRepository.createQueryBuilder('est')
+            .update()
+            .set({ esc_id: estudanteEscola.esc_id })
+            .where('est_id_int = :est_id', { est_id: estudanteEscola.est_id })
+            .execute().then(updateResult => {
+              contaTransferidos++;
+              if (contaTransferidos == estudantesEscola.length) {
+                resolve();
+              }
+            }).catch(reason => {
+              reject(reason);
+            });
+        }).catch(reason => {
+          reject(reason);
+        });
+      })
+    })
+  }
 
 }

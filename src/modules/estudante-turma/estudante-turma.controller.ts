@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch } from '@nestjs/common';
 import { EstudanteIntegracaoEnturmarDto } from './dto/estudante-integracao-enturmar.dto';
 import { EstudanteTurmaService } from './estudante-turma.service';
 
@@ -30,6 +30,11 @@ export class EstudanteTurmaController {
   @Get('/serie-turma-turno-etapa/:est_id')
   public listarSerieTurmaTurnoEtapa(@Param('est_id') est_id: number): Promise<any> {
     return this.estudanteTurmaService.listarSerieTurmaTurnoEtapa(est_id);
+  }
+
+  @Patch()
+  public alterar(@Body() dados: any): Promise<any> {
+    return this.estudanteTurmaService.alterarTurma(dados);
   }
 
 }

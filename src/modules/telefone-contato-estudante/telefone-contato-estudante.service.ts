@@ -2,6 +2,7 @@ import { TelefoneContatoEstudante } from './telefone-contato-estudante.entity';
 import { TelefoneContatoEstudanteRepository } from './telefone-contato-estudante.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DeleteResult } from 'typeorm';
 
 @Injectable()
 export class TelefoneContatoEstudanteService {
@@ -34,6 +35,21 @@ export class TelefoneContatoEstudanteService {
           reject(reason);
         });
     });
+  }
+
+  public excluir(est_id: any): Promise<DeleteResult> {
+    return new Promise((resolve, reject) => {
+      this.telefoneContatoEstudanteRepository
+        .createQueryBuilder('tce')
+        .delete()
+        .where('est_id_int = :est_id', est_id)
+        .execute()
+        .then(deleteResult => {
+          resolve(deleteResult)
+        }).catch(reason => {
+          reject(reason);
+        });
+    })
   }
 
 }

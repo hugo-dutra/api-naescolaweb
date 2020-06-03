@@ -48,6 +48,25 @@ export class EstudanteTurmaService {
     });
   }
 
+  public desenturmarEstudante(est_id: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.estudanteTurmaRepository.createQueryBuilder('etu')
+        .update()
+        .set({ turma_atual: 0 })
+        .where("est_id_int = :id", { id: est_id })
+        .execute()
+        .then(() => {
+          resolve()
+        }).catch(reason => {
+          reject(reason);
+        });
+    })
+
+
+
+
+  }
+
   public listarSerieTurmaTurnoEtapa(est_id: number): Promise<any> {
     return new Promise((resolve, reject) => {
       const campos = [
@@ -81,7 +100,7 @@ export class EstudanteTurmaService {
     return new Promise((resolve, reject) => {
       let contaExecucao = 0;
       estudantesIntegracaoEnturmarDto.forEach((estudante: EstudanteIntegracaoEnturmarDto) => {
-        this.estudanteTurmaRepository.createQueryBuilder('etu').update().set({ etu_turma_atual: 0 }).where("est_id_int = :id", { id: estudante.id }).execute().then((updateResult: UpdateResult) => {
+        this.estudanteTurmaRepository.createQueryBuilder('etu').update().set({ turma_atual: 0 }).where("est_id_int = :id", { id: estudante.id }).execute().then((updateResult: UpdateResult) => {
           contaExecucao++;
           if (contaExecucao == estudantesIntegracaoEnturmarDto.length) {
             resolve();
@@ -100,7 +119,7 @@ export class EstudanteTurmaService {
     return new Promise((resolve, reject) => {
       let contaExecucao = 0;
       estudantesIntegracaoEnturmarDto.forEach((estudante: EstudanteIntegracaoEnturmarDto) => {
-        this.estudanteRepository.createQueryBuilder('etu').update().set({ esc_id: esc_id }).where("est_id_int = :id", { id: estudante.id }).execute().then((updateResult: UpdateResult) => {
+        this.estudanteRepository.createQueryBuilder('est').update().set({ esc_id: esc_id }).where("est_id_int = :id", { id: estudante.id }).execute().then((updateResult: UpdateResult) => {
           contaExecucao++;
           if (contaExecucao == estudantesIntegracaoEnturmarDto.length) {
             resolve();
@@ -118,14 +137,14 @@ export class EstudanteTurmaService {
     return new Promise((resolve, reject) => {
       this.estudanteTurmaRepository.find({ where: { est_id: estudanteIntegracaoEnturmarDto.id, trm_id: estudanteIntegracaoEnturmarDto.trm_id } }).then((estudantesTurmas: EstudanteTurma[]) => {
         if (estudantesTurmas.length == 1) {
-          estudantesTurmas[0].etu_turma_atual = 1;
+          estudantesTurmas[0].turma_atual = 1;
           estudantesTurmas[0].save();
           resolve();
         } else {
           const estudanteTurma = new EstudanteTurma();
           estudanteTurma.est_id = estudanteIntegracaoEnturmarDto.id;
           estudanteTurma.trm_id = estudanteIntegracaoEnturmarDto.trm_id
-          estudanteTurma.etu_numero_chamada = 0;
+          estudanteTurma.numero_chamada = 0;
           estudanteTurma.save().then(() => {
             resolve()
           }).catch((reason: any) => {
@@ -154,7 +173,7 @@ export class EstudanteTurmaService {
             .select(['etu.etu_id_int as id, etu.etu_numero_chamada_int as etu_numero_chamada, etu.etu_turma_atual_int as etu_turma_atual, etu.est_id_int as est_id, trm.trm_id_int as trm_id'])
             .andWhere('trm.esc_id_int = :esc_id', { esc_id: esc_id }).andWhere('etu.est_id_int = :est_id', { est_id: estId }).execute().then((estudanteTurma: EstudanteTurma) => {
               contaAtualizados++;
-              estudanteTurma.etu_turma_atual = 0;
+              estudanteTurma.turma_atual = 0;
               this.estudanteTurmaRepository.save(estudanteTurma).then((estudanteDesativado: EstudanteTurma) => {
                 if (contaAtualizados == listaEstId.length) {
                   resolve();
@@ -168,7 +187,47 @@ export class EstudanteTurmaService {
     });
   }
 
+  public alterarTurma(dados: any): Promise<void> {
+    const trm_id = parseInt(dados['trm_id']);
+    const estudantesTurma = (<any[]>dados['estudantes']).map(estudante => {
+      return { id: estudante['id'], trm_id: trm_id }
+    });
+    return new Promise((resolve, reject) => {
+      let contaAlteradas = 0;
+      estudantesTurma.forEach(estudanteTurma => {
+        this.mudarStatusEnturmacoesAnteriores(estudanteTurma['id'], false).then(updateResult => {
+          let estudante = new EstudanteIntegracaoEnturmarDto();
+          estudante.id = estudanteTurma.id;
+          estudante.trm_id = estudanteTurma.trm_id
+          this.verificarAtualizarEnturmar(estudante).then(() => {
+            contaAlteradas++;
+            if (contaAlteradas == estudantesTurma.length) {
+              resolve();
+            }
+          }).catch(reason => {
+            reject(reason)
+          })
+        }).catch(reason => {
+          reject(reason);
+        })
+      })
+    })
+  }
 
+  public mudarStatusEnturmacoesAnteriores(est_id: number, ativa: boolean): Promise<UpdateResult> {
+    return new Promise((resolve, reject) => {
+      this.estudanteTurmaRepository.createQueryBuilder('etu')
+        .update()
+        .set({ turma_atual: ativa == true ? 1 : 0 })
+        .where('est_id_int = :est_id', { est_id: est_id })
+        .execute()
+        .then(updateResult => {
+          resolve(updateResult);
+        }).catch(reason => {
+          reject(reason);
+        });
+    });
+  }
 
 
 
