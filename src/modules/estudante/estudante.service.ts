@@ -343,6 +343,90 @@ export class EstudanteService {
     })
   }
 
+  public validarMatricula(matricula: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.estudanteRepository.find({ where: { matricula: matricula } }).then(estudates => {
+        if (estudates.length == 0) {
+          resolve(false);
+        } else {
+          resolve(true);
+        }
+      }).catch(reason => {
+        reject(reason);
+      })
+    })
+  }
+
+  public listarSemFoto(esc_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'est.est_id_int as est_id', 'est.est_nome_txt as nome', 'est.est_matricula_txt as matricula',
+        'est.est_foto_txt as url_foto', 'trm.trm_id_int as trm_id', 'trm.trm_nome_txt as turma',
+        'trm.trm_ano_int as turma_ano', 'sre.sre_id_int as sre_id', 'sre.sre_nome_txt as serie',
+        'sre.sre_abreviatura_txt as serie_abrv', 'trn.trn_id_int as trn_id', 'trn_nome_txt as turno',
+        'ete.ete_id_int as ete_id', 'ete.ete_nome_txt as etapa_ensino', 'ete.ete_abreviatura_txt as etapa_ensino_abrv'
+      ];
+      const emptyString = "";
+      this.estudanteRepository.createQueryBuilder('est')
+        .select(campos)
+        .innerJoin('est.estudantesTurmas', 'etu')
+        .innerJoin('etu.turma', 'trm')
+        .innerJoin('trm.serie', 'sre')
+        .innerJoin('sre.etapaEnsino', 'ete')
+        .innerJoin('trm.turno', 'trn')
+        .where('etu.etu_turma_atual_int = 1')
+        .andWhere('est.esc_id_int = :esc_id', { esc_id: esc_id })
+        .orWhere('est.est_foto_txt = :emptyString', { emptyString: emptyString })
+        .orWhere('est.est_foto_txt = null')
+        .orderBy('trm.trm_nome_txt', 'ASC')
+        .orderBy('sre.sre_nome_txt', 'ASC')
+        .orderBy('est.est_nome_txt', 'ASC').execute().then(estudantes => {
+          resolve(estudantes);
+        }).catch(reason => {
+          reject(reason);
+        })
+    })
+  }
+
+  public listarPorTurnoId(trn_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'est.est_id_int as id', 'est.est_nome_txt as nome', 'est.est_matricula_txt as matricula',
+        'est.est_foto_txt as foto', 'trm.trm_id_int as trm_id', 'etu.etu_numero_chamada_int as numero_chamada',
+        'est.est_nascimento_dte as data_nascimento'
+      ];
+      this.estudanteRepository.createQueryBuilder('est').select(campos)
+        .innerJoin('est.estudantesTurmas', 'etu')
+        .innerJoin('etu.turma', 'trm')
+        .innerJoin('trm.turno', 'trn')
+        .where('trn.trn_id_int = :trn_id', { trn_id: trn_id })
+        .andWhere('etu.etu_turma_atual_int = 1')
+        .orderBy('etu.etu_numero_chamada_int', 'ASC')
+        .orderBy('est.est_nome_txt', 'ASC').execute()
+        .then(estudantes => {
+          resolve(estudantes);
+        }).catch(reason => {
+          reject(reason);
+        });
+    });
+  }
+
+  public listarSemTurma(esc_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'est.est_id_int as id',
+        'est.est_nome_txt as nome',
+        'est.est_matricula_txt as matricula',
+        'est.est_responsavel_txt  as responsavel'
+      ];
+
+
+      //.select(campos).andWhere('dir.dir_id_int not in (:...dir_ids)', { dir_ids: dir_ids })
+      console.log(esc_id);
+      resolve(null);
+    })
+  }
+
   public alterar(estudante: Estudante): Promise<Estudante> {
     return new Promise((resolve, reject) => {
       this.estudanteRepository.save(estudante).then(estudanteAlterado => {

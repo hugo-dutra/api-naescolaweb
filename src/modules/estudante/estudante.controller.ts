@@ -55,6 +55,26 @@ export class EstudanteController {
     return this.estudanteService.filtrarGlobal(valor, limit, offset);
   }
 
+  @Get('/validar-matricula/:matricula')
+  public validarMatricula(@Param('matricula') matricula: string): Promise<any[]> {
+    return this.estudanteService.validarMatricula(matricula);
+  }
+
+  @Get('/sem-foto/:esc_id')
+  public listarSemFoto(@Param('esc_id') esc_id: number): Promise<any[]> {
+    return this.estudanteService.listarSemFoto(esc_id);
+  }
+
+  @Get('/turno-id/:trn_id')
+  public listarPorTurnoId(@Param('trn_id') trn_id: number): Promise<any[]> {
+    return this.estudanteService.listarPorTurnoId(trn_id);
+  }
+
+  @Get('/sem-turma/:esc_id')
+  public listarSemTurma(@Param('esc_id') esc_id: number): Promise<any[]> {
+    return this.estudanteService.listarSemTurma(esc_id);
+  }
+
   @Patch()
   public alterar(@Body() estudante: Estudante): Promise<Estudante> {
     return this.estudanteService.alterar(estudante);
