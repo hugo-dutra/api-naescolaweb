@@ -20,6 +20,11 @@ export class EstudanteTurmaController {
     return this.estudanteTurmaService.inserirIntegracao(estudantesEnturmar, esc_id);
   }
 
+  @Post('/enturmar/via-importacao')
+  public enturmarEstudanteViaImportacao(@Body() estudantes: any[]): Promise<void> {
+    return this.estudanteTurmaService.inserirViaImportacao(estudantes);
+  }
+
   @Post('/desabilitar-turma-estudante-transferido')
   public desabilitarTransferidos(@Body() parametros: any): Promise<void> {
     const esc_id = parametros['esc_id'];

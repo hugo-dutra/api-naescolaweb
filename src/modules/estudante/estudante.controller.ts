@@ -15,6 +15,11 @@ export class EstudanteController {
     return this.estudanteService.inserir(estudanteDto);
   }
 
+  @Post('/via-listagem')
+  public inserirViaListagem(@Body() estudantes: any[]): Promise<any> {
+    return this.estudanteService.inserirViaListagem(estudantes);
+  }
+
   @Post('/integracao/:esc_id')
   public inserirEstudanteIntegracao(@Body() estudantesIntegracaoDto: EstudanteIntegracaoDto[], @Param('esc_id') esc_id: number): Promise<any> {
     return this.estudanteService.inserirEstudanteIntegracao(estudantesIntegracaoDto, esc_id);
@@ -73,6 +78,11 @@ export class EstudanteController {
   @Get('/sem-turma/:esc_id')
   public listarSemTurma(@Param('esc_id') esc_id: number): Promise<any[]> {
     return this.estudanteService.listarSemTurma(esc_id);
+  }
+
+  @Get('/listar-aplicativo/:esc_id')
+  public listarAplicativo(@Param('esc_id') esc_id: number): Promise<any[]> {
+    return this.estudanteService.listarAplicativo(esc_id);
   }
 
   @Patch()

@@ -34,6 +34,41 @@ export class EstudanteService {
     });
   }
 
+  public inserirViaListagem(estudantes: any[]): Promise<void> {
+    const estudantesDto = estudantes.map(estudante => {
+      const estudanteDto = new EstudanteDto();
+      estudanteDto.matricula = estudante['matricula'];
+      estudanteDto.nome = estudante['nome'];
+      estudanteDto.nascimento = estudante['dataNascimento'];
+      estudanteDto.responsavel = estudante['responsavel'];
+      estudanteDto.esc_id = estudante['esc_id'];
+      return estudanteDto;
+    })
+    return new Promise((resolve, reject) => {
+      let estudantesInseridos = 0;
+      estudantesDto.forEach(estudanteDto => {
+        this.verificarExistenciaViaListagem(estudanteDto).then(existe => {
+          estudantesInseridos++;
+          if (!existe) {
+            this.estudanteRepository.save(estudanteDto).then(() => {
+              if (estudantesInseridos == estudantesDto.length) {
+                resolve();
+              }
+            }).catch(reason => {
+              reject(reason);
+            });
+          } else {
+            if (estudantesInseridos == estudantesDto.length) {
+              resolve();
+            }
+          }
+        }).catch(reason => {
+          reject(reason);
+        });
+      });
+    });
+  }
+
   public inserirEstudanteIntegracao(estudantesIntegracao: EstudanteIntegracaoDto[], esc_id: number): Promise<Estudante[]> {
     return new Promise((resolve, reject) => {
       const estudantes = estudantesIntegracao.map((estudanteIntegracao: EstudanteIntegracaoDto) => {
@@ -419,12 +454,69 @@ export class EstudanteService {
         'est.est_matricula_txt as matricula',
         'est.est_responsavel_txt  as responsavel'
       ];
+      this.estudantesTurmaEnturmadosPorEscola(esc_id).then(ids => {
+        const arrayDeIds = ids.map(id => {
+          return id['est_id_int'];
+        });
+        this.estudanteRepository.createQueryBuilder('est')
+          .select(campos)
+          .where('est.esc_id_int = :esc_id', { esc_id: esc_id })
+          .andWhere('est.est_id_int not in (:...arrayDeIds)', { arrayDeIds: arrayDeIds })
+          .execute()
+          .then(naoEnturmados => {
+            resolve(naoEnturmados)
+          }).catch(reason => {
+            reject(reason);
+          });
+      }).catch(reason => {
+        reject(reason);
+      });
+    });
+  }
 
-
-      //.select(campos).andWhere('dir.dir_id_int not in (:...dir_ids)', { dir_ids: dir_ids })
-      console.log(esc_id);
-      resolve(null);
+  public listarAplicativo(esc_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'esc.esc_inep_txt as inep', 'est.est_id_int as est_id', 'est.est_nome_txt as nome',
+        'est.est_foto_txt as foto', 'ete.ete_nome_txt as etapa', 'sre.sre_abreviatura_txt as serie',
+        'trm.trm_nome_txt as turma', 'trn.trn_nome_txt as turno', 'esc.esc_nome_txt as escola',
+        'est.est_data_foto_dtm as dataFoto', 'est.usr_id_foto_int as usr_id_foto'
+      ];
+      this.estudanteRepository.createQueryBuilder('est')
+        .select(campos)
+        .innerJoin('est.estudantesTurmas', 'etu')
+        .innerJoin('etu.turma', 'trm')
+        .innerJoin('trm.turno', 'trn')
+        .innerJoin('trm.serie', 'sre')
+        .innerJoin('sre.etapaEnsino', 'ete')
+        .innerJoin('est.escola', 'esc')
+        .where('esc.esc_id_int = :esc_id', { esc_id: esc_id })
+        .andWhere('trm.esc_id_int = :esc_id', { esc_id: esc_id })
+        .andWhere('etu.etu_turma_atual_int = 1')
+        .orderBy('est.est_nome_txt', 'ASC')
+        .execute()
+        .then(estudantes => {
+          resolve(estudantes);
+        }).catch(resolve => {
+          reject(resolve);
+        })
     })
+  }
+
+  public estudantesTurmaEnturmadosPorEscola(esc_id: number): Promise<number[]> {
+    return new Promise((resolve, reject) => {
+      this.estudanteRepository.createQueryBuilder('est')
+        .select(['est.est_id_int'])
+        .innerJoin('est.estudantesTurmas', 'etu')
+        .where('est.esc_id_int = :esc_id', { esc_id: esc_id })
+        .andWhere('etu.etu_turma_atual_int = 1')
+        .execute()
+        .then(ids => {
+          resolve(ids)
+        }).catch(reason => {
+          reject(reason)
+        });
+    });
   }
 
   public alterar(estudante: Estudante): Promise<Estudante> {
@@ -536,10 +628,22 @@ export class EstudanteService {
     });
   }
 
+  public verificarExistenciaViaListagem(estudanteDto: EstudanteDto): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.estudanteRepository.find({ where: { matricula: estudanteDto.matricula } }).then(estudantes => {
+        if (estudantes.length != 0) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      })
+    });
+  }
+
   public verificarExistenciaIntegracao(estudante: Estudante): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      this.estudanteRepository.findByIds([estudante.id]).then((series: Estudante[]) => {
-        if (series.length == 0) {
+      this.estudanteRepository.findByIds([estudante.id]).then((estudantes: Estudante[]) => {
+        if (estudantes.length == 0) {
           resolve(false);
         } else {
           resolve(true);
@@ -552,8 +656,8 @@ export class EstudanteService {
 
   public verificarExistencia(estudanteDto: EstudanteDto): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      this.estudanteRepository.findByIds([estudanteDto.id]).then((series: Estudante[]) => {
-        if (series.length == 0) {
+      this.estudanteRepository.findByIds([estudanteDto.id]).then((estudantes: Estudante[]) => {
+        if (estudantes.length == 0) {
           resolve(false);
         } else {
           resolve(true);

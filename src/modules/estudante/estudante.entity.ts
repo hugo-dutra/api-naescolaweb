@@ -53,7 +53,7 @@ export class Estudante extends BaseEntity {
   @Column({ name: 'est_data_foto_dtm', nullable: true })
   data_foto: Date;
   @Column({ name: 'usr_id_foto_int', nullable: true }) // Depois, transformar isso num relacionamento
-  id_foto: number;
+  usr_id_foto: number;
   @Column({ name: 'esc_id_int', nullable: false })
   esc_id: number;
   /* RELACIONAMENTOS */

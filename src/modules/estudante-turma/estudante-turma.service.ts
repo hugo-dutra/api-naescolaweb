@@ -1,15 +1,18 @@
+import { EstudanteService } from './../estudante/estudante.service';
 import { EstudanteIntegracaoEnturmarDto } from './dto/estudante-integracao-enturmar.dto';
 import { EstudanteTurmaRepository } from './estudante-turma.repository';
 import { Injectable } from '@nestjs/common';
 import { UpdateResult } from 'typeorm';
 import { EstudanteRepository } from '../estudante/estudante.repository';
 import { EstudanteTurma } from './estudante-turma.entity';
+import { EstudanteImportacaoDto } from './dto/estudante-importacao.dto';
 
 @Injectable()
 export class EstudanteTurmaService {
   constructor(
     private estudanteTurmaRepository: EstudanteTurmaRepository,
-    private estudanteRepository: EstudanteRepository) { }
+    private estudanteRepository: EstudanteRepository,
+  ) { }
 
   /**
    * Vincula estudantes as turmas
@@ -22,10 +25,61 @@ export class EstudanteTurmaService {
         this.atualizarEscolaEstudante(estudantesIntegracaoEnturmarDto, esc_id).then(() => {
           this.enturmarEstudantes(estudantesIntegracaoEnturmarDto).then(() => {
             resolve(null);
-          })
-        })
+          }).catch(reason => {
+            reject(reason);
+          });
+        }).catch(reason => {
+          reject(reason);
+        });
+      }).catch(reason => {
+        reject(reason);
       });
     })
+  }
+
+  public inserirViaImportacao(estudantes: EstudanteImportacaoDto[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const esc_id = estudantes[0].esc_id;
+      this.pegarIdsPorMatriculas(estudantes).then(estudantesIntegracaoEnturmarDto => {
+        this.marcarEstudantesComStatusTurmaAtualZero(estudantesIntegracaoEnturmarDto).then(() => {
+          this.atualizarEscolaEstudante(estudantesIntegracaoEnturmarDto, esc_id).then(() => {
+            this.enturmarEstudantes(estudantesIntegracaoEnturmarDto).then(() => {
+              resolve(null);
+            }).catch(reason => {
+              reject(reason);
+            });
+          }).catch(reason => {
+            reject(reason);
+          });
+        }).catch(reason => {
+          reject(reason);
+        });
+      }).catch(reason => {
+        reject(reason);
+      })
+    })
+  }
+
+  public pegarIdsPorMatriculas(estudantes: EstudanteImportacaoDto[]): Promise<EstudanteIntegracaoEnturmarDto[]> {
+    return new Promise((resolve, reject) => {
+      let matriculasRecuperadas = 0;
+      const arrayDeEstudanteTurma = new Array<EstudanteIntegracaoEnturmarDto>();
+      estudantes.forEach(estudante => {
+        this.estudanteRepository.find({ where: { matricula: estudante.matricula } }).then(est => {
+          matriculasRecuperadas++;
+          const estudanteTurma = new EstudanteIntegracaoEnturmarDto();
+          estudanteTurma.id = est[0].id;
+          estudanteTurma.trm_id = estudante.trm_id;
+          estudanteTurma.numero_chamada = parseInt(estudante.numero);
+          arrayDeEstudanteTurma.push(estudanteTurma);
+          if (matriculasRecuperadas == estudantes.length) {
+            resolve(arrayDeEstudanteTurma)
+          }
+        }).catch(reason => {
+          reject(reason);
+        });
+      });
+    });
   }
 
   /**
@@ -61,10 +115,6 @@ export class EstudanteTurmaService {
           reject(reason);
         });
     })
-
-
-
-
   }
 
   public listarSerieTurmaTurnoEtapa(est_id: number): Promise<any> {
@@ -100,12 +150,14 @@ export class EstudanteTurmaService {
     return new Promise((resolve, reject) => {
       let contaExecucao = 0;
       estudantesIntegracaoEnturmarDto.forEach((estudante: EstudanteIntegracaoEnturmarDto) => {
-        this.estudanteTurmaRepository.createQueryBuilder('etu').update().set({ turma_atual: 0 }).where("est_id_int = :id", { id: estudante.id }).execute().then((updateResult: UpdateResult) => {
+        this.estudanteTurmaRepository.createQueryBuilder('etu').update().set({ turma_atual: 0 }).where("est_id_int = :id", { id: estudante.id }).execute().then(() => {
           contaExecucao++;
           if (contaExecucao == estudantesIntegracaoEnturmarDto.length) {
             resolve();
           }
-        });
+        }).catch(reason => {
+          reject(reason);
+        })
       });
     });
   };

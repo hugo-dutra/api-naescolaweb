@@ -9,6 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   imports: [TypeOrmModule.forFeature([EstudanteRepository]), EscolaModule, EstudanteTurmaModule],
   providers: [EstudanteService],
-  controllers: [EstudanteController]
+  controllers: [EstudanteController],
+  exports: [EstudanteService],
 })
 export class EstudanteModule { }
