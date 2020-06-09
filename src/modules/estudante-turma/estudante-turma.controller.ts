@@ -1,6 +1,7 @@
 import { Controller, Post, Body, Get, Param, Patch } from '@nestjs/common';
 import { EstudanteIntegracaoEnturmarDto } from './dto/estudante-integracao-enturmar.dto';
 import { EstudanteTurmaService } from './estudante-turma.service';
+import { UpdateResult } from 'typeorm';
 
 @Controller('estudante-turma')
 export class EstudanteTurmaController {
@@ -23,6 +24,16 @@ export class EstudanteTurmaController {
   @Post('/enturmar/via-importacao')
   public enturmarEstudanteViaImportacao(@Body() estudantes: any[]): Promise<void> {
     return this.estudanteTurmaService.inserirViaImportacao(estudantes);
+  }
+
+  @Post('/enturmar')
+  public enturmar(@Body() dados: any[]): Promise<void> {
+    return this.estudanteTurmaService.enturmar(dados);
+  }
+
+  @Post('/alterar-manual-numero-chamada')
+  public alterarManualNumeroChamada(@Body() dados: any): Promise<UpdateResult> {
+    return this.estudanteTurmaService.alterarManualNumeroChamada(dados)
   }
 
   @Post('/desabilitar-turma-estudante-transferido')

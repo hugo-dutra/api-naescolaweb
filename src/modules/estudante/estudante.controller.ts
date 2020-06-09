@@ -4,7 +4,7 @@ import { Controller, Post, Body, Param, Get, Patch, Delete } from '@nestjs/commo
 import { EstudanteIntegracaoDto } from './dto/estudante-integracao.dto';
 import { EstudanteIntegracaoEnturmarDto } from '../estudante-turma/dto/estudante-integracao-enturmar.dto';
 import { Estudante } from './estudante.entity';
-import { DeleteResult } from 'typeorm';
+import { DeleteResult, UpdateResult } from 'typeorm';
 
 @Controller('estudante')
 export class EstudanteController {
@@ -24,6 +24,13 @@ export class EstudanteController {
   public inserirEstudanteIntegracao(@Body() estudantesIntegracaoDto: EstudanteIntegracaoDto[], @Param('esc_id') esc_id: number): Promise<any> {
     return this.estudanteService.inserirEstudanteIntegracao(estudantesIntegracaoDto, esc_id);
   }
+
+  @Post('alterar-foto-aplicativo-administrativo')
+  public alterarFotosAplicativoAdministrativo(@Body() dados: any): Promise<UpdateResult> {
+    return this.estudanteService.alterarFotosAplicativoAdministrativo(dados);
+  }
+
+
 
   @Get('/turma-id/:trm_id')
   public listarTurmaId(@Param('trm_id') trm_id: number): Promise<any[]> {
@@ -83,6 +90,11 @@ export class EstudanteController {
   @Get('/listar-aplicativo/:esc_id')
   public listarAplicativo(@Param('esc_id') esc_id: number): Promise<any[]> {
     return this.estudanteService.listarAplicativo(esc_id);
+  }
+
+  @Get('/turma-escola-id/:esc_id')
+  public listarPorEscolaId(@Param('esc_id') esc_id: number): Promise<any[]> {
+    return this.estudanteService.listarPorEscolaId(esc_id);
   }
 
   @Patch()

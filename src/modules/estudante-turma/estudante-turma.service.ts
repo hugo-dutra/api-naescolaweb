@@ -37,6 +37,27 @@ export class EstudanteTurmaService {
     })
   }
 
+  public enturmar(dados: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const estudantes = Array.from(dados['estudantes']);
+      const trm_id = dados['trm_id'];
+      let enturmados = 0;
+      estudantes.forEach((estudante: number) => {
+        const estudanteTurma = new EstudanteTurma();
+        estudanteTurma.trm_id = trm_id;
+        estudanteTurma.est_id = estudante;
+        this.estudanteTurmaRepository.save(estudanteTurma).then(novoEstudanteTurma => {
+          enturmados++;
+          if (enturmados == estudantes.length) {
+            resolve();
+          }
+        }).catch(reason => {
+          reject(reason);
+        });
+      });
+    });
+  }
+
   public inserirViaImportacao(estudantes: EstudanteImportacaoDto[]): Promise<void> {
     return new Promise((resolve, reject) => {
       const esc_id = estudantes[0].esc_id;
@@ -56,7 +77,25 @@ export class EstudanteTurmaService {
         });
       }).catch(reason => {
         reject(reason);
-      })
+      });
+    });
+  }
+
+  public alterarManualNumeroChamada(dados: any): Promise<UpdateResult> {
+    return new Promise((resolve, reject) => {
+      const est_id = dados['est_id'];
+      const trm_id = dados['trm_id'];
+      const numero_chamada = dados['numero_chamada'];
+      this.estudanteTurmaRepository.createQueryBuilder('etu')
+        .update()
+        .set({ numero_chamada: numero_chamada }).where('est_id_int = :est_id', { est_id: est_id })
+        .andWhere('trm_id_int = :trm_id', { trm_id: trm_id })
+        .execute()
+        .then(updateResult => {
+          resolve(updateResult);
+        }).catch(reason => {
+          reject(reason);
+        });
     })
   }
 

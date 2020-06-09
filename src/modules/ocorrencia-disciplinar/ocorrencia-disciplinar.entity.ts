@@ -11,13 +11,21 @@ export class OcorrenciaDisciplinar extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'ocd_id_int' })
   id: number;
   @Column({ name: 'ocd_ocorrencia_txt', nullable: false, length: 1000 })
-  ocd_ocorrencia: string;
+  ocorrencia: string;
   @Column({ name: 'ocd_data_hora_dtm', nullable: false })
-  ocd_data_hora: Date;
-  @Column({ name: 'ocd_firebase_dbkey_txt', length: 50 })
-  ocd_firebase_dbkey: string;
-  @Column({ name: 'ocd_firebase_dbkey_administrativo_txt', length: 50 })
-  ocd_firebase_dbkey_administrativo: string;
+  data_hora: Date;
+  @Column({ name: 'ocd_firebase_dbkey_txt', length: 50, nullable: true })
+  firebase_dbkey: string;
+  @Column({ name: 'ocd_firebase_dbkey_administrativo_txt', length: 50, nullable: true })
+  firebase_dbkey_administrativo: string;
+  @Column({ name: 'usr_id_int' })
+  usr_id: number;
+  @Column({ name: 'est_id_int' })
+  est_id: number;
+  @Column({ name: 'tod_id_int' })
+  tod_id: number;
+  @Column({ name: 'ocd_status_entrega_int' })
+  status_entrega: number;
   /* RELACIONAMENTOS */
   @ManyToOne(type => Usuario, usuario => usuario.ocorrenciasDisciplinares)
   @JoinColumn({ name: 'usr_id_int' })

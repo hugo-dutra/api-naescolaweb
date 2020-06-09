@@ -6,8 +6,8 @@ import { EstudanteRepository } from './estudante.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Estudante } from './estudante.entity';
-import { InsertResult, DeleteResult } from 'typeorm';
-import { promises } from 'dns';
+import { InsertResult, DeleteResult, UpdateResult } from 'typeorm';
+import * as moment from 'moment';
 
 @Injectable()
 export class EstudanteService {
@@ -132,6 +132,46 @@ export class EstudanteService {
         });
       });
     });
+  }
+
+  public alterarFotosAplicativoAdministrativo(dados: any): Promise<UpdateResult> {
+    return new Promise((resolve, reject) => {
+      const sobrescreverFoto = dados['sobrescreverFoto'];
+      const dadosEstudantes = Array.from(dados['fotosEstudantes']);
+      let arrayDeDadosFoto = new Array<Object>();
+      if (arrayDeDadosFoto.length == 0) {
+        resolve(null);
+      }
+      dadosEstudantes.forEach(estudante => {
+        const segundos = estudante['foto']['datePicture']['seconds'];
+        const usr_id = estudante['foto']['userId'];
+        const url = estudante['foto']['url'];
+        const est_id = parseInt(estudante['est_id']);
+        arrayDeDadosFoto.push({ data: moment.unix(segundos).format("MM/DD/YYYY"), usr_id: usr_id, est_id: est_id, url: url });
+      });
+      arrayDeDadosFoto = arrayDeDadosFoto.filter(dados => {
+        if (dados['usr_id'] != null) {
+          dados['usr_id'] = parseInt(dados['usr_id']);
+        }
+        return dados['usr_id'] != null;
+      });
+      let contadorAtualizacao = 0;
+      arrayDeDadosFoto.forEach(dados => {
+        const est_id = parseInt(dados['est_id']);
+        this.estudanteRepository.createQueryBuilder('est')
+          .update()
+          .set({ usr_id_foto: dados['usr_id'], data_foto: dados['data'], foto: dados['url'] })
+          .where('est_id_int = :est_id', { est_id: est_id })
+          .execute()
+          .then(updateResult => {
+            contadorAtualizacao++;
+            if (contadorAtualizacao == arrayDeDadosFoto.length) {
+              resolve(updateResult);
+            }
+          });
+      });
+
+    })
   }
 
   public listarTurmaId(trm_id: number): Promise<any[]> {
@@ -454,10 +494,15 @@ export class EstudanteService {
         'est.est_matricula_txt as matricula',
         'est.est_responsavel_txt  as responsavel'
       ];
+
       this.estudantesTurmaEnturmadosPorEscola(esc_id).then(ids => {
+
         const arrayDeIds = ids.map(id => {
           return id['est_id_int'];
         });
+        if (arrayDeIds.length == 0) {
+          arrayDeIds.push(-1);
+        }
         this.estudanteRepository.createQueryBuilder('est')
           .select(campos)
           .where('est.esc_id_int = :esc_id', { esc_id: esc_id })
@@ -468,6 +513,8 @@ export class EstudanteService {
           }).catch(reason => {
             reject(reason);
           });
+
+
       }).catch(reason => {
         reject(reason);
       });
@@ -480,7 +527,7 @@ export class EstudanteService {
         'esc.esc_inep_txt as inep', 'est.est_id_int as est_id', 'est.est_nome_txt as nome',
         'est.est_foto_txt as foto', 'ete.ete_nome_txt as etapa', 'sre.sre_abreviatura_txt as serie',
         'trm.trm_nome_txt as turma', 'trn.trn_nome_txt as turno', 'esc.esc_nome_txt as escola',
-        'est.est_data_foto_dtm as dataFoto', 'est.usr_id_foto_int as usr_id_foto'
+        'est.est_data_foto_dtm as data_foto', 'est.usr_id_foto_int as usr_id_foto'
       ];
       this.estudanteRepository.createQueryBuilder('est')
         .select(campos)
@@ -500,6 +547,29 @@ export class EstudanteService {
         }).catch(resolve => {
           reject(resolve);
         })
+    })
+  }
+
+  public listarPorEscolaId(esc_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'est.est_id_int as id',
+        'est.est_nome_txt as nome',
+        'est.est_matricula_txt as matricula',
+        'est.est_foto_txt as foto',
+        'trm.trm_id_int as trm_id'
+      ];
+      this.estudanteRepository.createQueryBuilder('est').select(campos)
+        .innerJoin('est.estudantesTurmas', 'etu')
+        .innerJoin('etu.turma', 'trm')
+        .where('trm.esc_id_int = :esc_id', { esc_id: esc_id })
+        .orderBy('trm.trm_id_int', 'ASC')
+        .execute()
+        .then(estudantes => {
+          resolve(estudantes);
+        }).catch(reason => {
+          reject(reason);
+        });
     })
   }
 
