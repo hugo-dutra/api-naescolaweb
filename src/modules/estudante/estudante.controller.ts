@@ -30,8 +30,6 @@ export class EstudanteController {
     return this.estudanteService.alterarFotosAplicativoAdministrativo(dados);
   }
 
-
-
   @Get('/turma-id/:trm_id')
   public listarTurmaId(@Param('trm_id') trm_id: number): Promise<any[]> {
     return this.estudanteService.listarTurmaId(trm_id);

@@ -136,66 +136,33 @@ export class ProfessorService {
     });
   }
 
-  public listarEscopoLocal(limit: number, offset: number, esc_id: number, asc: boolean): Promise<Professor[]> {
+  public totalProfessoresLocal(esc_id: number): Promise<number> {
     return new Promise((resolve, reject) => {
-      const campos = [
-        'prf.prf_id_int as id',
-        'prf.prf_nome_txt as nome',
-        'prf.prf_email_txt as email',
-        'prf.prf_matricula_txt as matricula',
-        'prf.prf_cpf_txt as cpf',
-        'prf.prf_telefone_txt as telefone'
-      ];
       this.professorRepository.createQueryBuilder('prf')
-        .select(campos)
         .innerJoin('prf.professoresEscolas', 'pre')
         .innerJoin('pre.escola', 'esc')
         .innerJoin('esc.regiaoEscola', 'ree')
         .where('pre.esc_id_int = :esc_id', { esc_id: esc_id })
-        .orderBy('prf.prf_nome_txt', asc == true ? 'ASC' : 'DESC')
-        .limit(limit)
-        .offset(offset).execute().then((professores: Professor[]) => {
-          let professoresSemRepetidos = <Professor[]>this.utils.eliminaValoresRepetidos(professores, 'id');
-          const totalProfessores = professoresSemRepetidos.length;
-          professoresSemRepetidos = professoresSemRepetidos.map(professor => {
-            Object.assign(professor, { total: totalProfessores });
-            return professor;
-          });
-          resolve(professoresSemRepetidos);
+        .getCount()
+        .then((total: number) => {
+          resolve(total);
         }).catch((reason: any) => {
           reject(reason);
         });
     });
   }
 
-  public listarEscopoRegional(limit: number, offset: number, esc_id: number, usr_id: number, asc: boolean): Promise<Professor[]> {
+  public totalProfessoresRegional(esc_id: number): Promise<number> {
     return new Promise((resolve, reject) => {
       this.pegarIdRegiaoEscolaPorEscolaId(esc_id).then((ree_id: number) => {
-        const campos = [
-          'prf.prf_id_int as id',
-          'prf.prf_nome_txt as nome',
-          'prf.prf_email_txt as email',
-          'prf.prf_matricula_txt as matricula',
-          'prf.prf_cpf_txt as cpf',
-          'prf.prf_telefone_txt as telefone',
-        ];
-        this.professorRepository.createQueryBuilder('prf').select(campos)
+        this.professorRepository.createQueryBuilder('prf')
           .innerJoin('prf.professoresEscolas', 'pre')
           .innerJoin('pre.escola', 'esc')
           .innerJoin('esc.regiaoEscola', 'ree')
           .where('ree.ree_id_int = :ree_id', { ree_id: ree_id })
-          .orderBy('prf.prf_nome_txt', asc == true ? 'ASC' : 'DESC')
-          .limit(limit)
-          .offset(offset)
-          .execute()
-          .then((professores: Professor[]) => {
-            let professoresSemRepetidos = <Professor[]>this.utils.eliminaValoresRepetidos(professores, 'id');
-            const totalProfessores = professoresSemRepetidos.length;
-            professoresSemRepetidos = professoresSemRepetidos.map(professor => {
-              Object.assign(professor, { total: totalProfessores });
-              return professor;
-            });
-            resolve(professoresSemRepetidos);
+          .getCount()
+          .then((total: number) => {
+            resolve(total);
           }).catch((reason: any) => {
             reject(reason);
           });
@@ -205,32 +172,111 @@ export class ProfessorService {
     });
   }
 
-  public listarEscopoGlobal(limit: number, offset: number, asc: boolean): Promise<Professor[]> {
+  public totalProfessoresGlobal(): Promise<number> {
     return new Promise((resolve, reject) => {
-      const campos = [
-        'prf.prf_id_int as id',
-        'prf.prf_nome_txt as nome',
-        'prf.prf_email_txt as email',
-        'prf.prf_matricula_txt as matricula',
-        'prf.prf_cpf_txt as cpf',
-        'prf.prf_telefone_txt as telefone'
-      ];
-      this.professorRepository.createQueryBuilder('prf').select(campos)
-        .orderBy('prf.prf_nome_txt', asc == true ? 'ASC' : 'DESC')
-        .limit(limit)
-        .offset(offset)
-        .execute()
-        .then((professores: Professor[]) => {
-          let professoresSemRepetidos = <Professor[]>this.utils.eliminaValoresRepetidos(professores, 'id');
-          const totalProfessores = professoresSemRepetidos.length;
-          professoresSemRepetidos = professoresSemRepetidos.map(professor => {
-            Object.assign(professor, { total: totalProfessores });
-            return professor;
-          });
-          resolve(professoresSemRepetidos);
+      this.professorRepository.createQueryBuilder('prf')
+        .getCount()
+        .then((total: number) => {
+          resolve(total);
         }).catch((reason: any) => {
           reject(reason);
         });
+    });
+  }
+
+
+  public listarEscopoLocal(limit: number, offset: number, esc_id: number, asc: boolean): Promise<Professor[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'prf.prf_id_int as id', 'prf.prf_nome_txt as nome', 'prf.prf_email_txt as email',
+        'prf.prf_matricula_txt as matricula', 'prf.prf_cpf_txt as cpf', 'prf.prf_telefone_txt as telefone'
+      ];
+      this.totalProfessoresLocal(esc_id).then(totalProfessores => {
+        this.professorRepository.createQueryBuilder('prf')
+          .select(campos)
+          .innerJoin('prf.professoresEscolas', 'pre')
+          .innerJoin('pre.escola', 'esc')
+          .innerJoin('esc.regiaoEscola', 'ree')
+          .where('pre.esc_id_int = :esc_id', { esc_id: esc_id })
+          .orderBy('prf.prf_nome_txt', asc == true ? 'ASC' : 'DESC')
+          .limit(limit)
+          .offset(offset).execute().then((professores: Professor[]) => {
+            let professoresSemRepetidos = <Professor[]>this.utils.eliminaValoresRepetidos(professores, 'id');
+            professoresSemRepetidos = professoresSemRepetidos.map(professor => {
+              Object.assign(professor, { total: totalProfessores });
+              return professor;
+            });
+            resolve(professoresSemRepetidos);
+          }).catch((reason: any) => {
+            reject(reason);
+          });
+      }).catch(reason => {
+        reject(reason);
+      });
+    });
+  }
+
+  public listarEscopoRegional(limit: number, offset: number, esc_id: number, usr_id: number, asc: boolean): Promise<Professor[]> {
+    return new Promise((resolve, reject) => {
+      this.totalProfessoresRegional(esc_id).then(totalProfessores => {
+        this.pegarIdRegiaoEscolaPorEscolaId(esc_id).then((ree_id: number) => {
+          const campos = [
+            'prf.prf_id_int as id', 'prf.prf_nome_txt as nome', 'prf.prf_email_txt as email',
+            'prf.prf_matricula_txt as matricula', 'prf.prf_cpf_txt as cpf', 'prf.prf_telefone_txt as telefone',
+          ];
+          this.professorRepository.createQueryBuilder('prf').select(campos)
+            .innerJoin('prf.professoresEscolas', 'pre')
+            .innerJoin('pre.escola', 'esc')
+            .innerJoin('esc.regiaoEscola', 'ree')
+            .where('ree.ree_id_int = :ree_id', { ree_id: ree_id })
+            .orderBy('prf.prf_nome_txt', asc == true ? 'ASC' : 'DESC')
+            .limit(limit)
+            .offset(offset)
+            .execute()
+            .then((professores: Professor[]) => {
+              let professoresSemRepetidos = <Professor[]>this.utils.eliminaValoresRepetidos(professores, 'id');
+              professoresSemRepetidos = professoresSemRepetidos.map(professor => {
+                Object.assign(professor, { total: totalProfessores });
+                return professor;
+              });
+              resolve(professoresSemRepetidos);
+            }).catch((reason: any) => {
+              reject(reason);
+            });
+        }).catch((reason: any) => {
+          reject(reason);
+        });
+      }).catch(reason => {
+        reject(reason);
+      });
+    });
+  }
+
+  public listarEscopoGlobal(limit: number, offset: number, asc: boolean): Promise<Professor[]> {
+    return new Promise((resolve, reject) => {
+      this.totalProfessoresGlobal().then(totalProfessores => {
+        const campos = [
+          'prf.prf_id_int as id', 'prf.prf_nome_txt as nome', 'prf.prf_email_txt as email',
+          'prf.prf_matricula_txt as matricula', 'prf.prf_cpf_txt as cpf', 'prf.prf_telefone_txt as telefone'
+        ];
+        this.professorRepository.createQueryBuilder('prf').select(campos)
+          .orderBy('prf.prf_nome_txt', asc == true ? 'ASC' : 'DESC')
+          .limit(limit)
+          .offset(offset)
+          .execute()
+          .then((professores: Professor[]) => {
+            let professoresSemRepetidos = <Professor[]>this.utils.eliminaValoresRepetidos(professores, 'id');
+            professoresSemRepetidos = professoresSemRepetidos.map(professor => {
+              Object.assign(professor, { total: totalProfessores });
+              return professor;
+            });
+            resolve(professoresSemRepetidos);
+          }).catch((reason: any) => {
+            reject(reason);
+          });
+      }).catch(reason => {
+        reject(reason);
+      })
     });
   }
 
