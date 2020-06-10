@@ -11,14 +11,21 @@ export class RegraAlerta extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'ral_id_int' })
   id: number;
   @Column({ name: 'ral_data_criacao_dte', nullable: false })
-  ral_data_criacao: Date;
+  data_criacao: Date;
   @Column({ name: 'ral_data_inicio_dte' })
-  ral_data_inicio: Date;
+  data_inicio: Date;
   @Column({ name: 'ral_data_fim_dte' })
-  ral_data_fim: Date;
+  data_fim: Date;
   @Column({ name: 'ral_valor_referencia_int' })
-  ral_valor_referencia: number;
-
+  valor_referencia: number;
+  @Column({ name: 'opa_id_int' })
+  opa_id: number;
+  @Column({ name: 'tod_id_int' })
+  tod_id: number;
+  @Column({ name: 'usr_id_int' })
+  usr_id: number;
+  @Column({ name: 'esc_id_int' })
+  esc_id: number;
   /* RELACIONAMENTOS */
   @ManyToOne(type => OperadorAlerta, operadorAlerta => operadorAlerta.regrasAlertas)
   @JoinColumn({ name: 'opa_id_int' })

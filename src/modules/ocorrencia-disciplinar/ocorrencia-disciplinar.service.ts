@@ -3,10 +3,14 @@ import { OcorrenciaDisciplinar } from './ocorrencia-disciplinar.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OcorrenciaDisciplinarRespository } from './ocorrencia-disciplinar.repository';
+import { EstudanteRepository } from '../estudante/estudante.repository';
+import { Utils } from 'src/utils/utils';
 
 @Injectable()
 export class OcorrenciaDisciplinarService {
-  constructor(@InjectRepository(OcorrenciaDisciplinarRespository) private ocorrenciaDisciplinarRespository: OcorrenciaDisciplinarRespository) { }
+  constructor(
+    @InjectRepository(OcorrenciaDisciplinarRespository) private ocorrenciaDisciplinarRespository: OcorrenciaDisciplinarRespository,
+    @InjectRepository(EstudanteRepository) private estudanteRepository: EstudanteRepository) { }
 
   public inserir(dados: any): Promise<OcorrenciaDisciplinar[]> {
     return new Promise((resolve, reject) => {
@@ -142,8 +146,9 @@ export class OcorrenciaDisciplinarService {
   public listarDetalhes(est_id: number, dataInicio: Date, dataFim: Date): Promise<any[]> {
     return new Promise((resolve, reject) => {
       const campos = [
-        'est.est_id_int as est_id', 'est.est_matricula_txt as matricula', 'ocd.ocd_data_hora_dtm as data_hora',
-        'tod.tod_tipo_ocorrencia_txt as tipo', 'ocd.ocd_ocorrencia_txt as ocorrencia'
+        'est.est_id_int as est_id', 'est.est_matricula_txt as matricula',
+        'ocd.ocd_data_hora_dtm as data_hora', 'tod.tod_tipo_ocorrencia_txt as tipo',
+        'ocd.ocd_ocorrencia_txt as ocorrencia'
       ];
       this.ocorrenciaDisciplinarRespository.createQueryBuilder('ocd')
         .select(campos)
@@ -161,16 +166,67 @@ export class OcorrenciaDisciplinarService {
     });
   }
 
-  public calcularAvaliacaoSocial(trm_id: number, dataInicio: Date, dataFim: Date, total: number): Promise<any[]> {
+  public listarAvaliacaoSocial(trm_id: number, dataInicio: Date, dataFim: Date, total: number): Promise<any[]> {
     return new Promise((resolve, reject) => {
-      const campos = [
+      const campos_1 = [
         'est.est_id_int as est_id', 'est.est_matricula_txt as matricula', 'est.est_nome_txt as nome',
-        'ocd.ocd_id_int as ocorrencias', '0 as avaliacao_social', 'est.est_foto_txt as foto'
+        '0 as ocorrencias', `${total} as avaliacao_social`, 'est.est_foto_txt as foto', '0 as valor'
       ];
-      resolve(null);
-      //console.log(trm_id, dataInicio, dataFim, total);
-      //resolve(null);
+      let ocorrenciasTurma = new Array<any>();
+      this.estudanteRepository.createQueryBuilder('est').select(campos_1)
+        .innerJoin('est.estudantesTurmas', 'etu')
+        .innerJoin('etu.turma', 'trm')
+        .where('trm.trm_id_int = :trm_id', { trm_id: trm_id })
+        .execute()
+        .then((estudantesTurma: any[]) => {
+          ocorrenciasTurma.push(...estudantesTurma);
+        }).then(() => {
+          const campos_2 = [
+            'est.est_id_int as est_id', 'est.est_matricula_txt as matricula', 'est.est_nome_txt as nome',
+            '0 as ocorrencias', `${total} as avaliacao_social`, 'est.est_foto_txt as foto', 'tod.tod_valor_num as valor'
+          ];
+          this.ocorrenciaDisciplinarRespository.createQueryBuilder('ocd').select(campos_2)
+            .innerJoin('ocd.estudante', 'est')
+            .innerJoin('ocd.tipoOcorrenciaDisciplinar', 'tod')
+            .innerJoin('est.estudantesTurmas', 'etu')
+            .innerJoin('etu.turma', 'trm')
+            .where('trm.trm_id_int = :trm_id', { trm_id: trm_id })
+            .andWhere('ocd.data_hora >= :dataInicio', { dataInicio: dataInicio })
+            .andWhere('ocd.data_hora <= :dataFim', { dataFim: dataFim })
+            .execute()
+            .then(ocorrencias => {
+              ocorrenciasTurma.push(...ocorrencias)
+              const novaFormativaCalculada = this.calcularAvaliacaoSocial(ocorrenciasTurma, total);
+              resolve(novaFormativaCalculada);
+            }).then(reason => {
+              reject(reason);
+            });
+        })
     })
+  }
+
+  public calcularAvaliacaoSocial(ocorrenciasTurma: any[], total: number): any[] {
+    ocorrenciasTurma = ocorrenciasTurma.sort((a, b) => a.nome > b.nome ? 1 : -1);
+    let ocorrenciasCalculadas = new Array<any>();
+    ocorrenciasTurma.forEach(ocorrenciaEstudante => {
+      const ocorrenciaProcurada = ocorrenciasCalculadas.find(ocorrenciaCalculada => ocorrenciaCalculada.est_id == ocorrenciaEstudante.est_id)
+      if (!ocorrenciaProcurada) {
+        ocorrenciasCalculadas.push(ocorrenciaEstudante);
+      } else {
+        ocorrenciaProcurada.valor += ocorrenciaEstudante.valor;
+        ocorrenciaProcurada.ocorrencias++;
+        const idxNova = ocorrenciasCalculadas.findIndex(ocorrencia => ocorrencia.est_id == ocorrenciaProcurada.est_id);
+        ocorrenciasCalculadas[idxNova] = ocorrenciaProcurada;
+      }
+    })
+    ocorrenciasCalculadas = ocorrenciasCalculadas.map(resultadoFinal => {
+      resultadoFinal.avaliacao_social = (total - resultadoFinal.valor).toPrecision(3);
+      if (resultadoFinal.avaliacao_social < 0) {
+        resultadoFinal.avaliacao_social = 0
+      }
+      return resultadoFinal
+    })
+    return (ocorrenciasCalculadas);
   }
 
   public filtrar(valor: string, limit: number, offset: number, esc_id: number): Promise<any[]> {

@@ -37,9 +37,9 @@ export class OcorrenciaDisciplinarController {
   }
 
   @Get('/calcular-avaliacao-social/:trm_id/:data_inicio/:data_fim/:valor_total_avaliacao_social')
-  public calcularAvaliacaoSocial(
+  public listarAvaliacaoSocial(
     @Param('trm_id') trm_id: number, @Param('data_inicio') dataInicio: Date, @Param('data_fim') dataFim: Date, @Param('valor_total_avaliacao_social') total: number): Promise<any[]> {
-    return this.ocorrenciaDisciplinarService.calcularAvaliacaoSocial(trm_id, dataInicio, dataFim, total);
+    return this.ocorrenciaDisciplinarService.listarAvaliacaoSocial(trm_id, dataInicio, dataFim, total);
   }
 
 }
