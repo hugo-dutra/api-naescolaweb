@@ -1,5 +1,5 @@
 import { RegraAlerta } from './../regra-alerta/regra-alerta.entity';
-import { BaseEntity, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Column } from "typeorm";
 import { Usuario } from '../usuario/usuario.entity';
 import { Escola } from '../escola/escola.entity';
 
@@ -8,6 +8,12 @@ export class RegraAlertaUsuario extends BaseEntity {
   /* CAMPOS */
   @PrimaryGeneratedColumn({ name: 'rau_id_int' })
   id: number;
+  @Column({ name: 'ral_id_int' })
+  ral_id: number;
+  @Column({ name: 'usr_id_int' })
+  usr_id: number;
+  @Column({ name: 'esc_id_int' })
+  esc_id: number;
   /* RELACIONAMENTOS */
   @ManyToOne(type => RegraAlerta, regraAlerta => regraAlerta.regrasAlertasUsuarios)
   @JoinColumn({ name: 'ral_id_int' })

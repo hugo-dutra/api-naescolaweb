@@ -21,7 +21,7 @@ export class RegraAlertaService {
   public listar(esc_id: number): Promise<any[]> {
     return new Promise((resolve, reject) => {
       const campos = [
-        'ral.ral_id_int as id', 'ral.ral_valor_referencia_int as valor_referencia',
+        'ral.ral_id_int as ral_id', 'ral.ral_valor_referencia_int as valor_referencia',
         'ral.opa_id_int as opa_id', 'opa.opa_operador_txt as operador',
         'ral.tod_id_int as tod_id', 'tod.tod_tipo_ocorrencia_txt as tipo_ocorrencia',
         'ral.usr_id_int as usr_id', 'usr.usr_nome_txt as usuario',
@@ -44,6 +44,7 @@ export class RegraAlertaService {
   }
 
   public alterar(regraAlerta: RegraAlerta): Promise<RegraAlerta> {
+    console.log(regraAlerta);
     return new Promise((resolve, reject) => {
       this.regraAlertaRepository.save(regraAlerta).then(novaRegraAlerta => {
         resolve(novaRegraAlerta);
