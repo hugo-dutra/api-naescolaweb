@@ -134,7 +134,6 @@ export class ProfessorDisciplinaService {
   public desvincular(parametros: any): Promise<DeleteResult> {
     const dsp_id = parametros['dsp_id'];
     const prf_id = parametros['prf_id'];
-    console.log(prf_id, dsp_id)
     return new Promise((resolve, reject) => {
       this.professorDisciplinaRepository
         .createQueryBuilder().delete()
@@ -142,7 +141,6 @@ export class ProfessorDisciplinaService {
         .andWhere('dsp_id_int = :dsp_id', { dsp_id: dsp_id })
         .execute()
         .then((deleteResult: DeleteResult) => {
-          console.log(deleteResult);
           resolve(deleteResult);
         }).catch((reason: any) => {
           reject(reason);

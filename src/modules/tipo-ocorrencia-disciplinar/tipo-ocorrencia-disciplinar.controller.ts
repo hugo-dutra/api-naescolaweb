@@ -19,8 +19,7 @@ export class TipoOcorrenciaDisciplinarController {
   }
   @Get('/estudante/:est_id')
   public listarPorEstudante(@Param('est_id') est_id: number): Promise<TipoOcorrenciaDisciplinarDto[]> {
-    console.log(est_id);
-    return null;//this.tipoOcorrenciaDisciplinarService.listar(limit, offset, ascendente, esc_id);
+    return this.tipoOcorrenciaDisciplinarService.listarPorEstudante(est_id);
   }
 
   @Patch()

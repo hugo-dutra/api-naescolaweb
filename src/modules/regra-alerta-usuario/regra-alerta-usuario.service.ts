@@ -18,19 +18,33 @@ export class RegraAlertaUsuarioService {
     })
   }
 
-  public listar(usr_id: number, esc_id: number): Promise<any> {
+  public listarPorUsuarioIdEscolaId(usr_id: number, esc_id: number): Promise<any> {
     return new Promise((resolve, reject) => {
       const campos = [
-        'rau.rau_id_int as rau_id', 'rau.ral_id_int as ral_id',
-        'rau.usr_id_int as usr_id', 'rau.esc_id_int as esc_id'
-      ];
+        'ral.ral_id_int as ral_id',
+        'tod.tod_id_int as tod_id',
+        'tod.tod_tipo_ocorrencia_txt as tipo_ocorrencia',
+        'opa.opa_id_int as opa_id',
+        'opa.opa_operador_txt as operador',
+        'ral.ral_valor_referencia_int as valor_referencia',
+        'ral.esc_id_int as esc_id',
+        'ral.ral_data_inicio_dte as data_inicio',
+        'ral.ral_data_fim_dte as data_fim',
+        'ral.usr_id_int as usr_id_criador',
+        'usr.usr_nome_txt as usuario_criador',
+        'ral.ral_data_criacao_dte as data_criacao'
+      ]
+
       this.regraAlertaUsuarioRepository.createQueryBuilder('rau')
         .select(campos)
+        .innerJoin('rau.regraAlerta', 'ral')
+        .innerJoin('rau.usuario', 'usr')
+        .innerJoin('ral.operadorAlerta', 'opa')
+        .innerJoin('ral.tipoOcorrenciaDisciplinar', 'tod')
         .where('rau.usr_id_int = :usr_id', { usr_id: usr_id })
         .andWhere('rau.esc_id_int = :esc_id', { esc_id: esc_id })
         .execute()
         .then(regrasAlertas => {
-          console.log(regrasAlertas);
           resolve(regrasAlertas);
         }).catch(reason => {
           reject(reason);

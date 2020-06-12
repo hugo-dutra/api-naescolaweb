@@ -44,7 +44,6 @@ export class RegraAlertaService {
   }
 
   public alterar(regraAlerta: RegraAlerta): Promise<RegraAlerta> {
-    console.log(regraAlerta);
     return new Promise((resolve, reject) => {
       this.regraAlertaRepository.save(regraAlerta).then(novaRegraAlerta => {
         resolve(novaRegraAlerta);

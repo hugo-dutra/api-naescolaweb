@@ -1,7 +1,7 @@
 import { TipoOcorrenciaDisciplinarDto } from './dto/tipo-ocorrencia-disciplinar.dto';
 import { TipoOcorrenciaDisciplinar } from './tipo-ocorrencia-disciplinar.entity';
 import { TipoOcorrenciaDisciplinarRepository } from './tipo-ocorrencia-disciplinar.repository';
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadGatewayException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdateResult, DeleteResult } from 'typeorm';
 
@@ -47,6 +47,14 @@ export class TipoOcorrenciaDisciplinarService {
           reject(reason);
         });
     });
+  }
+
+  public listarPorEstudante(est_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      reject(new BadGatewayException('Implementar consulta'));
+      console.log(est_id)
+      //resolve(null);
+    })
   }
 
   public alterar(tipoOcorrenciaDisciplinarDto: TipoOcorrenciaDisciplinarDto): Promise<TipoOcorrenciaDisciplinarDto> {

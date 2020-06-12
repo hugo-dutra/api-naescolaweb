@@ -5,9 +5,10 @@ import { OcorrenciaDisciplinarService } from './ocorrencia-disciplinar.service';
 import { OcorrenciaDisciplinarController } from './ocorrencia-disciplinar.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OcorrenciaDisciplinarRespository } from './ocorrencia-disciplinar.repository';
+import { AlertaOcorrenciaVerificadaRepository } from '../alerta-ocorrencia-verificada/alerta-ocorrencia-verificada.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([OcorrenciaDisciplinarRespository, EstudanteRepository])],
+  imports: [TypeOrmModule.forFeature([OcorrenciaDisciplinarRespository, EstudanteRepository, AlertaOcorrenciaVerificadaRepository])],
   providers: [OcorrenciaDisciplinarService],
   controllers: [OcorrenciaDisciplinarController]
 })

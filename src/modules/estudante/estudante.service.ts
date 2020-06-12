@@ -601,7 +601,6 @@ export class EstudanteService {
 
   public excluir(est_id: number): Promise<DeleteResult> {
     const id = est_id['est_id'];
-    console.log(id)
     return new Promise((resolve, reject) => {
       this.estudanteRepository.delete(id).then(deleteResult => {
         resolve(deleteResult);

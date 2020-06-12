@@ -1,3 +1,4 @@
+import { AlertaOcorrenciaVerificadaRepository } from './../alerta-ocorrencia-verificada/alerta-ocorrencia-verificada.repository';
 
 import { OcorrenciaDisciplinar } from './ocorrencia-disciplinar.entity';
 import { Injectable } from '@nestjs/common';
@@ -10,7 +11,10 @@ import { Utils } from 'src/utils/utils';
 export class OcorrenciaDisciplinarService {
   constructor(
     @InjectRepository(OcorrenciaDisciplinarRespository) private ocorrenciaDisciplinarRespository: OcorrenciaDisciplinarRespository,
-    @InjectRepository(EstudanteRepository) private estudanteRepository: EstudanteRepository) { }
+    @InjectRepository(EstudanteRepository) private estudanteRepository: EstudanteRepository,
+    @InjectRepository(AlertaOcorrenciaVerificadaRepository) private alertaOcorrenciaVerificadaRepository: AlertaOcorrenciaVerificadaRepository
+
+  ) { }
 
   public inserir(dados: any): Promise<OcorrenciaDisciplinar[]> {
     return new Promise((resolve, reject) => {
@@ -258,8 +262,86 @@ export class OcorrenciaDisciplinarService {
           resolve(ocorrencias);
         }).catch(reason => {
           reject(reason);
-        })
-    })
+        });
+    });
+  }
+
+  public listarQuantidadeAlertaNaoVerificada(
+    esc_id: number, usr_id: number,
+    tod_id: number, data_inicio: Date, data_fim: Date): Promise<OcorrenciaDisciplinar[]> {
+    return new Promise((resolve, reject) => {
+      const str_data_inicio = data_inicio.toString().split('T')[0]
+      const str_data_fim = data_fim.toString().split('T')[0]
+      const campos = [
+        'ocd.ocd_id_int as ocd_id', 'tod.tod_id_int as tod_id',
+        'tod.tod_tipo_ocorrencia_txt as tipo_ocorrencia', 'est.est_id_int as est_id',
+        'est.est_nome_txt as nome', 'est.est_matricula_txt as matricula',
+        'est.est_foto_txt as foto', 'sre.sre_id_int as sre_id',
+        'sre.sre_abreviatura_txt as serie', 'trm.trm_id_int as trm_id',
+        'trm.trm_nome_txt as turma', 'trn.trn_id_int as trn_id',
+        'trn.trn_abreviatura_txt as turno', 'ete.ete_id_int as ete_id',
+        'ete.ete_abreviatura_txt as etapa', '0 as quantidade',
+        `'' as data_inicio_considerado`, `'' as data_fim_considerado`
+      ];
+      const ocd_ids = new Array<number>()
+      ocd_ids.push(0);
+      this.listarOcorrenciasVerificadas(esc_id, usr_id).then((ocdIds: any[]) => {
+        ocdIds.forEach(ocdId => {
+          ocd_ids.push(ocdId['ocd_id_int']);
+        });
+        this.ocorrenciaDisciplinarRespository.createQueryBuilder('ocd')
+          .select(campos)
+          .innerJoin('ocd.tipoOcorrenciaDisciplinar', 'tod')
+          .innerJoin('ocd.estudante', 'est')
+          .innerJoin('est.escola', 'esc')
+          .innerJoin('est.estudantesTurmas', 'etu')
+          .innerJoin('etu.turma', 'trm')
+          .innerJoin('trm.serie', 'sre')
+          .innerJoin('trm.turno', 'trn')
+          .innerJoin('sre.etapaEnsino', 'ete')
+          .where('tod.tod_id_int = :tod_id', { tod_id: tod_id })
+          .andWhere('ocd.ocd_data_hora_dtm >= :data_inicio', { data_inicio: data_inicio })
+          .andWhere('ocd.ocd_data_hora_dtm <= :data_fim', { data_fim: data_fim })
+          .andWhere('esc.esc_id_int = :esc_id', { esc_id: esc_id })
+          .andWhere('ocd.ocd_id_int not in (:...ocd_ids)', { ocd_ids: ocd_ids })
+          .orderBy('ocd.ocd_data_hora_dtm', 'DESC')
+          .orderBy('est.est_nome_txt', 'ASC')
+          .execute()
+          .then((alertas: any[]) => {
+            let result = [];
+            alertas.reduce(function (res, value) {
+              value['data_inicio_considerado'] = data_inicio;
+              value['data_fim_considerado'] = data_fim;
+              if (!res[value.est_id]) {
+                res[value.est_id] = value
+                result.push(res[value.est_id])
+              }
+              res[value.est_id].quantidade += 1;
+              return res;
+            }, {});
+            resolve(result);
+          }).catch(reason => {
+            reject(reason);
+          });
+      }).catch(reason => {
+        reject(reason);
+      });
+    });
+  }
+
+  public listarOcorrenciasVerificadas(esc_id: number, usr_id: number): Promise<number[]> {
+    return new Promise((resolve, reject) => {
+      this.alertaOcorrenciaVerificadaRepository.createQueryBuilder('aov')
+        .select('ocd_id_int')
+        .where('aov.esc_id_int = :esc_id', { esc_id: esc_id })
+        .andWhere('aov.usr_id_int = :usr_id', { usr_id: usr_id })
+        .execute()
+        .then(ocdIds => {
+          resolve(ocdIds)
+        }).catch(reason => {
+          reject(reason);
+        });
+    });
   }
 
 }

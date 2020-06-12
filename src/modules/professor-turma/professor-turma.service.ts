@@ -35,7 +35,6 @@ export class ProfessorTurmaService {
         .andWhere('prt.esc_id_int = :esc_id', { esc_id: esc_id })
         .execute()
         .then((professorTurmaDisciplinaDto: ProfessorTurmaDisciplinaDto[]) => {
-          console.log(professorTurmaDisciplinaDto);
           resolve(professorTurmaDisciplinaDto);
         }).catch((reason: any) => {
           reject(reason);

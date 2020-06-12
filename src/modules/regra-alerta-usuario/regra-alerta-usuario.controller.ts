@@ -18,8 +18,8 @@ export class RegraAlertaUsuarioController {
   }
 
   @Get('/:usr_id/:esc_id')
-  public listar(@Param('usr_id') usr_id: number, @Param('esc_id') esc_id: number): Promise<any> {
-    return this.regraAlertaUsuarioService.listar(usr_id, esc_id);
+  public listarPorUsuarioIdEscolaId(@Param('usr_id') usr_id: number, @Param('esc_id') esc_id: number): Promise<any> {
+    return this.regraAlertaUsuarioService.listarPorUsuarioIdEscolaId(usr_id, esc_id);
   }
 
 }

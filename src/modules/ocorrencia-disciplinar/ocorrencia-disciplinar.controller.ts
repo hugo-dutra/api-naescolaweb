@@ -30,6 +30,14 @@ export class OcorrenciaDisciplinarController {
     return this.ocorrenciaDisciplinarService.filtrar(valor, limit, offset, esc_id);
   }
 
+  @Get('/listar-quantidade-alerta-nao-verificada/:esc_id/:usr_id/:tod_id/:data_inicio/:data_fim')
+  public listarQuantidadeAlertaNaoVerificada(
+    @Param('esc_id') esc_id: number, @Param('usr_id') usr_id: number,
+    @Param('tod_id') tod_id: number, @Param('data_inicio') data_inicio: Date,
+    @Param('data_fim') data_fim: Date, ): Promise<any[]> {
+    return this.ocorrenciaDisciplinarService.listarQuantidadeAlertaNaoVerificada(esc_id, usr_id, tod_id, data_inicio, data_fim);
+  }
+
   @Get('/listar-detalhes/:est_id/:data_inicio/:data_fim')
   public listarDetalhes(
     @Param('est_id') est_id: number, @Param('data_inicio') dataInicio: Date, @Param('data_fim') dataFim: Date, ): Promise<any[]> {

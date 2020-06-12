@@ -7,9 +7,9 @@ export class ObservacaoAlertaOcorrenciaVerificada extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'oov_id_int' })
   id: number;
   @Column({ name: 'oov_observacao_txt', length: 1000, nullable: false })
-  oov_observacao: string;
+  observacao: string;
   @Column({ name: 'oov_data_verificacao_dte', nullable: false })
-  oov_data_verificacao: Date;
+  data_verificacao: Date;
   /* RELACIONAMENTOS */
   @OneToMany(type => AlertaOcorrenciaVerificada, alertaOcorrenciaVerificada => alertaOcorrenciaVerificada.observacaoAlertaOcorrenciaVerificada)
   alertasOcorrenciasVerificadas: AlertaOcorrenciaVerificada[]
