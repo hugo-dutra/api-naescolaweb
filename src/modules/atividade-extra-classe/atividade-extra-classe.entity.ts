@@ -10,13 +10,17 @@ export class AtividadeExtraClasse extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'aec_id_int' })
   id: number;
   @Column({ name: 'aec_titulo_txt', length: 200, nullable: false })
-  aec_titulo: string;
+  titulo: string;
   @Column({ name: 'aec_descricao_txt', length: 1000, nullable: false })
-  aec_descricao: string;
+  descricao: string;
   @Column({ name: 'aec_data_envio_dte', nullable: false })
-  aec_data_envio: Date;
+  data_envio: Date;
   @Column({ name: 'aec_data_entrega_dte', nullable: false })
-  aec_data_entrega: Date;
+  data_entrega: Date;
+  @Column({ name: 'usr_id_int' })
+  usr_id: number;
+  @Column({ name: 'prd_id_int' })
+  prd_id: number;
   /* RELACIONAMENTOS */
   @OneToMany(type => AnexoAtividadeExtra, anexoAtividadeExtra => anexoAtividadeExtra.atividadeExtraClasse)
   anexosAtividadeExtra: AnexoAtividadeExtra[];

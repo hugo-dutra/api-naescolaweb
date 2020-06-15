@@ -154,7 +154,6 @@ export class ProfessorDisciplinaService {
    * @param todos
    */
   public listarDisciplinas(esc_id: number, todos: boolean): Promise<ProfessorDisciplinaEscolaDto[]> {
-    todos = false;
     return new Promise((resolve, reject) => {
       if (todos) {
         this.listarTodasDisciplinas(esc_id).then((disciplinas: ProfessorDisciplinaEscolaDto[]) => {
@@ -203,6 +202,8 @@ export class ProfessorDisciplinaService {
 
   public async listarDisciplinasPorEscola(esc_id: number): Promise<ProfessorDisciplinaEscolaDto[]> {
     const arrayDeIds = await this.pegarIdsProfessorDisciplina();
+    console.log(arrayDeIds);
+
     return new Promise((resolve, reject) => {
       const campos = [
         'prd.prd_id_int as prd_id',
