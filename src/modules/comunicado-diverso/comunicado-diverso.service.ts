@@ -9,7 +9,14 @@ import { ComunicadoDiversoDto } from './dto/comunicado-diverso.dto';
 export class ComunicadoDiversoService {
   constructor(@InjectRepository(ComunicadoDiversoRepository) private comunicadoDiversoRepository: ComunicadoDiversoRepository) { }
 
-  public inserir(dados: ComunicadoDiversoDto[]): Promise<void> {
+  public inserir(dados: ComunicadoDiversoDto): Promise<any> {
+    return new Promise((resolve, reject) => {
+      console.log('comunicado-diverso => inserir', dados);
+      resolve([]);
+    })
+  }
+
+  public inserirMultiplos(dados: ComunicadoDiversoDto[]): Promise<void> {
     return new Promise((resolve, reject) => {
       let comunicadosDiversos = dados.map(comunicadoDiversoDto => {
         const comunicadoDiverso = new ComunicadoDiverso();
@@ -32,7 +39,45 @@ export class ComunicadoDiversoService {
     });
   }
 
-  public filtrar(status: Boolean, data_inicio: Date, data_fim: Date, limit: number, offset: number, esc_id: number): Promise<any[]> {
+  public inserirSimples(dados: ComunicadoDiversoDto): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const comunicadoDiverso = new ComunicadoDiverso();
+      comunicadoDiverso.assunto = dados.assunto;
+      comunicadoDiverso.cdi_status = dados.status_comunicado;
+      comunicadoDiverso.data = dados.data_comunicado;
+      comunicadoDiverso.est_id = dados.est_id;
+      comunicadoDiverso.fbdbkey = dados.fbdbkey;
+      comunicadoDiverso.hora = new Date(dados.data_comunicado.toString() + ' ' + dados.hora);
+      comunicadoDiverso.mensagem = dados.mensagem;
+      comunicadoDiverso.usr_id = dados.usr_id;
+      this.comunicadoDiversoRepository.save(comunicadoDiverso).then(novoComunicado => {
+        console.log(novoComunicado);
+        resolve(novoComunicado)
+      }).catch(reason => {
+        reject(reason);
+      });
+    })
+  }
+
+  public filtrar(status: number, data_inicio: Date, data_fim: Date, limit: number, offset: number, esc_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      if (status >= 0) {
+        this.filtrarPorStatus(status, data_inicio, data_fim, limit, offset, esc_id).then((comunicados: any[]) => {
+          resolve(comunicados)
+        }).catch(reason => {
+          reject(reason);
+        })
+      } else {
+        this.filtrarTodos(data_inicio, data_fim, limit, offset, esc_id).then((comunicados: any[]) => {
+          resolve(comunicados);
+        }).catch(reason => {
+          reject(reason);
+        });
+      }
+    })
+  }
+
+  public filtrarTodos(data_inicio: Date, data_fim: Date, limit: number, offset: number, esc_id: number): Promise<any[]> {
     return new Promise((resolve, reject) => {
       const campos = [
         'cdi_id_int as id', 'cdi.est_id_int as est_id',
@@ -44,9 +89,77 @@ export class ComunicadoDiversoService {
         'cdi.cdi_fbdbkey_txt as fbdbkey', 'cdi.usr_id_int as usr_id',
         'usr.usr_nome_txt as usuario', '0 as total'
       ];
+      this.comunicadoDiversoRepository.createQueryBuilder('cdi').select(campos)
+        .innerJoin('cdi.usuario', 'usr')
+        .innerJoin('cdi.estudante', 'est')
+        .innerJoin('est.estudantesTurmas', 'etu')
+        .innerJoin('etu.turma', 'trm')
+        .innerJoin('trm.turno', 'trn')
+        .innerJoin('trm.serie', 'sre')
+        .innerJoin('sre.etapaEnsino', 'ete')
+        .innerJoin('est.escola', 'esc')
+        .where('est.esc_id_int = :esc_id', { esc_id: esc_id })
+        .andWhere('date(cdi.cdi_data_dte) >= date(:data_inicio)', { data_inicio: data_inicio })
+        .andWhere('date(cdi.cdi_data_dte) <= date(:data_fim)', { data_fim: data_fim })
+        .limit(limit)
+        .offset(offset)
+        .execute()
+        .then((comunicados: any[]) => {
+          comunicados = comunicados.map(comunicado => {
+            comunicado['total'] = comunicados.length;
+            return (comunicado);
+          })
+          resolve(comunicados);
+        }).catch(reason => {
+          reject(reason)
+        });
+    })
+  }
 
-      console.log(status, data_inicio, data_fim, limit, offset, esc_id);
-      resolve(null);
+  public filtrarPorStatus(status: number, data_inicio: Date, data_fim: Date, limit: number, offset: number, esc_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'cdi_id_int as id', 'cdi.est_id_int as est_id',
+        'est.est_nome_txt as nome', 'sre.sre_abreviatura_txt as serie',
+        'ete.ete_abreviatura_txt as etapa', 'trm.trm_nome_txt as turma',
+        'trn.trn_nome_txt as turno', 'cdi.cdi_assunto_txt as assunto',
+        'cdi.cdi_mensagem_txt as mensagem', 'cdi.cdi_data_dte as data_comunicado',
+        'cdi.cdi_hora_tmr as hora', 'cdi.cdi_status_int as status_comunicado',
+        'cdi.cdi_fbdbkey_txt as fbdbkey', 'cdi.usr_id_int as usr_id',
+        'usr.usr_nome_txt as usuario', '0 as total'
+      ];
+      this.comunicadoDiversoRepository.createQueryBuilder('cdi').select(campos)
+        .innerJoin('cdi.usuario', 'usr')
+        .innerJoin('cdi.estudante', 'est')
+        .innerJoin('est.estudantesTurmas', 'etu')
+        .innerJoin('etu.turma', 'trm')
+        .innerJoin('trm.turno', 'trn')
+        .innerJoin('trm.serie', 'sre')
+        .innerJoin('sre.etapaEnsino', 'ete')
+        .innerJoin('est.escola', 'esc')
+        .where('est.esc_id_int = :esc_id', { esc_id: esc_id })
+        .andWhere('date(cdi.cdi_data_dte) >= date(:data_inicio)', { data_inicio: data_inicio })
+        .andWhere('date(cdi.cdi_data_dte) <= date(:data_fim)', { data_fim: data_fim })
+        .andWhere('cdi.cdi_status_int = :status', { status: status })
+        .limit(limit)
+        .offset(offset)
+        .execute()
+        .then((comunicados: any[]) => {
+          comunicados = comunicados.map(comunicado => {
+            comunicado['total'] = comunicados.length;
+            return (comunicado);
+          })
+          resolve(comunicados);
+        }).catch(reason => {
+          reject(reason)
+        });
+    })
+  }
+
+  public alterarStatusEntregaMensagem(dados: any[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      console.log('comunicado-diverso => alterarStatusEntregaMensagem', dados);
+      resolve();
     })
   }
 

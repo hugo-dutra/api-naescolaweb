@@ -65,6 +65,18 @@ export class EstudanteController {
     return this.estudanteService.filtrarGlobal(valor, limit, offset);
   }
 
+  @Get('/listar-historico-entrega-notificacao/:est_id')
+  public listarHistoricoEntregaNotificacao(@Param('est_id') est_id: number): Promise<any[]> {
+    return this.estudanteService.listarHistoricoEntregaNotificacao(est_id);
+  }
+
+  @Get('/filtrar-conta-ocorrencia/:valor/:limit/:offset/:esc_id')
+  public filtrarComOcorrencia(
+    @Param('valor') valor: string, @Param('limit') limit: number,
+    @Param('offset') offset: number, @Param('esc_id') esc_id: number): Promise<any[]> {
+    return this.estudanteService.filtrarComOcorrencia(valor, limit, offset, esc_id);
+  }
+
   @Get('/validar-matricula/:matricula')
   public validarMatricula(@Param('matricula') matricula: string): Promise<any[]> {
     return this.estudanteService.validarMatricula(matricula);

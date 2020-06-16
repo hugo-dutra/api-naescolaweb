@@ -49,11 +49,46 @@ export class TipoOcorrenciaDisciplinarService {
     });
   }
 
-  public listarPorEstudante(est_id: number): Promise<any[]> {
+  public listarPorEstudanteEscolaId(nome: string, esc_id: number): Promise<any[]> {
     return new Promise((resolve, reject) => {
-      reject(new BadGatewayException('Implementar consulta'));
-      console.log(est_id)
-      //resolve(null);
+      const campos = [
+        'est.est_id_int as id', 'tod.tod_tipo_ocorrencia_txt as tipo',
+        'ocd.ocd_data_hora_dtm as data_hora', 'est.est_matricula_txt as matricula',
+        'est.est_nome_txt as nome'
+      ];
+      this.tipoOcorrenciaDisciplinarRepository.createQueryBuilder('tod')
+        .select(campos)
+        .innerJoin('tod.ocorrenciasDisciplinares', 'ocd')
+        .innerJoin('ocd.estudante', 'est')
+        .where('est.esc_id_int = :esc_id', { esc_id: esc_id })
+        .andWhere('LOWER(est.est_nome_txt) like LOWER(:nome)', { nome: `%${nome}%` })
+        .execute()
+        .then((resumo: any[]) => {
+          resolve(resumo);
+        }).catch(reason => {
+          reject(reason);
+        })
+    })
+  }
+
+  public listarPorEstudanteId(est_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'est.est_id_int as id', 'tod.tod_tipo_ocorrencia_txt as tipo',
+        'ocd.ocd_data_hora_dtm as data_hora', 'est.est_matricula_txt as matricula',
+        'est.est_nome_txt as nome'
+      ];
+      this.tipoOcorrenciaDisciplinarRepository.createQueryBuilder('tod')
+        .select(campos)
+        .innerJoin('tod.ocorrenciasDisciplinares', 'ocd')
+        .innerJoin('ocd.estudante', 'est')
+        .where('est.est_id_int = :est_id', { est_id: est_id })
+        .execute()
+        .then((ocorrencias: any[]) => {
+          resolve(ocorrencias);
+        }).catch(reason => {
+          reject(reason);
+        });
     })
   }
 

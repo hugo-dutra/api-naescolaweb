@@ -17,9 +17,15 @@ export class TipoOcorrenciaDisciplinarController {
   public listar(@Param('limit') limit: number, @Param('offset') offset: number, @Param('ascendente') ascendente: boolean, @Param('esc_id') esc_id: number): Promise<TipoOcorrenciaDisciplinarDto[]> {
     return this.tipoOcorrenciaDisciplinarService.listar(limit, offset, ascendente, esc_id);
   }
-  @Get('/estudante/:est_id')
-  public listarPorEstudante(@Param('est_id') est_id: number): Promise<TipoOcorrenciaDisciplinarDto[]> {
-    return this.tipoOcorrenciaDisciplinarService.listarPorEstudante(est_id);
+
+  @Get('/nome-escola-id/:nome/:est_id')
+  public listarPorEstudanteEscolaId(@Param('nome') nome: string, @Param('est_id') esc_id: number): Promise<TipoOcorrenciaDisciplinarDto[]> {
+    return this.tipoOcorrenciaDisciplinarService.listarPorEstudanteEscolaId(nome, esc_id);
+  }
+
+  @Get('/estudante-id/:est_id')
+  public listarPorEstudanteId(@Param('est_id') est_id: number): Promise<TipoOcorrenciaDisciplinarDto[]> {
+    return this.tipoOcorrenciaDisciplinarService.listarPorEstudanteId(est_id);
   }
 
   @Patch()
