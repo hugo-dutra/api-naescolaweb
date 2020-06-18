@@ -18,7 +18,6 @@ export class ProfessorController {
     return this.professorService.inserirIntegracao(professoresIntegracao);
   }
 
-
   @Get('/:limit/:offset/:asc/:usr_id/:esc_id')
   public listar(
     @Param('limit') limit: number, @Param('offset') offset: number,
@@ -42,6 +41,8 @@ export class ProfessorController {
   public excluir(@Body() prf_id: any): Promise<DeleteResult> {
     return this.professorService.excluir(prf_id.id);
   }
+
+
 
 }
 

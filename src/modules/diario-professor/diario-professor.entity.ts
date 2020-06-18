@@ -13,9 +13,13 @@ export class DiarioProfessor extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'dip_id_int' })
   id: number;
   @Column({ name: 'dip_diario_txt', length: 200, nullable: false })
-  dip_diario: string;
+  diario: string;
   @Column({ name: 'dip_criacao_dte', nullable: false })
-  dip_criacao: Date;
+  criacao: Date;
+  @Column({ name: 'prd_id_int' })
+  prd_id: number;
+  @Column({ name: 'trm_id_int' })
+  trm_id: number;
   /* RELACIONAMENTOS */
   @ManyToOne(type => ProfessorDisciplina, professorDisciplina => professorDisciplina.diariosProfessores)
   @JoinColumn({ name: 'prd_id_int' })

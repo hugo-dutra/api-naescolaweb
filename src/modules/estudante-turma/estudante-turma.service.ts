@@ -88,7 +88,8 @@ export class EstudanteTurmaService {
       const numero_chamada = dados['numero_chamada'];
       this.estudanteTurmaRepository.createQueryBuilder('etu')
         .update()
-        .set({ numero_chamada: numero_chamada }).where('est_id_int = :est_id', { est_id: est_id })
+        .set({ numero_chamada: numero_chamada })
+        .where('est_id_int = :est_id', { est_id: est_id })
         .andWhere('trm_id_int = :trm_id', { trm_id: trm_id })
         .execute()
         .then(updateResult => {

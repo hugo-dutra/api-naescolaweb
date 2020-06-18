@@ -1,3 +1,4 @@
+import { UsuarioProfessorRepository } from './../usuario-professor/usuario-professor.repository';
 import { ProfessorEscola } from './professor-escola.entity';
 import { ProfessorService } from './../professor/professor.service';
 import { ProfessorEscolaRepository } from './professor-escola.repository';
@@ -5,11 +6,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProfessorIntegracaoDto } from '../professor/dto/professor-integracao.dto';
 import { Professor } from '../professor/professor.entity';
+import { ProfessorRepository } from '../professor/professor.repository';
 
 @Injectable()
 export class ProfessorEscolaService {
   constructor(
     @InjectRepository(ProfessorEscolaRepository) private professorEscolaRepository: ProfessorEscolaRepository,
+    @InjectRepository(ProfessorRepository) private professorRepository: ProfessorRepository,
+    @InjectRepository(UsuarioProfessorRepository) private usuarioProfessorRepository: UsuarioProfessorRepository,
     private professorService: ProfessorService) { }
 
 
@@ -87,6 +91,66 @@ export class ProfessorEscolaService {
         });
       });
     });
+  }
+
+  public listarPorEscolaId(esc_id: number, todos: string): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'prf.prf_id_int as prf_id', 'prf.prf_nome_txt as professor',
+        'prf.prf_email_txt as email', 'prf.prf_matricula_txt as matricula',
+        'prf.prf_cpf_txt as cpf', 'prf.prf_telefone_txt as telefone'
+      ];
+      if (todos == 'true') {
+        this.professorRepository.createQueryBuilder('prf').select(campos)
+          .innerJoin('prf.professoresEscolas', 'pre')
+          .where('pre.esc_id_int = :esc_id', { esc_id: esc_id })
+          .orderBy('prf.prf_nome_txt', 'ASC')
+          .execute()
+          .then((professores: any[]) => {
+            resolve(professores);
+          }).catch(reason => {
+            reject(reason)
+          })
+      } else {
+        this.listarPrfIdUsuarioProfessor(esc_id).then((arrayDeIds: number[]) => {
+          this.professorRepository.createQueryBuilder('prf').select(campos)
+            .innerJoin('prf.professoresEscolas', 'pre')
+            .where('pre.esc_id_int = :esc_id', { esc_id: esc_id })
+            .andWhere('prf.prf_id_int not in (:...arrayDeIds)', { arrayDeIds: arrayDeIds })
+            .orderBy('prf.prf_nome_txt', 'ASC')
+            .execute()
+            .then((professores: any[]) => {
+              resolve(professores);
+            }).catch(reason => {
+              reject(reason)
+            })
+        }).catch(reason => {
+          reject(reason);
+        });
+      }
+    });
+  }
+
+  public listarPrfIdUsuarioProfessor(esc_id: number): Promise<number[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'prf_id_int as prf_id'
+      ]
+      const ids = new Array<number>()
+      this.usuarioProfessorRepository
+        .createQueryBuilder('upr')
+        .select(campos)
+        .execute()
+        .then((prfIds: number[]) => {
+          ids.push(0);
+          prfIds.forEach(prfId => {
+            ids.push(prfId['prf_id']);
+          })
+          resolve(ids);
+        }).catch(reason => {
+          reject(reason)
+        });
+    })
   }
 
 }

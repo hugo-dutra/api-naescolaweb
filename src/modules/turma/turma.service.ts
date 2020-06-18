@@ -147,7 +147,6 @@ export class TurmaService {
           .orderBy('sre_abreviatura_txt', "ASC")
           .orderBy('trm_nome_txt', "ASC")
           .getRawMany().then((turmas: any[]) => {
-            console.clear();
             resolve(turmas)
           }).catch((reason: any) => {
             reject(reason);
@@ -163,7 +162,6 @@ export class TurmaService {
           .orderBy('sre_abreviatura_txt', "ASC")
           .orderBy('trm_nome_txt', "ASC")
           .getRawMany().then((turmas: any[]) => {
-            console.clear();
             resolve(turmas)
           }).catch((reason: any) => {
             reject(reason);

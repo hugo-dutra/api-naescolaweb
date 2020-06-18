@@ -104,6 +104,7 @@ export class ProfessorService {
     });
   }
 
+
   public listar(limit: number, offset: number, asc: boolean, usr_id: number, esc_id: number): Promise<Professor[]> {
     return new Promise((resolve, reject) => {
       this.escopoPerfilUsuarioService.listarNivelAcessoUsuario(usr_id, esc_id).then((escopoUsuario: string) => {

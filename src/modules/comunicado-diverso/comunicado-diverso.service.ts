@@ -51,7 +51,6 @@ export class ComunicadoDiversoService {
       comunicadoDiverso.mensagem = dados.mensagem;
       comunicadoDiverso.usr_id = dados.usr_id;
       this.comunicadoDiversoRepository.save(comunicadoDiverso).then(novoComunicado => {
-        console.log(novoComunicado);
         resolve(novoComunicado)
       }).catch(reason => {
         reject(reason);
@@ -158,8 +157,24 @@ export class ComunicadoDiversoService {
 
   public alterarStatusEntregaMensagem(dados: any[]): Promise<void> {
     return new Promise((resolve, reject) => {
-      console.log('comunicado-diverso => alterarStatusEntregaMensagem', dados);
-      resolve();
+      let contaAtualizados = 0;
+      dados.forEach((dado: any) => {
+        const fbdbkey = dado['fbdbkey'];
+        const status_leitura = dado['status_leitura'];
+        this.comunicadoDiversoRepository.createQueryBuilder('cdi')
+          .update()
+          .set({ cdi_status: status_leitura })
+          .where('cdi_fbdbkey_txt = :fbdbkey', { fbdbkey: fbdbkey })
+          .execute()
+          .then((updateResult) => {
+            contaAtualizados++;
+            if (contaAtualizados == dados.length) {
+              resolve();
+            }
+          }).catch(reason => {
+            reject(reason)
+          });
+      });
     })
   }
 

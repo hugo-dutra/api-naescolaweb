@@ -21,7 +21,6 @@ export class AreaConhecimentoService {
     })
   }
 
-
   public listarAreaConhecimento(): Promise<AreaConhecimento[]> {
     return new Promise((resolve, reject) => {
       this.areaConhecimentoRepository.find().then((areasConhecimento: AreaConhecimento[]) => {
@@ -44,7 +43,6 @@ export class AreaConhecimentoService {
 
   public excluirAreaConhecimento(id: number): Promise<DeleteResult> {
     return new Promise((resolve, reject) => {
-
       this.areaConhecimentoRepository.delete(id).then((deleteResult: DeleteResult) => {
         resolve(deleteResult);
       }).catch((reason: any) => {

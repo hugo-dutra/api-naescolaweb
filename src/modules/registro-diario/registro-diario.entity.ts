@@ -8,11 +8,13 @@ export class RegistroDiario extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'rdi_id_int' })
   id: number;
   @Column({ name: 'rdi_registro_conteudo_txt', length: 1000, nullable: false })
-  rdi_registro_conteudo: string;
+  registro_conteudo: string;
   @Column({ name: 'rdi_data_registro_dte', nullable: false })
-  rdi_data_registro: Date;
+  data_registro: Date;
   @Column({ name: 'rdi_data_gravacao_dte', nullable: false })
-  rdi_data_gravacao: Date;
+  data_gravacao: Date;
+  @Column({ name: 'dip_id_int', nullable: false })
+  dip_id: number;
   /* RELACIONAMENTOS */
   @ManyToOne(type => DiarioProfessor, diarioProfessor => diarioProfessor.registrosDiarios)
   @JoinColumn({ name: 'dip_id_int' })

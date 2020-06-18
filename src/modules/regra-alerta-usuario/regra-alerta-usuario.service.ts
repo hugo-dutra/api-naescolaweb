@@ -54,7 +54,6 @@ export class RegraAlertaUsuarioService {
 
   public excluir(dados: any[]): Promise<DeleteResult> {
     return new Promise((resolve, reject) => {
-      console.clear();
       let contaDeletados = 0;
       dados.forEach(dado => {
         this.regraAlertaUsuarioRepository.createQueryBuilder('rau')

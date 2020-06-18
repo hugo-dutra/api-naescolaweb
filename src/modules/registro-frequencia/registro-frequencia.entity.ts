@@ -8,11 +8,15 @@ export class RegistroFrequencia extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'ref_id_int' })
   id: number;
   @Column({ name: 'ref_data_hora_dtm', nullable: false })
-  ref_data_hora: Date;
+  data_hora: Date;
   @Column({ name: 'ref_presente_int', default: 1, nullable: false })
-  ref_presente: number;
+  presente: number;
   @Column({ name: 'ref_status_push_int', default: 0, nullable: false })
-  ref_status_push: number;
+  status_push: number;
+  @Column({ name: 'rdi_id_int', nullable: false })
+  rdi_id: number;
+  @Column({ name: 'est_id_int', nullable: false })
+  est_id: number;
   /* RELACIONAMENTOS */
   @ManyToOne(type => RegistroDiario, registroDiario => registroDiario.registrosFrequencias)
   @JoinColumn({ name: 'rdi_id_int' })

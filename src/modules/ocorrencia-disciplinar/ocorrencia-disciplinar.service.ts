@@ -43,6 +43,28 @@ export class OcorrenciaDisciplinarService {
     });
   }
 
+  public alterarStatusEntregaMensagem(dados: any[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      let statusAlterados = 0;
+      dados.forEach(dado => {
+        const fbdbkey = dado['fbdbkey'];
+        const status_leitura = dado['status_leitura'];
+        this.ocorrenciaDisciplinarRespository.createQueryBuilder('ocd')
+          .update({ status_entrega: status_leitura })
+          .where('ocd_firebase_dbkey_txt = :fbdbkey', { fbdbkey: fbdbkey })
+          .execute()
+          .then(updateResult => {
+            statusAlterados++;
+            if (statusAlterados == dados.length) {
+              resolve();
+            }
+          }).catch(reason => {
+            reject(reason);
+          });
+      });
+    })
+  }
+
   public inserirDoAplicativo(dados: any[]): Promise<OcorrenciaDisciplinar[]> {
     return new Promise((resolve, reject) => {
       const ocorrenciasDoAplicativo = new Array<OcorrenciaDisciplinar>();

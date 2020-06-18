@@ -1,3 +1,5 @@
+import { OcorrenciaDisciplinarRespository } from './../ocorrencia-disciplinar/ocorrencia-disciplinar.repository';
+import { FrequenciaPortariaRepository } from './../frequencia-portaria/frequencia-portaria.repository';
 import { EstudanteTurmaService } from './../estudante-turma/estudante-turma.service';
 import { EscolaService } from './../escola/escola.service';
 import { EstudanteDto } from './dto/estudante.dto';
@@ -8,11 +10,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Estudante } from './estudante.entity';
 import { InsertResult, DeleteResult, UpdateResult } from 'typeorm';
 import * as moment from 'moment';
+import { ComunicadoDiversoRepository } from '../comunicado-diverso/comunicado-diverso.repository';
 
 @Injectable()
 export class EstudanteService {
   constructor(
     @InjectRepository(EstudanteRepository) private estudanteRepository: EstudanteRepository,
+    @InjectRepository(FrequenciaPortariaRepository) private frequenciaPortariaRepository: FrequenciaPortariaRepository,
+    @InjectRepository(ComunicadoDiversoRepository) private comunicadoDiversoRepository: ComunicadoDiversoRepository,
+    @InjectRepository(OcorrenciaDisciplinarRespository) private ocorrenciaDisciplinarRespository: OcorrenciaDisciplinarRespository,
     private escolaService: EscolaService,
     private estudanteTurmaService: EstudanteTurmaService) { }
 
@@ -377,11 +383,132 @@ export class EstudanteService {
     });
   }
 
-  public listarHistoricoEntregaNotificacao(est_id): Promise<any> {
+  public listarHistoricoEntregaNotificacao(est_id: number): Promise<any> {
     return new Promise((resolve, reject) => {
-      //sp_frp_ocd_cdi_historico_status_entrega -> procurar essa procedure...
-      console.log(est_id);
-      resolve(null);
+      let notificacoesEntradaSaida = new Array<any>();
+      let notificacoesComunicadoDiverso = new Array<any>();
+      let notificacoesOcorrenciasDisciplinares = new Array<any>();
+      this.listarNotificacoesComunicadoDiverso(est_id).then((comunicados: any[]) => {
+        notificacoesComunicadoDiverso = [...comunicados];
+      }).then(() => {
+        this.listarNotificacoesEntradaSaida(est_id).then((entradasSaidas: any[]) => {
+          notificacoesEntradaSaida = [...entradasSaidas]
+        }).then(() => {
+          this.listarNotificaoesOcorrenciasDisciplinares(est_id).then((ocorrencias: any[]) => {
+            notificacoesOcorrenciasDisciplinares = [...ocorrencias];
+            const notificacoesConsolidadas = [...notificacoesEntradaSaida, ...notificacoesComunicadoDiverso, ...notificacoesOcorrenciasDisciplinares];
+            resolve(notificacoesConsolidadas);
+          })
+        })
+      })
+    })
+  }
+
+  public listarNotificaoesOcorrenciasDisciplinares(est_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'ocd.ocd_firebase_dbkey_txt as fbdbkey', 'ocd.ocd_data_hora_dtm as data_registro',
+        'ocd.ocd_data_hora_dtm as hora_registro', `'ocorrencia' as tipo`,
+        'ocd.ocd_ocorrencia_txt as detalhe', 'ocd.ocd_status_entrega_int as status_entrega'
+      ];
+      this.ocorrenciaDisciplinarRespository.createQueryBuilder('ocd')
+        .select(campos)
+        .innerJoin('ocd.statusEntregaMensagem', 'sem')
+        .where('ocd.est_id_int = :est_id', { est_id: est_id })
+        .execute()
+        .then((ocorrenciasDisciplinares: any[]) => {
+          ocorrenciasDisciplinares = ocorrenciasDisciplinares.map(ocorrencia => {
+            switch (ocorrencia.status_entrega) {
+              case 0:
+                ocorrencia.status_entrega = 'Enviada';
+                break;
+              case 1:
+                ocorrencia.status_entrega = 'Recebida';
+                break;
+              case 2:
+                ocorrencia.status_entrega = 'Lida';
+                break;
+              default:
+                break;
+            }
+            return ocorrencia;
+          });
+          resolve(ocorrenciasDisciplinares);
+        }).catch(reason => {
+          reject(reason);
+        })
+    })
+  }
+
+  public listarNotificacoesComunicadoDiverso(est_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'cdi_fbdbkey_txt as fbdbkey',
+        'cdi_data_dte as data_registro',
+        'cdi_hora_tmr as hora_registro',
+        `'comunicado' as tipo`,
+        'cdi_mensagem_txt as detalhe',
+        'cdi_status_int as status_entrega'
+      ];
+      this.comunicadoDiversoRepository.createQueryBuilder('cdi')
+        .select(campos)
+        .innerJoin('cdi.statusEntregaMensagem', 'sem')
+        .where('cdi.est_id_int = :est_id', { est_id: est_id })
+        .execute()
+        .then((comunicados: any[]) => {
+          comunicados = comunicados.map(comunicado => {
+            switch (comunicado.status_entrega) {
+              case 0:
+                comunicado.status_entrega = 'Enviada';
+                break;
+              case 1:
+                comunicado.status_entrega = 'Recebida';
+                break;
+              case 2:
+                comunicado.status_entrega = 'Lida';
+                break;
+              default:
+                break;
+            }
+            return comunicado;
+          })
+          resolve(comunicados);
+        }).catch(reason => {
+          reject(reason);
+        })
+    })
+  }
+
+  public listarNotificacoesEntradaSaida(est_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'frp.frp_firebase_db_key_txt as fbdbkey', 'frp.frp_data_dtm as data_registro',
+        'frp.frp_hora_tmr as hora_registro', `'frequencia de portaria' as tipo`,
+        'frp.frp_tipo_movimentacao as detalhe', 'sem.sem_valor_txt as status_entrega'
+      ];
+      this.frequenciaPortariaRepository.createQueryBuilder('frp')
+        .select(campos)
+        .innerJoin('frp.statusEntregaMensagem', 'sem')
+        .where('frp.est_id_int = :est_id', { est_id: est_id })
+        .execute()
+        .then((frequencias: any[]) => {
+          frequencias = frequencias.map(frequencia => {
+            switch (frequencia.detalhe) {
+              case 0:
+                frequencia.detalhe = 'Entrada'
+                break;
+              case 1:
+                frequencia.detalhe = 'Saída'
+                break;
+              default:
+                break;
+            }
+            return frequencia;
+          });
+          resolve(frequencias)
+        }).catch(reason => {
+          reject(reason);
+        });
     })
   }
 
@@ -403,7 +530,7 @@ export class EstudanteService {
         .innerJoin('etu.turma', 'trm')
         .innerJoin('trm.serie', 'sre')
         .innerJoin('trm.turno', 'trn')
-        .where('LOWER(est.est_nome_txt) like LOWER(:valor)', { valor: `%${valor}%` })
+        .where('LOWER(est.est_nome_txt) like LOWER(:valor)', { valor: `%${valor}% ` })
         .andWhere('est.esc_id_int = :esc_id', { esc_id: esc_id })
         .orderBy('est.est_nome_txt', 'ASC')
         .limit(limit)
@@ -589,8 +716,6 @@ export class EstudanteService {
           }).catch(reason => {
             reject(reason);
           });
-
-
       }).catch(reason => {
         reject(reason);
       });
