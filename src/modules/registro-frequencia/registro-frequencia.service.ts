@@ -36,7 +36,6 @@ export class RegistroFrequenciaService {
         .where('ref_id_int = :ref_id', { ref_id: dados['ref_id'] })
         .execute()
         .then(updateResult => {
-          console.log(updateResult);
           resolve()
         }).catch(reason => {
           reject(reason);

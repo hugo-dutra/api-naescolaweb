@@ -8,9 +8,11 @@ export class BoletimEscolar extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'bes_id_int' })
   id: number;
   @Column({ name: 'bes_ano_int' })
-  bes_ano: number;
-  @Column({ name: 'est_matricula_txt', length: 50 })
+  ano: number;
+  @Column({ name: 'est_matricula_txt', length: 50, nullable: true })
   est_matricula: string;
+  @Column({ name: 'est_id_int' })
+  est_id: number;
   /* RELACIONAMENTOS */
   @OneToMany(type => ResultadoBoletim, resultadoBoletim => resultadoBoletim.boletimEscolar)
   resultadosBoletins: ResultadoBoletim[];

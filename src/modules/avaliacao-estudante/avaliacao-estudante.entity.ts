@@ -7,8 +7,12 @@ export class AvaliacaoEstudante extends BaseEntity {
   /* CAMPOS */
   @PrimaryGeneratedColumn({ name: 'ave_id_int' })
   id: number;
-  @Column({ name: 'ave_valor_float' })
-  ave_valor: number
+  @Column({ name: 'ave_valor_float', type: 'float4' })
+  valor: number;
+  @Column({ name: 'dav_id_int' })
+  dav_id: number;
+  @Column({ name: 'est_id_int' })
+  est_id: number;
   /* RELACIONAMENTOS */
   @ManyToOne(type => DiarioAvaliacao, diarioAvaliacao => diarioAvaliacao.avaliacoesEstudantes)
   @JoinColumn({ name: 'dav_id_int' })

@@ -9,15 +9,19 @@ export class DiarioAvaliacao extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'dav_id_int' })
   id: number;
   @Column({ name: 'dav_metodologia_txt', length: 250, nullable: false })
-  dav_metodologia: string;
+  metodologia: string;
   @Column({ name: 'dav_objetivo_txt', length: 250, nullable: false })
-  dav_objetivo: string;
+  objetivo: string;
   @Column({ name: 'dav_data_dte', nullable: false })
-  dav_data: Date;
-  @Column({ name: 'dav_valor_num', nullable: false })
-  dav_valor: number;
-  @Column({ name: 'dav_peso_num', nullable: false })
-  dav_peso: number;
+  data: Date;
+  @Column({ name: 'dav_valor_num', nullable: false, type: 'float4' })
+  valor: number;
+  @Column({ name: 'dav_peso_num', nullable: false, type: 'float4' })
+  peso: number;
+  @Column({ name: 'dip_id_int', nullable: false })
+  dip_id: number;
+  @Column({ name: 'prl_id_int', nullable: false })
+  prl_id: number;
   /* RELACIONAMENTOS */
   @ManyToOne(type => DiarioProfessor, diarioProfessor => diarioProfessor.diariosAvaliacoes)
   @JoinColumn({ name: 'dip_id_int' })
