@@ -32,7 +32,7 @@ export class Escola extends BaseEntity {
   telefone: string;
   @Column({ length: 200, name: 'esc_endereco_txt' })
   endereco: string;
-  @Column({ length: 2000, name: 'esc_logo_txt' })
+  @Column({ length: 2000, name: 'esc_logo_txt', nullable: true })
   logo: string;
   @Column({ length: 40, name: 'esc_inep_txt' })
   inep: string;
@@ -40,17 +40,17 @@ export class Escola extends BaseEntity {
   cep: string;
   @Column({ length: 25, name: 'esc_cnpj_txt' })
   cnpj: string;
-  @Column({ name: 'esc_dia_vencimento_int' })
+  @Column({ name: 'esc_dia_vencimento_int', default: 10 })
   dia_vencimento: number;
-  @Column({ name: 'esc_valor_mensalidade_num' })
+  @Column({ name: 'esc_valor_mensalidade_num', default: 1000, type: 'float4' })
   valor_mensalidade: number;
-  @Column({ name: 'esc_desconto_assiduidade_num' })
+  @Column({ name: 'esc_desconto_assiduidade_num', type: 'float4', default: 0.05 })
   desconto_assiduidade: number;
-  @Column({ name: 'esc_valor_juros_diario_num' })
+  @Column({ name: 'esc_valor_juros_diario_num', type: 'float4', default: 0.05 })
   juros_diario: number;
   @Column({ length: 50, name: 'esc_nome_abreviado_txt' })
   nome_abreviado: string;
-  @Column({ length: 2000, name: 'esc_assinatura_gestor_txt' })
+  @Column({ length: 2000, name: 'esc_assinatura_gestor_txt', nullable: true })
   assinatura_gestor: string;
   /* CHAVES ESTRANGEIRAS */
   @Column({ name: 'ree_id_int' })

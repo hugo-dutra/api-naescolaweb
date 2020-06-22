@@ -226,12 +226,9 @@ export class DiretorService {
   public listarSemEscola(): Promise<ListagemDiretorDto[]> {
     return new Promise((resolve, reject) => {
       const campos = [
-        'dir.dir_id_int as id',
-        'dir.dir_nome_txt as nome',
-        'dir.dir_telefone_txt as telefone',
-        'dir.dir_email_txt as email',
-        'dir.dir_foto_txt as foto',
-        'dir.dir_matricula_txt as matricula'
+        'dir.dir_id_int as id', 'dir.dir_nome_txt as nome',
+        'dir.dir_telefone_txt as telefone', 'dir.dir_email_txt as email',
+        'dir.dir_foto_txt as foto', 'dir.dir_matricula_txt as matricula'
       ];
       this.diretorEscolaRepository.find().then((diretoresEscolas: DiretorEscola[]) => {
         const dir_ids = diretoresEscolas.map(diretorEscola => {

@@ -8,24 +8,30 @@ export class EntradaPosteriorEstudante extends BaseEntity {
   /* CAMPOS */
   @PrimaryGeneratedColumn({ name: 'epe_id_int' })
   id: number;
-  @Column({ name: 'epe_data_dte', nullable: false })
-  epe_data: Date;
-  @Column({ name: 'epe_hora_tmr', nullable: false })
-  epe_hora: Date;
+  @Column({ name: 'epe_data_dte', nullable: false, type: 'date' })
+  data: Date;
+  @Column({ name: 'epe_hora_tmr', nullable: false, type: 'time' })
+  hora: Date;
   @Column({ name: 'epe_motivo_txt', nullable: false, length: 500 })
-  epe_motivo: string;
+  motivo: string;
   @Column({ name: 'epe_segunda_int', default: 0 })
-  epe_segunda: number;
+  segunda: number;
   @Column({ name: 'epe_terca_int', default: 0 })
-  epe_terca: number;
+  terca: number;
   @Column({ name: 'epe_quarta_int', default: 0 })
-  epe_quarta: number;
+  quarta: number;
   @Column({ name: 'epe_quinta_int', default: 0 })
-  epe_quinta: number;
+  quinta: number;
   @Column({ name: 'epe_sexta_int', default: 0 })
-  epe_sexta: number;
+  sexta: number;
   @Column({ name: 'epe_sabado_int', default: 0 })
-  epe_sabado: number;
+  sabado: number;
+  @Column({ name: 'usr_id_int', default: 0 })
+  usr_id: number;
+  @Column({ name: 'est_id_int', default: 0 })
+  est_id: number;
+  @Column({ name: 'esc_id_int', default: 0 })
+  esc_id: number;
   /* RELACIONAMENTOS */
   @ManyToOne(type => Usuario, usuario => usuario.entradasPosterioresEstudantes)
   @JoinColumn({ name: 'usr_id_int' })
