@@ -8,9 +8,13 @@ export class TurnoPortaria extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'tup_id_int' })
   id: number;
   @Column({ name: 'tup_tolerancia_inicio', comment: 'Tolerancia em minutos' })
-  tup_toleracia_inicio: number;
+  toleracia_inicio: number;
   @Column({ name: 'tup_tolerancia_fim', comment: 'Tolerancia em minutos' })
-  tup_toleracia_fim: number;
+  toleracia_fim: number;
+  @Column({ name: 'trn_id_int' })
+  trn_id: number;
+  @Column({ name: 'por_id_int' })
+  por_id: number;
   /* RELACIONAMENTOS */
   @ManyToOne(type => Turno, turno => turno.turnosPortaria)
   @JoinColumn({ name: 'trn_id_int' })

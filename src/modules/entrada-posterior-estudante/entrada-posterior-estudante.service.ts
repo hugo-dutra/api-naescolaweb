@@ -51,7 +51,6 @@ export class EntradaPosteriorEstudanteService {
               .where('esc_id_int = :esc_id', { esc_id: entradaPosteriorEstudante.esc_id })
               .andWhere('est_id_int = :est_id', { est_id: entradaPosteriorEstudante.est_id })
               .execute().then(updateResult => {
-                console.log(updateResult);
                 if (contaInteracoes == dados.length) {
                   resolve()
                 }

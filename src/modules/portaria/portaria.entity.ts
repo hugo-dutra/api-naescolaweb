@@ -8,10 +8,12 @@ import { Escola } from '../escola/escola.entity';
 export class Portaria extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'por_id_int' })
   id: number;
-  @Column({ name: 'por_codigo_cadastro_txt', length: 45 })
-  por_codigo_cadastro: string;
+  @Column({ name: 'por_codigo_cadastro_txt', length: 45, nullable: true })
+  codigo_cadastro: string;
   @Column({ name: 'por_nome_txt', length: 45 })
-  por_nome: string;
+  nome: string;
+  @Column({ name: 'esc_id_int' })
+  esc_id: number;
   @OneToMany(type => TurnoPortaria, turnoPortaria => turnoPortaria.portaria)
   turnosPortaria: TurnoPortaria[];
   @ManyToOne(type => Escola, escola => escola.portarias)

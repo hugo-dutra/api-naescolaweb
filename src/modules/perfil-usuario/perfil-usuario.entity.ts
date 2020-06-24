@@ -10,7 +10,13 @@ export class PerfilUsuario extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'pru_id_int' })
   id: number;
   @Column({ length: 45, name: 'pru_perfil_usuario_txt', nullable: false })
-  pru_perfil_usuario: string;
+  perfil_usuario: string;
+  @Column({ name: 'epu_id_int', nullable: false })
+  epu_id: number;
+  @Column({ name: 'esc_id_int', nullable: false })
+  esc_id: number;
+
+
   /* RELACIONAMENTOS */
   @ManyToOne(type => EscopoPerfilUsuario, escopoPerfilUsuario => escopoPerfilUsuario.perfilUsuario)
   @JoinColumn({ name: 'epu_id_int' })

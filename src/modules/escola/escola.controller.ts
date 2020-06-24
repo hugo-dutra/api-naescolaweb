@@ -65,6 +65,16 @@ export class EscolaController {
     return this.escolaService.listarSemDiretor();
   }
 
+  @Get('/sem-diretor-regional/:esc_id')
+  public listarSemDiretorRegional(@Param('esc_id') esc_id: number): Promise<any[]> {
+    return this.escolaService.listarSemDiretorRegional(esc_id);
+  }
+
+  @Get('/sem-diretor-local/:esc_id')
+  public listarSemDiretorLocal(@Param('esc_id') esc_id: number): Promise<any[]> {
+    return this.escolaService.listarSemDiretorLocal(esc_id);
+  }
+
   @Patch()
   public alterar(@Body() escola: any): Promise<void> {
     return this.escolaService.alterar(escola);

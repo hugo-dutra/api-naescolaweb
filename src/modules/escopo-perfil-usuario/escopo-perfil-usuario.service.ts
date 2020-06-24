@@ -23,4 +23,20 @@ export class EscopoPerfilUsuarioService {
     });
   }
 
+  public listar(): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'epu_id_int as epu_id', 'epu_nome_txt as nome', 'epu_nivel_int as nivel'
+      ];
+      this.escopoPerfilUsuarioRepository.createQueryBuilder('epu')
+        .select(campos)
+        .execute()
+        .then(escopos => {
+          resolve(escopos)
+        }).catch(reason => {
+          reject(reason);
+        });
+    })
+  }
+
 }

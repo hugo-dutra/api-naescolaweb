@@ -3,12 +3,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Escola } from './escola.entity';
 import { RegiaoEscolaRepository } from '../regiao-escola/regiao-escola.repository';
+import { DiretorEscolaRepository } from '../diretor-escola/diretor-escola.repository';
 
 @Injectable()
 export class EscolaService {
   constructor(
     @InjectRepository(EscolaRepository) private escolaRepository: EscolaRepository,
     @InjectRepository(RegiaoEscolaRepository) private regiaoEscolaRepository: RegiaoEscolaRepository,
+    @InjectRepository(DiretorEscolaRepository) private diretorEscolaRepository: DiretorEscolaRepository,
   ) { }
 
   public inserir(escolaDto: any): Promise<any> {
@@ -181,7 +183,6 @@ export class EscolaService {
 
   public filtrarRegional(valor: string, limit: number, offset: number, esc_id: number): Promise<any[]> {
     return new Promise((resolve, reject) => {
-      console.log(valor, limit, offset, esc_id);
       this.pegarIdRegiaoEscolaPorEscolaId(esc_id).then(ree_id => {
         this.contarfiltroTotalPorRegional(valor, ree_id).then(total => {
           const campos = [
@@ -270,8 +271,107 @@ export class EscolaService {
 
   public listarSemDiretor(): Promise<any[]> {
     return new Promise((resolve, reject) => {
-      console.log('sem diretor');
-      resolve([])
+      const campos = [
+        'distinct esc.esc_id_int as id', 'ree.ree_id_int as ree_id',
+        'ree.ree_nome_txt as ree_nome', 'esc.esc_nome_txt as nome',
+        'esc.esc_email_txt as email', 'esc.esc_telefone_txt as telefone',
+        'esc.esc_endereco_txt as enderco', 'esc.esc_logo_txt as logo',
+        'esc.esc_inep_txt as inep', 'esc.esc_cep_txt as cep',
+        'esc.esc_cnpj_txt as cnpj'
+      ];
+      this.listarIdsEscolasDiretorEscola().then(ids => {
+        this.escolaRepository.createQueryBuilder('esc')
+          .select(campos)
+          .innerJoin('esc.regiaoEscola', 'ree')
+          .where('esc.esc_id_int not in (:...ids)', { ids: ids })
+          .orderBy('esc.esc_nome_txt', 'ASC')
+          .execute()
+          .then(diretoresSemEscola => {
+            resolve(diretoresSemEscola)
+          }).catch(reason => {
+            reject(reason);
+          });
+      })
+    })
+  }
+
+  public listarSemDiretorRegional(esc_id): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'distinct esc.esc_id_int as id', 'ree.ree_id_int as ree_id',
+        'ree.ree_nome_txt as ree_nome', 'esc.esc_nome_txt as nome',
+        'esc.esc_email_txt as email', 'esc.esc_telefone_txt as telefone',
+        'esc.esc_endereco_txt as enderco', 'esc.esc_logo_txt as logo',
+        'esc.esc_inep_txt as inep', 'esc.esc_cep_txt as cep',
+        'esc.esc_cnpj_txt as cnpj'
+      ];
+      this.pegarIdRegiaoEscolaPorEscolaId(esc_id).then(ree_id => {
+        this.listarIdsEscolasDiretorEscola().then(ids => {
+          this.escolaRepository.createQueryBuilder('esc')
+            .select(campos)
+            .innerJoin('esc.regiaoEscola', 'ree')
+            .where('esc.esc_id_int not in (:...ids)', { ids: ids })
+            .andWhere('esc.ree_id_int = :ree_id', { ree_id: ree_id })
+            .orderBy('esc.esc_nome_txt', 'ASC')
+            .execute()
+            .then(diretoresSemEscola => {
+              resolve(diretoresSemEscola)
+            }).catch(reason => {
+              reject(reason);
+            });
+        }).catch(reason => {
+          reject(reason);
+        })
+      }).catch(reason => {
+        reject(reason);
+      });
+    })
+  }
+
+  public listarSemDiretorLocal(esc_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'distinct esc.esc_id_int as id', 'ree.ree_id_int as ree_id',
+        'ree.ree_nome_txt as ree_nome', 'esc.esc_nome_txt as nome',
+        'esc.esc_email_txt as email', 'esc.esc_telefone_txt as telefone',
+        'esc.esc_endereco_txt as enderco', 'esc.esc_logo_txt as logo',
+        'esc.esc_inep_txt as inep', 'esc.esc_cep_txt as cep',
+        'esc.esc_cnpj_txt as cnpj'
+      ];
+      this.listarIdsEscolasDiretorEscola().then(ids => {
+        this.escolaRepository.createQueryBuilder('esc')
+          .select(campos)
+          .innerJoin('esc.regiaoEscola', 'ree')
+          .where('esc.esc_id_int not in (:...ids)', { ids: ids })
+          .andWhere('esc.esc_id_int = :esc_id', { esc_id: esc_id })
+          .orderBy('esc.esc_nome_txt', 'ASC')
+          .execute()
+          .then(diretoresSemEscola => {
+            resolve(diretoresSemEscola);
+          }).catch(reason => {
+            reject(reason);
+          });
+      }).catch(reason => {
+        reject(reason);
+      })
+
+
+    })
+  }
+
+  public listarIdsEscolasDiretorEscola(): Promise<number[]> {
+    return new Promise((resolve, reject) => {
+      this.diretorEscolaRepository.createQueryBuilder('dec')
+        .select(['esc_id_int as esc_id'])
+        .execute()
+        .then((estIds: any[]) => {
+          const ids = estIds.map(id => {
+            return id['esc_id'];
+          })
+          resolve(ids)
+        }).catch(reason => {
+          reject(reason);
+        });
     })
   }
 
