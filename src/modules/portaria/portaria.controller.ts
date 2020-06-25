@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Patch } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch, Delete } from '@nestjs/common';
 import { PortariaService } from './portaria.service';
 
 @Controller('portaria')
@@ -18,5 +18,10 @@ export class PortariaController {
   @Patch()
   public alterar(@Body() portaria: any): Promise<any> {
     return this.portariaService.alterar(portaria);
+  }
+
+  @Delete()
+  public excluir(@Body() por_id: any): Promise<any> {
+    return this.portariaService.excluir(por_id);
   }
 }

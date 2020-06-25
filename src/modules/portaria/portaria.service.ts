@@ -70,6 +70,17 @@ export class PortariaService {
     })
   }
 
+  public excluir(por_id: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const id = por_id['por_id'];
+      this.portariaRepository.delete(id).then(() => {
+        resolve();
+      }).catch(reason => {
+        reject(reason);
+      })
+    })
+  }
+
   public pegarInepPorEscolaId(esc_id: number): Promise<string> {
     return new Promise((resolve, reject) => {
       this.escolaRepository.findOne({ where: { esc_id: esc_id } }).then(escola => {

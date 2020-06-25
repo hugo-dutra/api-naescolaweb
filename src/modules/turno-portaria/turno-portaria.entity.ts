@@ -19,7 +19,7 @@ export class TurnoPortaria extends BaseEntity {
   @ManyToOne(type => Turno, turno => turno.turnosPortaria)
   @JoinColumn({ name: 'trn_id_int' })
   turno: Turno;
-  @ManyToOne(type => Portaria, portaria => portaria.turnosPortaria)
+  @ManyToOne(type => Portaria, portaria => portaria.turnosPortaria, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'por_id_int' })
   portaria: Portaria;
 
