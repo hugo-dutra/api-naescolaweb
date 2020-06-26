@@ -1,9 +1,24 @@
 import { FrequenciaPortariaService } from './frequencia-portaria.service';
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body } from '@nestjs/common';
 
 @Controller('frequencia-portaria')
 export class FrequenciaPortariaController {
   constructor(private frequenciaPortariaService: FrequenciaPortariaService) { }
+
+  @Post('/entradas')
+  public inserirEntradas(@Body() dados: any): Promise<void> {
+    return this.frequenciaPortariaService.inserirEntradas(dados);
+  }
+
+  @Post('/saidas')
+  public inserirSaidas(@Body() dados: any): Promise<void> {
+    return this.frequenciaPortariaService.inserirSaidas(dados);
+  }
+
+  @Post('/inserir-do-aplicativo')
+  public inserirFrequenciaDoAplicativo(@Body() dados: any): Promise<void> {
+    return this.frequenciaPortariaService.inserirFrequenciaDoAplicativo(dados);
+  }
 
   @Get('/presentes-turma-data-movimentacao/:trm_id/:data/:tipo_movimentacao')
   public listarPresentesTurmaDataTipoMovimentacao(

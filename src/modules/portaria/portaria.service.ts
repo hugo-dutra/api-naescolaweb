@@ -13,11 +13,13 @@ export class PortariaService {
 
   public inserir(dadosPortaria: any): Promise<any> {
     return new Promise((resolve, reject) => {
+      console.log(dadosPortaria);
       const portaria = new Portaria()
       portaria.esc_id = dadosPortaria['esc_id'];
       portaria.nome = dadosPortaria['nome'];
       this.pegarInepPorEscolaId(portaria.esc_id).then(inep => {
         this.portariaRepository.save(portaria).then(novaPortaria => {
+          console.log(novaPortaria);
           const por_id = novaPortaria.id;
           novaPortaria.codigo_cadastro = `${inep}_${por_id}`;
           this.portariaRepository.createQueryBuilder('por')
@@ -83,7 +85,7 @@ export class PortariaService {
 
   public pegarInepPorEscolaId(esc_id: number): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.escolaRepository.findOne({ where: { esc_id: esc_id } }).then(escola => {
+      this.escolaRepository.findOne({ where: { id: esc_id } }).then(escola => {
         resolve(escola.inep);
       }).catch(reason => {
         reject(reason);

@@ -158,6 +158,9 @@ export class ComunicadoDiversoService {
   public alterarStatusEntregaMensagem(dados: any[]): Promise<void> {
     return new Promise((resolve, reject) => {
       let contaAtualizados = 0;
+      if (dados.length == 0) {
+        resolve();
+      }
       dados.forEach((dado: any) => {
         const fbdbkey = dado['fbdbkey'];
         const status_leitura = dado['status_leitura'];

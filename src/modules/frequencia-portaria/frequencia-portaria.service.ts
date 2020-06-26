@@ -1,3 +1,4 @@
+import { FrequenciaPortaria } from './frequencia-portaria.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { FrequenciaPortariaRepository } from './frequencia-portaria.repository';
@@ -9,6 +10,136 @@ export class FrequenciaPortariaService {
     @InjectRepository(FrequenciaPortariaRepository) private frequenciaPortariaRepository: FrequenciaPortariaRepository,
     @InjectRepository(EstudanteRepository) private estudanteRepository: EstudanteRepository,
   ) { }
+
+  public inserirEntradas(dados: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const por_id = dados['por_id'];
+      const entradas: any[] = dados['entradas'];
+      let frequenciasInseridas = 0;
+      if (entradas.length == 0 || entradas == undefined) {
+        resolve();
+      }
+      entradas.forEach(entrada => {
+        const frequenciaPortaria = new FrequenciaPortaria();
+        frequenciaPortaria.por_id = por_id;
+        frequenciaPortaria.est_id = parseInt(entrada['est_id']);
+        frequenciaPortaria.data = entrada['data'];
+        frequenciaPortaria.hora = entrada['hora'];
+        frequenciaPortaria.firebase_db_key = entrada['firebaseDbKey'];
+        frequenciaPortaria.tipo_movimentacao = 0;
+        frequenciaPortaria.status_entrega = 0;
+        this.verificarExistenciaPorFirebaseDbKey(frequenciaPortaria.firebase_db_key).then(existe => {
+          frequenciasInseridas++;
+          if (!existe) {
+            this.frequenciaPortariaRepository.save(frequenciaPortaria).then(() => {
+              if (frequenciasInseridas == entradas.length) {
+                resolve();
+              }
+            }).catch(reason => {
+              reject(reason)
+            })
+          } else {
+            if (frequenciasInseridas == entradas.length) {
+              resolve();
+            }
+          }
+        }).catch(reason => {
+          reject(reason);
+        })
+      })
+    })
+  }
+
+  public inserirFrequenciaDoAplicativo(dados: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      console.log(dados);
+      console.log('inserirFrequenciaDoAplicativo');
+      const entradas: any[] = dados['entradas'];
+      let frequenciasInseridas = 0;
+      entradas.forEach(entrada => {
+        const frequenciaPortaria = new FrequenciaPortaria();
+        frequenciaPortaria.por_id = entrada['por_id'];
+        frequenciaPortaria.est_id = entrada['est_id'];
+        frequenciaPortaria.data = new Date(entrada['data'] + ' 00:00:00');
+        frequenciaPortaria.hora = entrada['hora'];
+        frequenciaPortaria.firebase_admin_db_key = entrada['firebase_dbkey_admin'];
+        frequenciaPortaria.firebase_db_key = entrada['firebase_dbkey'];
+        frequenciaPortaria.tipo_movimentacao = 0;
+        frequenciaPortaria.status_entrega = 0;
+        this.verificarExistenciaPorFirebaseDbKey(frequenciaPortaria.firebase_db_key).then(existe => {
+          frequenciasInseridas++;
+          if (!existe) {
+            this.frequenciaPortariaRepository.save(frequenciaPortaria).then(() => {
+              if (frequenciasInseridas == entradas.length) {
+                resolve();
+              }
+            }).catch(reason => {
+              reject(reason);
+            })
+          } else {
+            if (frequenciasInseridas == entradas.length) {
+              resolve();
+            }
+          }
+        }).catch(reason => {
+          reject(reason);
+        });
+      })
+    })
+  }
+
+  public inserirSaidas(dados: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const por_id = dados['por_id'];
+      const saidas: any[] = dados['saidas'];
+      let frequenciasInseridas = 0;
+      if (saidas.length == 0 || saidas == undefined) {
+        resolve();
+      }
+      saidas.forEach(entrada => {
+        const frequenciaPortaria = new FrequenciaPortaria();
+        frequenciaPortaria.por_id = por_id;
+        frequenciaPortaria.est_id = parseInt(entrada['est_id']);
+        frequenciaPortaria.data = entrada['data'];
+        frequenciaPortaria.hora = entrada['hora'];
+        frequenciaPortaria.firebase_db_key = entrada['firebaseDbKey'];
+        frequenciaPortaria.tipo_movimentacao = 1;
+        frequenciaPortaria.status_entrega = 0;
+        this.verificarExistenciaPorFirebaseDbKey(frequenciaPortaria.firebase_db_key).then(existe => {
+          frequenciasInseridas++;
+          if (!existe) {
+            this.frequenciaPortariaRepository.save(frequenciaPortaria).then(() => {
+              if (frequenciasInseridas == saidas.length) {
+                resolve();
+              }
+            }).catch(reason => {
+              reject(reason)
+            })
+          } else {
+            if (frequenciasInseridas == saidas.length) {
+              resolve();
+            }
+          }
+        }).catch(reason => {
+          reject(reason);
+        })
+      })
+    })
+  }
+
+  public verificarExistenciaPorFirebaseDbKey(fbdbkey: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.frequenciaPortariaRepository.find({ where: { firebase_db_key: fbdbkey } }).then(frequencias => {
+        if (frequencias.length != 0) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      }).catch(reason => {
+        reject(reason);
+      });
+    });
+  }
 
   public listarPresentesTurmaDataTipoMovimentacao(trm_id: number, data: Date, tipo_movimentacao: number): Promise<any[]> {
     return new Promise((resolve, reject) => {

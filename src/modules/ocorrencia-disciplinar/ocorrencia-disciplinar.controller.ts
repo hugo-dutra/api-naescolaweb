@@ -11,6 +11,16 @@ export class OcorrenciaDisciplinarController {
     return this.ocorrenciaDisciplinarService.inserir(dados);
   }
 
+  @Post('/inserir-atraso-da-portaria')
+  public inserirAtrasoDaPortaria(@Body() dados: any): Promise<void> {
+    return this.ocorrenciaDisciplinarService.inserirAtrasoDaPortaria(dados);
+  }
+
+  @Post('/inserir-sem-uniforme-da-portaria')
+  public inserirSemUniformeDaPortaria(@Body() dados: any): Promise<void> {
+    return this.ocorrenciaDisciplinarService.inserirSemUniformeDaPortaria(dados);
+  }
+
   @Post('/alterar-status-entrega-mensagem')
   public alterarStatusEntregaMensagem(@Body() dados: any[]): Promise<void> {
     return this.ocorrenciaDisciplinarService.alterarStatusEntregaMensagem(dados);

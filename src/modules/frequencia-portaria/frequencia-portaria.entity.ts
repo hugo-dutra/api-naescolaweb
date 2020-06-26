@@ -14,16 +14,16 @@ export class FrequenciaPortaria extends BaseEntity {
   hora: Date;
   @Column({ name: 'frp_tipo_movimentacao' })
   tipo_movimentacao: number;
-  @Column({ name: 'frp_firebase_db_key_txt', length: 50 })
+  @Column({ name: 'frp_firebase_db_key_txt', length: 50, nullable: true })
   firebase_db_key: string;
-  @Column({ name: 'frp_firebase_admin_db_key_txt', length: 50 })
+  @Column({ name: 'frp_firebase_admin_db_key_txt', length: 50, nullable: true })
   firebase_admin_db_key: string;
   @Column({ name: 'por_id_int' })
-  por_id: string;
+  por_id: number;
   @Column({ name: 'est_id_int' })
-  est_id: string;
-  @Column({ name: 'frp_status_entrega_int' })
-  frp_status_entrega: string;
+  est_id: number;
+  @Column({ name: 'frp_status_entrega_int', default: 0 })
+  status_entrega: number;
   /* RELACIONAMENTOS */
   @ManyToOne(type => Portaria, portaria => portaria.frequenciasPortarias)
   @JoinColumn({ name: 'por_id_int' })

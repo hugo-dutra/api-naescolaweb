@@ -1,3 +1,4 @@
+import { TipoOcorrenciaDisciplinarRepository } from './../tipo-ocorrencia-disciplinar/tipo-ocorrencia-disciplinar.repository';
 import { EstudanteRepository } from './../estudante/estudante.repository';
 import { EstudanteModule } from './../estudante/estudante.module';
 import { Module } from '@nestjs/common';
@@ -8,7 +9,7 @@ import { OcorrenciaDisciplinarRespository } from './ocorrencia-disciplinar.repos
 import { AlertaOcorrenciaVerificadaRepository } from '../alerta-ocorrencia-verificada/alerta-ocorrencia-verificada.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([OcorrenciaDisciplinarRespository, EstudanteRepository, AlertaOcorrenciaVerificadaRepository])],
+  imports: [TypeOrmModule.forFeature([OcorrenciaDisciplinarRespository, EstudanteRepository, AlertaOcorrenciaVerificadaRepository, TipoOcorrenciaDisciplinarRepository])],
   providers: [OcorrenciaDisciplinarService],
   controllers: [OcorrenciaDisciplinarController]
 })

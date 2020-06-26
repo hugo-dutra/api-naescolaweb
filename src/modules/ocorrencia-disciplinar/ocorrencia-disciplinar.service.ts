@@ -6,14 +6,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { OcorrenciaDisciplinarRespository } from './ocorrencia-disciplinar.repository';
 import { EstudanteRepository } from '../estudante/estudante.repository';
 import { Utils } from 'src/utils/utils';
+import { TipoOcorrenciaDisciplinarRepository } from '../tipo-ocorrencia-disciplinar/tipo-ocorrencia-disciplinar.repository';
 
 @Injectable()
 export class OcorrenciaDisciplinarService {
   constructor(
     @InjectRepository(OcorrenciaDisciplinarRespository) private ocorrenciaDisciplinarRespository: OcorrenciaDisciplinarRespository,
     @InjectRepository(EstudanteRepository) private estudanteRepository: EstudanteRepository,
-    @InjectRepository(AlertaOcorrenciaVerificadaRepository) private alertaOcorrenciaVerificadaRepository: AlertaOcorrenciaVerificadaRepository
-
+    @InjectRepository(AlertaOcorrenciaVerificadaRepository) private alertaOcorrenciaVerificadaRepository: AlertaOcorrenciaVerificadaRepository,
+    @InjectRepository(TipoOcorrenciaDisciplinarRepository) private tipoOcorrenciaDisciplinarRepository: TipoOcorrenciaDisciplinarRepository,
   ) { }
 
   public inserir(dados: any): Promise<OcorrenciaDisciplinar[]> {
@@ -23,6 +24,9 @@ export class OcorrenciaDisciplinarService {
       const usr_id = dados['usr_id'];
       const data_hora = dados['data_hora'];
       const ocorrencia = dados['ocorrencia'];
+      if (arrayDetalhes.length == 0 || arrayDetalhes == undefined) {
+        resolve();
+      }
       const arrayDeOcorrenciaDisciplinar = new Array<OcorrenciaDisciplinar>();
       arrayDetalhes.forEach(detalhe => {
         const ocorrenciaDisciplinar = new OcorrenciaDisciplinar();
@@ -43,9 +47,122 @@ export class OcorrenciaDisciplinarService {
     });
   }
 
+  public inserirAtrasoDaPortaria(dados: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const usr_id = dados['usr_id'];
+      const esc_id = dados['esc_id'];
+      const atrasos: any[] = dados['atrasos'];
+      const tipoOcorrencia = 'Atraso';
+      let contaInseridos = 0;
+      if (atrasos.length == 0 || atrasos == undefined) {
+        resolve();
+      }
+      this.verificarIdTipoOcorrenciaDisciplinar(tipoOcorrencia).then(tod_id => {
+        atrasos.forEach(atraso => {
+          const ocorrenciaDisciplinar = new OcorrenciaDisciplinar();
+          ocorrenciaDisciplinar.tod_id = tod_id;
+          ocorrenciaDisciplinar.usr_id = usr_id;
+          ocorrenciaDisciplinar.est_id = atraso['est_id'];
+          ocorrenciaDisciplinar.firebase_dbkey = atraso['firebaseDbKey'];
+          ocorrenciaDisciplinar.data_hora = new Date(atraso['data'] + ' ' + atraso['hora']);
+          ocorrenciaDisciplinar.ocorrencia = 'Atraso inserido automaticamente da portaria';
+          ocorrenciaDisciplinar.status_entrega = 0;
+          this.verificarExistenciaOcorrenciaPorFirebaseDbKey(ocorrenciaDisciplinar.firebase_dbkey).then(existe => {
+            contaInseridos++;
+            if (!existe) {
+              this.ocorrenciaDisciplinarRespository.save(ocorrenciaDisciplinar).then(() => {
+                if (contaInseridos == atrasos.length) {
+                  resolve();
+                }
+              }).catch(reason => {
+                reject(reason);
+              })
+            } else {
+              if (contaInseridos == atrasos.length) {
+                resolve();
+              }
+            }
+          }).catch(reason => {
+            reject(reason)
+          })
+        })
+      })
+    })
+  }
+
+  public inserirSemUniformeDaPortaria(dados: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const usr_id = dados['usr_id'];
+      const esc_id = dados['esc_id'];
+      const semUniformes: any[] = dados['semUniforme'];
+      const tipoOcorrencia = 'Sem uniforme';
+      let contaInseridos = 0;
+      if (semUniformes.length == 0 || semUniformes == undefined) {
+        resolve();
+      }
+
+      this.verificarIdTipoOcorrenciaDisciplinar(tipoOcorrencia).then(tod_id => {
+        semUniformes.forEach(semUniforme => {
+          const ocorrenciaDisciplinar = new OcorrenciaDisciplinar();
+          ocorrenciaDisciplinar.tod_id = tod_id;
+          ocorrenciaDisciplinar.usr_id = usr_id;
+          ocorrenciaDisciplinar.est_id = semUniforme['est_id'];
+          ocorrenciaDisciplinar.firebase_dbkey = semUniforme['firebaseDbKey'];
+          ocorrenciaDisciplinar.data_hora = new Date(semUniforme['data'] + ' ' + semUniforme['hora']);
+          ocorrenciaDisciplinar.ocorrencia = 'Sem uniforme inserido automaticamente da portaria';
+          ocorrenciaDisciplinar.status_entrega = 0;
+          this.verificarExistenciaOcorrenciaPorFirebaseDbKey(ocorrenciaDisciplinar.firebase_dbkey).then(existe => {
+            contaInseridos++;
+            if (!existe) {
+              this.ocorrenciaDisciplinarRespository.save(ocorrenciaDisciplinar).then(() => {
+                if (contaInseridos == semUniformes.length) {
+                  resolve();
+                }
+              }).catch(reason => {
+                reject(reason);
+              })
+            } else {
+              if (contaInseridos == semUniformes.length) {
+                resolve();
+              }
+            }
+          }).catch(reason => {
+            reject(reason)
+          })
+        })
+      })
+    })
+  }
+
+  public verificarExistenciaOcorrenciaPorFirebaseDbKey(fbdbkey: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.ocorrenciaDisciplinarRespository.find({ where: { firebase_dbkey: fbdbkey } }).then(ocorrencias => {
+        if (ocorrencias.length != 0) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      })
+    })
+  }
+
+
+  public verificarIdTipoOcorrenciaDisciplinar(tipoOcorrencia: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this.tipoOcorrenciaDisciplinarRepository.findOne({ where: { tipo_ocorrencia: tipoOcorrencia } }).then(tipoOcorrenciaEncontrada => {
+        resolve(tipoOcorrenciaEncontrada.id)
+      }).catch(reason => {
+        reject(reason);
+      })
+    })
+  }
+
   public alterarStatusEntregaMensagem(dados: any[]): Promise<void> {
     return new Promise((resolve, reject) => {
       let statusAlterados = 0;
+      if (dados.length == 0) {
+        resolve();
+      }
       dados.forEach(dado => {
         const fbdbkey = dado['fbdbkey'];
         const status_leitura = dado['status_leitura'];
