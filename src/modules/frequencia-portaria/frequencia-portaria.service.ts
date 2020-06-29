@@ -88,6 +88,33 @@ export class FrequenciaPortariaService {
     })
   }
 
+  public alterarStatusEntregaMensagemEntradaSaida(dados: any[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      console.log(dados);
+      if (dados.length == 0) {
+        resolve();
+      }
+      let contaEntradasAlteradas = 0;
+      dados.forEach(frequenciaPortaria => {
+        const fbdbkey = frequenciaPortaria['fbdbkey'];
+        const status_leitura = frequenciaPortaria['status_leitura'];
+        this.frequenciaPortariaRepository.createQueryBuilder('frp')
+          .update()
+          .set({ status_entrega: status_leitura })
+          .where('frp_firebase_db_key_txt = :fbdbkey', { fbdbkey: fbdbkey })
+          .execute()
+          .then(updateResult => {
+            contaEntradasAlteradas++;
+            if (contaEntradasAlteradas == dados.length) {
+              resolve()
+            }
+          }).catch(reason => {
+            reject(reason);
+          })
+      })
+    })
+  }
+
   public inserirSaidas(dados: any): Promise<void> {
     return new Promise((resolve, reject) => {
       const por_id = dados['por_id'];

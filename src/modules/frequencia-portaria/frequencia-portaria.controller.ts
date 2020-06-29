@@ -1,5 +1,5 @@
 import { FrequenciaPortariaService } from './frequencia-portaria.service';
-import { Controller, Get, Param, Post, Body } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Patch } from '@nestjs/common';
 
 @Controller('frequencia-portaria')
 export class FrequenciaPortariaController {
@@ -20,6 +20,12 @@ export class FrequenciaPortariaController {
     return this.frequenciaPortariaService.inserirFrequenciaDoAplicativo(dados);
   }
 
+  @Patch('/status-entrega-mensagem-entrada-saida')
+  public alterarStatusEntregaMensagemEntradaSaida(@Body() dados: any[]): Promise<void> {
+    return this.frequenciaPortariaService.alterarStatusEntregaMensagemEntradaSaida(dados);
+  }
+
+
   @Get('/presentes-turma-data-movimentacao/:trm_id/:data/:tipo_movimentacao')
   public listarPresentesTurmaDataTipoMovimentacao(
     @Param('trm_id') trm_id: number,
@@ -36,7 +42,6 @@ export class FrequenciaPortariaController {
   ): Promise<any[]> {
     return this.frequenciaPortariaService.listarVerificarPercentualTurma(trm_id, ano_letivo, tipo_movimentacao);
   }
-
 
   @Get('/listar-frequencia-periodo/:data_inicio/:data_fim/:tipo_movimentacao/:esc_id')
   public listarFrequenciaPeriodo(

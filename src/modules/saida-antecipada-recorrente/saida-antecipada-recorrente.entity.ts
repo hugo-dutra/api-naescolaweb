@@ -7,24 +7,28 @@ export class SaidaAntecipadaRecorrente extends BaseEntity {
   /* CAMPOS */
   @PrimaryGeneratedColumn({ name: 'sar_id_int' })
   id: number;
-  @Column({ name: 'sar_data_dte', nullable: false })
-  sar_data: Date;
-  @Column({ name: 'sar_hora_tmr', nullable: false })
-  sar_hora: Date;
+  @Column({ name: 'sar_data_dte', nullable: false, type: 'date' })
+  data: Date;
+  @Column({ name: 'sar_hora_tmr', nullable: false, type: 'time' })
+  hora: Date;
   @Column({ name: 'sar_motivo_txt', length: 500, nullable: false })
-  sar_motivo: string;
+  motivo: string;
   @Column({ name: 'sar_segunda_int' })
-  sar_segunda: number;
+  segunda: number;
   @Column({ name: 'sar_terca_int' })
-  sar_terca: number;
+  terca: number;
   @Column({ name: 'sar_quarta_int' })
-  sar_quarta: number;
+  quarta: number;
   @Column({ name: 'sar_quinta_int' })
-  sar_quinta: number;
+  quinta: number;
   @Column({ name: 'sar_sexta_int' })
-  sar_sexta: number;
+  sexta: number;
   @Column({ name: 'sar_sabado_int' })
-  sar_sabado: number;
+  sabado: number;
+  @Column({ name: 'est_id_int' })
+  est_id: number;
+  @Column({ name: 'usr_id_int' })
+  usr_id: number;
   /* REPOSITORY */
   @ManyToOne(type => Estudante, estudante => estudante.saidasAntecipadasRecorrentes)
   @JoinColumn({ name: 'est_id_int' })

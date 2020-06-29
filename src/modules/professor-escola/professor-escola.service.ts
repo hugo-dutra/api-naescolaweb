@@ -53,6 +53,26 @@ export class ProfessorEscolaService {
     });
   }
 
+  public inserirManual(dadosProfessorEscola: any[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (dadosProfessorEscola.length == 0) {
+        resolve();
+      }
+      const professoresEscolas = new Array<ProfessorEscola>();
+      dadosProfessorEscola.forEach(dados => {
+        const professorEscola = new ProfessorEscola();
+        professorEscola.esc_id = dados['esc_id'];
+        professorEscola.prf_id = dados['prf_id'];
+        professoresEscolas.push(professorEscola);
+      })
+      this.professorEscolaRepository.save(professoresEscolas).then(() => {
+        resolve();
+      }).catch(reason => {
+        reject(reason);
+      });
+    })
+  }
+
   public verificarProfessorEscola(EscIdPrfId: any): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.professorEscolaRepository.findOne({ where: { esc_id: EscIdPrfId.esc_id, prf_id: EscIdPrfId.prf_id } }).then(professorEscola => {

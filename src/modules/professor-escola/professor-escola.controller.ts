@@ -5,9 +5,14 @@ import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 export class ProfessorEscolaController {
   constructor(private professorEscolaService: ProfessorEscolaService) { }
 
-  @Post()
-  public inserir(@Body() dadosProfessorEscola: any[]): Promise<void> {
+  @Post('/integracao')
+  public inserirIntegracao(@Body() dadosProfessorEscola: any[]): Promise<void> {
     return this.professorEscolaService.inserirIntegracao(dadosProfessorEscola);
+  }
+
+  @Post('/manual')
+  public inserirManual(@Body() dadosProfessorEscola: any[]): Promise<void> {
+    return this.professorEscolaService.inserirManual(dadosProfessorEscola);
   }
 
   @Get('/listar-escola-id/:esc_id/:todos')
