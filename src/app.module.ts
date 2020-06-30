@@ -38,7 +38,7 @@ import { AtividadeExtraEstudanteModule } from './modules/atividade-extra-estudan
 import { TurnoPortariaModule } from './modules/turno-portaria/turno-portaria.module';
 import { PortariaModule } from './modules/portaria/portaria.module';
 import { CronogramaPortariaModule } from './modules/cronograma-portaria/cronograma-portaria.module';
-import { SusgestaoUsuarioModule } from './modules/susgestao-usuario/susgestao-usuario.module';
+import { SugestaoUsuarioModule } from './modules/sugestao-usuario/susgestao-usuario.module';
 import { SugestaoUsuarioHistoricoModule } from './modules/sugestao-usuario-historico/sugestao-usuario-historico.module';
 import { SaidaAntecipadaEventualModule } from './modules/saida-antecipada-eventual/saida-antecipada-eventual.module';
 import { EntradaPosteriorEstudanteModule } from './modules/entrada-posterior-estudante/entrada-posterior-estudante.module';
@@ -113,7 +113,7 @@ import { AvaliacaoEstudanteModule } from './modules/avaliacao-estudante/avaliaca
     TurnoPortariaModule,
     PortariaModule,
     CronogramaPortariaModule,
-    SusgestaoUsuarioModule,
+    SugestaoUsuarioModule,
     SugestaoUsuarioHistoricoModule,
     SaidaAntecipadaEventualModule,
     EntradaPosteriorEstudanteModule,

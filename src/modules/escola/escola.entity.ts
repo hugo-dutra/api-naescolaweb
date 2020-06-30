@@ -3,7 +3,7 @@ import { ProfessorEscola } from './../professor-escola/professor-escola.entity';
 import { RegraAlertaUsuario } from './../regra-alerta-usuario/regra-alerta-usuario.entity';
 import { RegraAlerta } from './../regra-alerta/regra-alerta.entity';
 import { AlertaOcorrenciaVerificada } from './../alerta-ocorrencia-verificada/alerta-ocorrencia-verificada.entity';
-import { SugestaoUsuario } from './../susgestao-usuario/sugestao-usuario.entity';
+import { SugestaoUsuario } from '../sugestao-usuario/sugestao-usuario.entity';
 import { PedidoCartao } from './../pedido-cartao/pedido-cartao.entity';
 import { UsuarioEscola } from './../usuario-escola/usuario-escola.entity';
 import { PerfilUsuario } from './../perfil-usuario/perfil-usuario.entity';

@@ -5,7 +5,7 @@ import { SaidaAntecipadaRecorrente } from './../saida-antecipada-recorrente/said
 import { AlertaOcorrenciaVerificada } from './../alerta-ocorrencia-verificada/alerta-ocorrencia-verificada.entity';
 import { OcorrenciaDisciplinar } from './../ocorrencia-disciplinar/ocorrencia-disciplinar.entity';
 import { SugestaoUsuarioHistorico } from './../sugestao-usuario-historico/sugestao-usuario-historico.entity';
-import { SugestaoUsuario } from './../susgestao-usuario/sugestao-usuario.entity';
+import { SugestaoUsuario } from '../sugestao-usuario/sugestao-usuario.entity';
 import { PendenciaCarteirinha } from './../pendencia-carteirinha/pendencia-carteirinha.entity';
 import { AtestadoMedico } from './../atestado-medico/atestado-medico.entity';
 import { ObservacaoTurma } from './../observacao-turma/observacao-turma.entity';
