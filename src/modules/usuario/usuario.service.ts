@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsuarioRepository } from './usuario.repository';
 import { EscolaRepository } from '../escola/escola.repository';
+import { groupBy } from 'rxjs/internal/operators/groupBy';
+import { Usuario } from './usuario.entity';
 
 @Injectable()
 export class UsuarioService {
@@ -173,8 +175,124 @@ export class UsuarioService {
 
   public filtrarLocal(valor: string, limit: number, offset: number, esc_id: number): Promise<any[]> {
     return new Promise((resolve, reject) => {
-      console.log(valor, limit, offset, esc_id);
-      resolve([])
+      this.usuarioRepository.createQueryBuilder('usr')
+        .innerJoin('usr.usuariosEscolas', 'usee')
+        .innerJoin('usee.escola', 'esc')
+        .andWhere('LOWER(usr.usr_nome_txt) like LOWER(:valor)', { valor: `%${valor}%` })
+        .andWhere('esc.esc_id_int = :esc_id', { esc_id: esc_id })
+        .orderBy('usr.usr_nome_txt', 'ASC')
+        .groupBy('usr.usr_id_int').getCount().then(total => {
+          const campos = [
+            'usr.usr_id_int as id', 'usr.usr_nome_txt as nome',
+            'usr.usr_email_txt as email', 'usr.usr_foto_txt as foto',
+            `${total} as total`
+          ];
+          this.usuarioRepository.createQueryBuilder('usr')
+            .select(campos)
+            .innerJoin('usr.usuariosEscolas', 'usee')
+            .innerJoin('usee.escola', 'esc')
+            .andWhere('LOWER(usr.usr_nome_txt) like LOWER(:valor)', { valor: `%${valor}%` })
+            .andWhere('esc.esc_id_int = :esc_id', { esc_id: esc_id })
+            .orderBy('usr.usr_nome_txt', 'ASC')
+            .groupBy('usr.usr_id_int')
+            .limit(limit)
+            .offset(offset)
+            .execute()
+            .then(usuarios => {
+              resolve(usuarios);
+            }).catch(reason => {
+              reject(reason);
+            });
+        });
+    })
+  }
+
+  public filtrarRegional(valor: string, limit: number, offset: number, esc_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      this.escolaRepository.createQueryBuilder('esc').select(['ree_id_int as ree_id']).where('esc_id_int = :esc_id', { esc_id: esc_id }).execute().then(ree_id_int => {
+        const ree_id = ree_id_int[0]['ree_id'];
+        this.usuarioRepository.createQueryBuilder('usr')
+          .innerJoin('usr.usuariosEscolas', 'usee')
+          .innerJoin('usee.escola', 'esc')
+          .andWhere('LOWER(usr.usr_nome_txt) like LOWER(:valor)', { valor: `%${valor}%` })
+          .andWhere('esc.ree_id_int = :ree_id', { ree_id: ree_id })
+          .orderBy('usr.usr_nome_txt', 'ASC')
+          .getCount()
+          .then(total => {
+            const campos = [
+              'usr.usr_id_int as id', 'usr.usr_nome_txt as nome',
+              'usr.usr_email_txt as email', 'usr.usr_foto_txt as foto',
+              `${total} as total`
+            ];
+            this.usuarioRepository.createQueryBuilder('usr')
+              .select(campos)
+              .innerJoin('usr.usuariosEscolas', 'usee')
+              .innerJoin('usee.escola', 'esc')
+              .andWhere('LOWER(usr.usr_nome_txt) like LOWER(:valor)', { valor: `%${valor}%` })
+              .andWhere('esc.ree_id_int = :ree_id', { ree_id: ree_id })
+              .orderBy('usr.usr_nome_txt', 'ASC')
+              .limit(limit)
+              .offset(offset)
+              .groupBy('usr.usr_id_int').execute().then(usuarios => {
+                resolve(usuarios);
+              }).catch(reason => {
+                reject(reason);
+              });
+          }).catch(reason => {
+            reject(reason);
+          });
+      }).catch(reason => {
+        reject(reason);
+      });
+    })
+  }
+
+  public filtrarGlobal(valor: string, limit: number, offset: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      this.usuarioRepository.createQueryBuilder('usr').getCount().then(total => {
+        const campos = [
+          'usr.usr_id_int as id', 'usr.usr_nome_txt as nome',
+          'usr.usr_email_txt as email', 'usr.usr_foto_txt as foto',
+          `${total} as total`
+        ];
+        this.usuarioRepository.createQueryBuilder('usr')
+          .select(campos)
+          .andWhere('LOWER(usr.usr_nome_txt) like LOWER(:valor)', { valor: `%${valor}%` })
+          .orderBy('usr.usr_nome_txt', 'ASC')
+          .limit(limit)
+          .offset(offset)
+          .execute()
+          .then(usuarios => {
+            resolve(usuarios);
+          }).catch(reason => {
+            reject(reason);
+          });
+      });
+    })
+  }
+
+  public alterar(usuarioRecebido: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const usuario = new Usuario();
+      usuario.id = usuarioRecebido['id'];
+      usuario.nome = usuarioRecebido['nome'];
+      usuario.email = usuarioRecebido['email'];
+      usuario.foto = usuarioRecebido['foto'];
+      this.usuarioRepository.save(usuario).then(updateResult => {
+        resolve();
+      }).catch(reason => {
+        reject(reason);
+      });
+    })
+  }
+
+  public excluir(parametros: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.usuarioRepository.delete(parametros).then(deleteResult => {
+        resolve();
+      }).catch(reason => {
+        reject(reason);
+      });
     })
   }
 

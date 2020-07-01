@@ -1,4 +1,19 @@
-import { Controller } from '@nestjs/common';
+import { UsuarioEscolaService } from './usuario-escola.service';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 
 @Controller('usuario-escola')
-export class UsuarioEscolaController {}
+export class UsuarioEscolaController {
+  constructor(private usuarioEscolaService: UsuarioEscolaService) { }
+
+  @Post('/alterar-status')
+  public alterarStatus(@Body() dados: any): Promise<void> {
+    return this.usuarioEscolaService.alterarStatus(dados)
+  }
+
+  @Get('/escola-perfil-status/:usr_id/:esc_id/:usr_id_solicitante')
+  public listarEscolaPerfilStatus(@Param('usr_id') usr_id: number, @Param('esc_id') esc_id: number, @Param('usr_id_solicitante') usr_id_solicitante: number): Promise<any[]> {
+    return this.usuarioEscolaService.listarEscolaPerfilStatus(usr_id, esc_id, usr_id_solicitante);
+  }
+
+
+}

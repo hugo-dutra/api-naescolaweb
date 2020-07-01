@@ -7,9 +7,9 @@ export class EscopoPerfilUsuario extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'epu_id_int' })
   id: number;
   @Column({ length: 100, nullable: false, name: 'epu_nome_txt' })
-  epu_nome: string;
+  nome: string;
   @Column({ nullable: false, name: 'epu_nivel_int', default: 100 })
-  epu_nivel: string;
+  nivel: string;
   /* RELACIONAMENTOS */
   @OneToMany(type => PerfilUsuario, perfilUsuario => perfilUsuario.escoposPerfisUsuarios)
   perfilUsuario: PerfilUsuario

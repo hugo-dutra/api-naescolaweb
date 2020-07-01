@@ -1,5 +1,6 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Patch, Body, Delete } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
+import { Usuario } from './usuario.entity';
 
 @Controller('usuario')
 export class UsuarioController {
@@ -29,4 +30,25 @@ export class UsuarioController {
   public filtrarLocal(@Param('valor') valor: string, @Param('limit') limit: number, @Param('offset') offset: number, @Param('esc_id') esc_id: number): Promise<any[]> {
     return this.usuarioService.filtrarLocal(valor, limit, offset, esc_id);
   }
+
+  @Get('/filtrar-regional/:valor/:limit/:offset/:esc_id')
+  public filtrarRegional(@Param('valor') valor: string, @Param('limit') limit: number, @Param('offset') offset: number, @Param('esc_id') esc_id: number): Promise<any[]> {
+    return this.usuarioService.filtrarRegional(valor, limit, offset, esc_id);
+  }
+
+  @Get('/filtrar/:valor/:limit/:offset')
+  public filtrarGlobal(@Param('valor') valor: string, @Param('limit') limit: number, @Param('offset') offset: number): Promise<any[]> {
+    return this.usuarioService.filtrarGlobal(valor, limit, offset);
+  }
+
+  @Patch()
+  public alterar(@Body() usuarioRecebido: any): Promise<void> {
+    return this.usuarioService.alterar(usuarioRecebido);
+  }
+
+  @Delete()
+  public excluir(@Body() parametros: any): Promise<void> {
+    return this.usuarioService.excluir(parametros);
+  }
+
 }

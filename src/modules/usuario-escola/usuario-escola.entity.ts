@@ -9,7 +9,7 @@ export class UsuarioEscola extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'use_id_int' })
   id: number;
   @Column({ nullable: false, default: 1, name: 'use_status_ativo' })
-  use_status_ativo: number;
+  status_ativo: number;
   /* RELACIONAMENTOS */
   @ManyToOne(type => PerfilUsuario, perfilUsuario => perfilUsuario.usuariosEscolas)
   @JoinColumn({ name: 'pru_id_int' })
