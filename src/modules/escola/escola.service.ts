@@ -44,6 +44,26 @@ export class EscolaService {
     });
   }
 
+  public listarPorEmailUsuario(email: string): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = ['esc.esc_id_int as id', 'esc.esc_nome_txt as nome'];
+      this.escolaRepository.createQueryBuilder('esc')
+        .select(campos)
+        .innerJoin('esc.usuariosEscolas', 'usee')
+        .innerJoin('usee.usuario', 'usr')
+        .where('usr.usr_email_txt = :email', { email: email })
+        .andWhere('usee.use_status_ativo = 1')
+        .groupBy('esc.esc_id_int')
+        .orderBy('esc.esc_nome_txt')
+        .execute()
+        .then(escolas => {
+          resolve(escolas);
+        }).catch(reason => {
+          reject(reason);
+        })
+    })
+  }
+
   public listarLocal(limit: number, offset: number, asc: boolean, esc_id: number): Promise<any[]> {
     return new Promise((resolve, reject) => {
       const campos = [

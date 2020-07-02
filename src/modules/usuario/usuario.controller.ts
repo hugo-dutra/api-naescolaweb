@@ -16,6 +16,11 @@ export class UsuarioController {
     return this.usuarioService.modificarSenha(dados);
   }
 
+  @Post('/pegar-token')
+  public pegarToken(@Body() dados: any): Promise<any> {
+    return this.usuarioService.pegarToken(dados);
+  }
+
   @Post('/logar')
   public logar(@Body() dados: any): Promise<void> {
     return this.usuarioService.logar(dados);

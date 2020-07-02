@@ -10,6 +10,11 @@ export class EscolaController {
     return this.escolaService.inserir(escola);
   }
 
+  @Get('/email-usuario/:email')
+  public listarPorEmailUsuario(@Param('email') email: string): Promise<any[]> {
+    return this.escolaService.listarPorEmailUsuario(email);
+  }
+
   @Get('/local/:limit/:offset/:asc/:esc_id')
   public listarLocal(
     @Param('limit') limit: number, @Param('offset') offset: number,

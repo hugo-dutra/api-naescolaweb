@@ -1,6 +1,6 @@
 import { UsuarioEscola } from './../usuario-escola/usuario-escola.entity';
 import { UsuarioProfessorRepository } from './../usuario-professor/usuario-professor.repository';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsuarioRepository } from './usuario.repository';
 import { EscolaRepository } from '../escola/escola.repository';
@@ -60,6 +60,33 @@ export class UsuarioService {
         }).catch(reason => {
           reject(reason);
         })
+      }).catch(reason => {
+        reject(reason);
+      })
+    })
+  }
+
+  public pegarToken(dados: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const email = dados['email'];
+      const senha = dados['senha'];
+      this.validarLogin(email, senha).then(valido => {
+        if (valido) {
+          resolve({ token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxLCJub21lIjoiSHVnbyBBbHZlcyBEdXRyYSIsImVtYWlsIjoiaHVnby5kdXRyYUBob3RtYWlsLmNvbSIsInBlcl9pZCI6MSwicGVyX25vbWUiOiJBZG1pbmlzdHJhZG9yIiwiY3RhX2lkIjoxLCJjdGFfbm9tZSI6InZpcnR1YS1zZWd1cm9zIiwiY3RhX2VtYWlsIjoiY29udGF0b0B2aXJ0dWEtc2VndXJvcy5jb20uYnIiLCJjdGFfdGVsZWZvbmUiOiIoNjEpOTgyMDg2NDQ5In0sImlhdCI6MTU5MzQ3NjQ1NSwiZXhwIjoxNTkzNTYyODU1fQ._6eMdnw8MlaoCCmCkvgmi8tOyxCFutrX-lplW-vEisc' })
+        } else {
+          reject(new UnauthorizedException('invalid_credentials'));
+        }
+      })
+    })
+  }
+
+  public validarLogin(email: string, senha: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      const campos = ['usr.usr_email_txt as email', 'usr_salt_txt as salt', 'usr_senha_txt senha'];
+      this.usuarioRepository.findOne({ email: email }).then(usuarioEncontrado => {
+        bcrypt.compare(senha, usuarioEncontrado.senha).then(resultado => {
+          resolve(resultado)
+        });
       }).catch(reason => {
         reject(reason);
       })
