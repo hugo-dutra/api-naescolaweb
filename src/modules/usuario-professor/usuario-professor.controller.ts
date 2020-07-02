@@ -10,4 +10,9 @@ export class UsuarioProfessorController {
     return this.usuarioProfessorService.inserir(dados);
   }
 
+  @Post('/desvincular')
+  public desvincular(@Body() dados: any): Promise<void> {
+    return this.usuarioProfessorService.desvincular(dados);
+  }
+
 }

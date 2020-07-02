@@ -10,6 +10,15 @@ export class UsuarioEscola extends BaseEntity {
   id: number;
   @Column({ nullable: false, default: 1, name: 'use_status_ativo' })
   status_ativo: number;
+  @Column({ name: 'pru_id_int' })
+  pru_id: number;
+  @Column({ name: 'usr_id_int' })
+  usr_id: number;
+  @Column({ name: 'esc_id_int' })
+  esc_id: number;
+
+
+
   /* RELACIONAMENTOS */
   @ManyToOne(type => PerfilUsuario, perfilUsuario => perfilUsuario.usuariosEscolas)
   @JoinColumn({ name: 'pru_id_int' })

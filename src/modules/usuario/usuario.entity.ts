@@ -31,7 +31,7 @@ export class Usuario extends BaseEntity {
   email: string;
   @Column({ length: 200, name: 'usr_salt_txt', nullable: false })
   salt: string;
-  @Column({ length: 500, name: 'usr_foto_txt' })
+  @Column({ length: 500, name: 'usr_foto_txt', nullable: true })
   foto: string;
   /* RELACIONAMENTOS */
   @OneToMany(type => UsuarioEscola, usuarioEscola => usuarioEscola.usuario)

@@ -1,10 +1,25 @@
-import { Controller, Get, Param, Patch, Body, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Patch, Body, Delete, Post } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
 import { Usuario } from './usuario.entity';
 
 @Controller('usuario')
 export class UsuarioController {
   constructor(private usuarioService: UsuarioService) { }
+
+  @Post()
+  public inserir(@Body() usuarioDto: any): Promise<void> {
+    return this.usuarioService.inserir(usuarioDto);
+  }
+
+  @Post('/modificar-senha')
+  public modificarSenha(@Body() dados: any): Promise<void> {
+    return this.usuarioService.modificarSenha(dados);
+  }
+
+  @Post('/logar')
+  public logar(@Body() dados: any): Promise<void> {
+    return this.usuarioService.logar(dados);
+  }
 
   @Get('/por-escola-id/:esc_id/:todos')
   public listarPorEscolaId(@Param('esc_id') esc_id: number, @Param('todos') todos: string): Promise<any[]> {

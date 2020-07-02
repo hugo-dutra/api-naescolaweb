@@ -1,10 +1,12 @@
+import { UsuarioEscola } from './../usuario-escola/usuario-escola.entity';
 import { UsuarioProfessorRepository } from './../usuario-professor/usuario-professor.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsuarioRepository } from './usuario.repository';
 import { EscolaRepository } from '../escola/escola.repository';
-import { groupBy } from 'rxjs/internal/operators/groupBy';
 import { Usuario } from './usuario.entity';
+import * as bcrypt from 'bcrypt'
+import { UsuarioEscolaRespository } from '../usuario-escola/usuario-escola.repository';
 
 @Injectable()
 export class UsuarioService {
@@ -12,7 +14,77 @@ export class UsuarioService {
     @InjectRepository(UsuarioRepository) private usuarioRepository: UsuarioRepository,
     @InjectRepository(UsuarioProfessorRepository) private usuarioProfessorRepository: UsuarioProfessorRepository,
     @InjectRepository(EscolaRepository) private escolaRepository: EscolaRepository,
+    @InjectRepository(UsuarioEscolaRespository) private usuarioEscolaRespository: UsuarioEscolaRespository,
   ) { }
+
+  public inserir(usuarioDto: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const usuario = new Usuario();
+      usuario.nome = usuarioDto['nome'];
+      usuario.senha = usuarioDto['senha'];
+      usuario.email = usuarioDto['email'];
+      const esc_id = usuarioDto['esc_id'];
+      this.encriptargUsuario(usuario).then(usuarioEncriptado => {
+        const teste = usuarioEncriptado;
+        this.usuarioRepository.save(usuarioEncriptado).then(novoUsuario => {
+          const usr_id = novoUsuario.id
+          const usuarioEscola = new UsuarioEscola();
+          usuarioEscola.esc_id = esc_id;
+          usuarioEscola.usr_id = usr_id;
+          usuarioEscola.pru_id = 0;
+          this.usuarioEscolaRespository.save(usuarioEscola).then(() => {
+            resolve();
+          }).catch(reason => {
+            reject(reason);
+          })
+        }).catch(reason => {
+          reject(reason);
+        });
+      }).catch(reason => {
+        reject(reason);
+      })
+    })
+  }
+
+  public modificarSenha(dados: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      console.clear();
+      this.usuarioRepository.findOne({ where: { id: dados['usr_id'] } }).then(usuario => {
+        usuario.senha = dados['senha'];
+        this.encriptargUsuario(usuario).then(usuarioComSenhaAlterada => {
+          this.usuarioRepository.save(usuarioComSenhaAlterada).then(() => {
+            resolve();
+          }).catch(reason => {
+            reject(reason);
+          })
+        }).catch(reason => {
+          reject(reason);
+        })
+      }).catch(reason => {
+        reject(reason);
+      })
+    })
+  }
+
+  public logar(dados: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      console.log(dados);
+      resolve([]);
+    })
+  }
+
+  private encriptargUsuario(usuario: Usuario): Promise<Usuario> {
+    return new Promise((resolve, reject) => {
+      bcrypt.genSalt(10, (err, salt) => {
+        usuario.salt = salt;
+        bcrypt.hash(usuario.senha, usuario.salt, (err, encryptedPassword) => {
+          usuario.senha = encryptedPassword;
+          resolve(usuario);
+        })
+      })
+    })
+  }
+
 
   public listarPorEscolaId(esc_id: number, todos: string): Promise<any[]> {
     return new Promise((resolve, reject) => {

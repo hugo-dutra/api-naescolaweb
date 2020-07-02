@@ -28,6 +28,21 @@ export class UsuarioProfessorService {
     });
   }
 
+  public desvincular(dados: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.usuarioProfessorRepository.createQueryBuilder('usp')
+        .delete()
+        .where('usr_id_int = :usr_id', { usr_id: dados['usr_id'] })
+        .execute()
+        .then(deleteResult => {
+          console.log(deleteResult);
+          resolve();
+        }).catch(reason => {
+          reject(reason);
+        });
+    })
+  }
+
   public verificarExistencia(usr_id: number, prf_id: number): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.usuarioProfessorRepository
