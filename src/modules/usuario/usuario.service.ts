@@ -1,12 +1,14 @@
 import { UsuarioEscola } from './../usuario-escola/usuario-escola.entity';
 import { UsuarioProfessorRepository } from './../usuario-professor/usuario-professor.repository';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, Request } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsuarioRepository } from './usuario.repository';
 import { EscolaRepository } from '../escola/escola.repository';
 import { Usuario } from './usuario.entity';
 import * as bcrypt from 'bcrypt'
 import { UsuarioEscolaRespository } from '../usuario-escola/usuario-escola.repository';
+import { JwtService } from '@nestjs/jwt';
+import { EscopoPerfilUsuarioRepository } from '../escopo-perfil-usuario/escopo-perfil-usuario.repository';
 
 @Injectable()
 export class UsuarioService {
@@ -15,6 +17,8 @@ export class UsuarioService {
     @InjectRepository(UsuarioProfessorRepository) private usuarioProfessorRepository: UsuarioProfessorRepository,
     @InjectRepository(EscolaRepository) private escolaRepository: EscolaRepository,
     @InjectRepository(UsuarioEscolaRespository) private usuarioEscolaRespository: UsuarioEscolaRespository,
+    @InjectRepository(EscopoPerfilUsuarioRepository) private escopoPerfilUsuarioRepository: EscopoPerfilUsuarioRepository,
+    private jwtService: JwtService
   ) { }
 
   public inserir(usuarioDto: any): Promise<void> {
@@ -66,13 +70,219 @@ export class UsuarioService {
     })
   }
 
+  public listarPermissoes(req: Request, esc_id: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const token = req.headers['authorization'];
+      const { exp, iat, usuario } = this.jwtService.verify(token);
+      const usr_id = (<Usuario>usuario).id;
+      const campos = [
+        'pac_rota_txt as rota', 'pac_permissao_acesso_txt as nome', 'esc.esc_id_int as esc_id'
+      ];
+      this.usuarioRepository.createQueryBuilder('usr')
+        .select(campos)
+        .innerJoin('usr.usuariosEscolas', 'usee')
+        .innerJoin('usee.perfilUsuario', 'pru')
+        .innerJoin('pru.perfisPermissao', 'pep')
+        .innerJoin('pep.permissaoAcesso', 'pac')
+        .innerJoin('usee.escola', 'esc')
+        .where('usee.esc_id_int = :esc_id', { esc_id: esc_id })
+        .andWhere('usr.usr_id_int = :usr_id', { usr_id: usr_id })
+        .execute()
+        .then(permissoes => {
+          this.pegarDados(usr_id).then(dados => {
+            this.listarGrupoDeAcesso(esc_id, usr_id).then(grupos => {
+              this.listarMenuAcesso(esc_id, usr_id).then(menus => {
+                this.listarDadosEscola(esc_id).then(dados_escola => {
+                  this.listarDadosEscopoPerfil(esc_id, usr_id).then(escopo_perfil => {
+                    this.verificarStatusAtivoUsuario(esc_id, usr_id).then(status_ativo_usuario => {
+                      const retorno = {
+                        permissoes: permissoes,
+                        dados: dados,
+                        grupos: grupos,
+                        menus: menus,
+                        dados_escola: dados_escola,
+                        escopo_perfil: escopo_perfil,
+                        status_ativo_usuario: status_ativo_usuario
+                      }
+                      resolve(retorno);
+                    }).catch(reason => {
+                      reject(reason);
+                    })
+                  }).catch(reason => {
+                    reject(reason);
+                  })
+                }).catch(reason => {
+                  reject(reason);
+                })
+              }).catch(reason => {
+                reject(reason);
+              })
+            }).catch(reason => {
+              reject(reason);
+            })
+          }).catch(reason => {
+            reject(reason);
+          })
+        }).catch(reason => {
+          reject(reason);
+        })
+    })
+  }
+
+  public verificarStatusAtivoUsuario(esc_id: number, usr_id: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const campos = ['use_status_ativo as status_ativo_usuario'];
+      this.usuarioEscolaRespository.createQueryBuilder('usee')
+        .select(campos)
+        .where('usr_id_int = :usr_id', { usr_id: usr_id })
+        .andWhere('esc_id_int = :esc_id', { esc_id: esc_id })
+        .execute()
+        .then(statusAtivo => {
+          resolve(statusAtivo)
+        }).catch(reason => {
+          reject(reason)
+        });
+    })
+  }
+
+  public listarDadosEscopoPerfil(esc_id: number, usr_id: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'usee.esc_id_int as esc_id', 'usee.usr_id_int as usr_id',
+        'epu.epu_id_int as epu_id', 'epu.epu_nome_txt as nome',
+        'epu.epu_nivel_int as nivel'
+      ]
+      this.escopoPerfilUsuarioRepository.createQueryBuilder('epu')
+        .select(campos)
+        .innerJoin('epu.perfilUsuario', 'pru')
+        .innerJoin('pru.usuariosEscolas', 'usee')
+        .where('usee.usr_id_int = :usr_id', { usr_id: usr_id })
+        .andWhere('usee.esc_id_int = :esc_id', { esc_id: esc_id })
+        .execute()
+        .then(dadosEscopo => {
+          resolve(dadosEscopo);
+        }).catch(reason => {
+          reject(reason);
+        })
+    })
+  }
+
+  public listarDadosEscola(esc_id: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'esc.esc_id_int as id', 'esc.ren_id_int as ren_id',
+        'esc.esc_nome_txt as nome', 'esc.esc_email_txt as email',
+        'esc.esc_telefone_txt as telefone', 'esc.esc_endereco_txt as endereco',
+        'esc.esc_logo_txt as logo', 'esc.ree_id_int as ree_id',
+        'esc.esc_inep_txt as inep', 'esc.esc_cep_txt as cep',
+        'esc.esc_cnpj_txt as cnpj', 'ren_nome_txt as rede_ensino',
+        'ren_abreviatura_txt as abv_rede_ensino', 'ren_email_txt as email_rede_ensino',
+        'ren_responsavel_txt as responsavel_rede_ensino', 'ren_telefone_txt as telefone_rede_ensino',
+        'ren_endereco_txt as endereco_rede_ensino', 'ren_cnpj_txt as cnpj_rede_ensino',
+        'ren_logo_txt as logo_rede_ensino', 'esc.esc_nome_abreviado_txt as nome_abreviado',
+        'ree.ree_nome_txt as regiao_escola'
+      ];
+      this.escolaRepository.createQueryBuilder('esc')
+        .select(campos)
+        .innerJoin('esc.redeEnsino', 'ren')
+        .innerJoin('esc.regiaoEscola', 'ree')
+        .where('esc.esc_id_int = :esc_id', { esc_id: esc_id })
+        .execute()
+        .then(dadosEscola => {
+          resolve(dadosEscola);
+        }).catch(reason => {
+          reject(reason);
+        })
+    })
+  }
+
+  public listarMenuAcesso(esc_id: number, usr_id: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'distinct mac_nome_txt as nome', 'mac_imagem_txt as imagem',
+        'gac_nome_txt as grupo', 'mac_texto_txt as texto',
+        'mac_link_txt as link', 'mac_modulo_txt as modulo',
+        'mac_cor_txt as cor'
+      ]
+      this.usuarioRepository.createQueryBuilder('usr')
+        .select(campos)
+        .innerJoin('usr.usuariosEscolas', 'usee')
+        .innerJoin('usee.escola', 'esc')
+        .innerJoin('usee.perfilUsuario', 'pru')
+        .innerJoin('pru.perfisPermissao', 'pep')
+        .innerJoin('pep.permissaoAcesso', 'pac')
+        .innerJoin('pac.menuAcesso', 'mac')
+        .innerJoin('mac.grupoAcesso', 'gac')
+        .where('usee.esc_id_int = :esc_id', { esc_id: esc_id })
+        .andWhere('usee.usr_id_int = :usr_id', { usr_id: usr_id })
+        .execute()
+        .then(menus => {
+          resolve(menus)
+        }).catch(reason => {
+          reject(reason);
+        })
+    })
+  }
+
+  public listarGrupoDeAcesso(esc_id: number, usr_id: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'distinct gac_nome_txt as nome', 'gac_imagem_txt as imagem',
+        'gac_texto_txt as texto', 'esc.esc_id_int as esc_id',
+        'gac_modulo_txt as modulo'
+      ];
+      this.usuarioRepository.createQueryBuilder('usr')
+        .select(campos)
+        .innerJoin('usr.usuariosEscolas', 'usee')
+        .innerJoin('usee.escola', 'esc')
+        .innerJoin('usee.perfilUsuario', 'pru')
+        .innerJoin('pru.perfisPermissao', 'pep')
+        .innerJoin('pep.permissaoAcesso', 'pac')
+        .innerJoin('pac.menuAcesso', 'mac')
+        .innerJoin('mac.grupoAcesso', 'cag')
+        .where('usee.esc_id_int = :esc_id', { esc_id: esc_id })
+        .andWhere('usee.usr_id_int = :usr_id', { usr_id: usr_id })
+        .execute()
+        .then(grupos => {
+          resolve(grupos)
+        }).catch(reason => {
+          reject(reason);
+        })
+    })
+  }
+
+  public pegarDados(usr_id: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'usr_id_int as id', 'usr_nome_txt as nome',
+        'usr_email_txt as email', 'usr_foto_txt  as foto'
+      ]
+      this.usuarioRepository.createQueryBuilder('usr')
+        .select(campos)
+        .where('usr_id_int = :usr_id', { usr_id: usr_id })
+        .execute()
+        .then(dados => {
+          resolve(dados)
+        }).catch(reason => {
+          reject(reason);
+        })
+    })
+  }
+
+
+
   public pegarToken(dados: any): Promise<any> {
     return new Promise((resolve, reject) => {
       const email = dados['email'];
       const senha = dados['senha'];
-      this.validarLogin(email, senha).then(valido => {
-        if (valido) {
-          resolve({ token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxLCJub21lIjoiSHVnbyBBbHZlcyBEdXRyYSIsImVtYWlsIjoiaHVnby5kdXRyYUBob3RtYWlsLmNvbSIsInBlcl9pZCI6MSwicGVyX25vbWUiOiJBZG1pbmlzdHJhZG9yIiwiY3RhX2lkIjoxLCJjdGFfbm9tZSI6InZpcnR1YS1zZWd1cm9zIiwiY3RhX2VtYWlsIjoiY29udGF0b0B2aXJ0dWEtc2VndXJvcy5jb20uYnIiLCJjdGFfdGVsZWZvbmUiOiIoNjEpOTgyMDg2NDQ5In0sImlhdCI6MTU5MzQ3NjQ1NSwiZXhwIjoxNTkzNTYyODU1fQ._6eMdnw8MlaoCCmCkvgmi8tOyxCFutrX-lplW-vEisc' })
+      this.validarLogin(email, senha).then((resultado) => {
+        if (resultado['valido']) {
+          const usuario = resultado['usuario'];
+          delete usuario.senha;
+          delete usuario.salt;
+          const payload = { usuario: usuario };
+          const access_token = this.jwtService.sign(payload);
+          resolve({ token: access_token })
         } else {
           reject(new UnauthorizedException('invalid_credentials'));
         }
@@ -80,12 +290,12 @@ export class UsuarioService {
     })
   }
 
-  public validarLogin(email: string, senha: string): Promise<boolean> {
+  public validarLogin(email: string, senha: string): Promise<{ valido: boolean, usuario: Usuario }> {
     return new Promise((resolve, reject) => {
       const campos = ['usr.usr_email_txt as email', 'usr_salt_txt as salt', 'usr_senha_txt senha'];
-      this.usuarioRepository.findOne({ email: email }).then(usuarioEncontrado => {
-        bcrypt.compare(senha, usuarioEncontrado.senha).then(resultado => {
-          resolve(resultado)
+      this.usuarioRepository.findOne({ email: email }).then(usuario => {
+        bcrypt.compare(senha, usuario.senha).then(valido => {
+          resolve({ valido, usuario })
         });
       }).catch(reason => {
         reject(reason);

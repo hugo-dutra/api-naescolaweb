@@ -16,9 +16,6 @@ export class UsuarioEscola extends BaseEntity {
   usr_id: number;
   @Column({ name: 'esc_id_int' })
   esc_id: number;
-
-
-
   /* RELACIONAMENTOS */
   @ManyToOne(type => PerfilUsuario, perfilUsuario => perfilUsuario.usuariosEscolas)
   @JoinColumn({ name: 'pru_id_int' })

@@ -8,9 +8,9 @@ export class PermissaoAcesso extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'pac_id_int' })
   id: number;
   @Column({ nullable: false, length: 150, name: 'pac_permissao_acesso_txt' })
-  pac_permissao_acesso: string;
+  permissao_acesso: string;
   @Column({ nullable: false, length: 150, name: 'pac_rota_txt' })
-  pac_rota: string;
+  rota: string;
   /* RELACIONAMENTOS */
   @ManyToOne(type => MenuAcesso, menuAcesso => menuAcesso.permissoesAcesso)
   @JoinColumn({ name: 'mac_id_int' })

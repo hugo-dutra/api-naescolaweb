@@ -1,6 +1,6 @@
-import { Controller, Get, Param, Patch, Body, Delete, Post } from '@nestjs/common';
+import { Controller, Get, Param, Patch, Body, Delete, Post, Request } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
-import { Usuario } from './usuario.entity';
+
 
 @Controller('usuario')
 export class UsuarioController {
@@ -14,6 +14,11 @@ export class UsuarioController {
   @Post('/modificar-senha')
   public modificarSenha(@Body() dados: any): Promise<void> {
     return this.usuarioService.modificarSenha(dados);
+  }
+
+  @Get('/listar-permissao/:esc_id')
+  public listarPermissoes(@Request() req: any, @Param('esc_id') esc_id: number): Promise<any> {
+    return this.usuarioService.listarPermissoes(req, esc_id);
   }
 
   @Post('/pegar-token')

@@ -11,3 +11,8 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   synchronize: true //Em produção, isso deve ficar true após o primeiro deploy.
 }
 
+export const jwtConfig = {
+  secret: '@r5w7y8b3@',
+  expired: '86400s'
+}
+

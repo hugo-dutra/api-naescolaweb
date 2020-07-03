@@ -8,17 +8,17 @@ export class MenuAcesso extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'mac_id_int' })
   id: number;
   @Column({ length: 100, nullable: false, name: 'mac_nome_txt' })
-  mac_nome: string;
+  nome: string;
   @Column({ length: 500, name: 'mac_imagem_txt' })
-  mac_imagem: string;
+  imagem: string;
   @Column({ length: 100, name: 'mac_texto_txt' })
-  mac_texto: string;
+  texto: string;
   @Column({ length: 100, name: 'mac_link_txt' })
-  mac_link: string;
+  link: string;
   @Column({ length: 100, name: 'mac_modulo_txt' })
-  mac_modulo: string;
+  modulo: string;
   @Column({ length: 20, name: 'mac_cor_txt' })
-  mac_cor: string;
+  cor: string;
   /* RELACIONAMENTOS */
   @ManyToOne(type => GrupoAcesso, grupoAcesso => grupoAcesso.menusAcesso)
   @JoinColumn({ name: 'gac_id_int' })
