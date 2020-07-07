@@ -8,11 +8,11 @@ export class PeriodoLetivo extends BaseEntity {
   @PrimaryGeneratedColumn({ name: 'prl_id_int' })
   id: number;
   @Column({ name: 'prl_periodo_txt', length: 50, nullable: false })
-  prl_periodo: string;
+  periodo: string;
   @Column({ name: 'prl_inicio_dte' })
-  prl_inicio: Date;
+  inicio: Date;
   @Column({ name: 'prl_fim_dte' })
-  prl_fim: Date;
+  fim: Date;
   /* RELACIONAMENTOS */
   @OneToMany(type => DiarioAvaliacao, diarioAvaliacao => diarioAvaliacao.periodoLetivo)
   diariosAvaliacoes: DiarioAvaliacao[]

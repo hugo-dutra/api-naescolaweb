@@ -1,3 +1,4 @@
+import { UsuarioProfessorRepository } from './../usuario-professor/usuario-professor.repository';
 import { EscopoPerfilUsuarioService } from './../escopo-perfil-usuario/escopo-perfil-usuario.service';
 import { ProfessorRepository } from './professor.repository';
 import { Module } from '@nestjs/common';
@@ -7,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { EscopoPerfilUsuarioRepository } from '../escopo-perfil-usuario/escopo-perfil-usuario.repository';
 import { EscolaRepository } from '../escola/escola.repository';
 import { EscopoPerfilUsuarioModule } from '../escopo-perfil-usuario/escopo-perfil-usuario.module';
+import { DiarioProfessorRepository } from '../diario-professor/diario-professor.repository';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { EscopoPerfilUsuarioModule } from '../escopo-perfil-usuario/escopo-perfi
       [
         ProfessorRepository,
         EscopoPerfilUsuarioRepository,
+        UsuarioProfessorRepository,
+        DiarioProfessorRepository,
         EscolaRepository,
       ]
     )

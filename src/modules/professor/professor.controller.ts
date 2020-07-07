@@ -32,6 +32,20 @@ export class ProfessorController {
     return this.professorService.listarDisciplinas(prf_id);
   }
 
+  @Get('/sem-disciplina/:limit/:offset/:asc/:usr_id/:esc_id')
+  public listarSemDisciplina(
+    @Param('limit') limit: number, @Param('offset') offset: number,
+    @Param('asc') asc: number, @Param('usr_id') usr_id: number,
+    @Param('esc_id') esc_id: number,
+  ): Promise<Professor[]> {
+    return this.professorService.listarSemDisciplina(limit, offset, asc, usr_id, esc_id);
+  }
+
+  @Get('/turma-disciplina/:esc_id/:usr_id/:ano')
+  public listarTurmaDisciplina(@Param('esc_id') esc_id: number, @Param('usr_id') usr_id: number, @Param('ano') ano: number): Promise<any[]> {
+    return this.professorService.listarTurmaDisciplina(esc_id, usr_id, ano);
+  }
+
   @Patch()
   public alterar(@Body() professor: Professor): Promise<Professor> {
     return this.professorService.alterar(professor);

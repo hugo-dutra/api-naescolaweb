@@ -1,3 +1,4 @@
+import { DiarioProfessorRepository } from './../diario-professor/diario-professor.repository';
 import { EscopoPerfilUsuarioService } from './../escopo-perfil-usuario/escopo-perfil-usuario.service';
 import { ProfessorRepository } from './professor.repository';
 import { Injectable } from '@nestjs/common';
@@ -10,6 +11,7 @@ import { EscolaRepository } from '../escola/escola.repository';
 import { Escola } from '../escola/escola.entity';
 import { DeleteResult } from 'typeorm';
 import { ProfessorIntegracaoDto } from './dto/professor-integracao.dto';
+import { UsuarioProfessorRepository } from '../usuario-professor/usuario-professor.repository';
 
 @Injectable()
 export class ProfessorService {
@@ -17,7 +19,6 @@ export class ProfessorService {
 
   constructor(
     @InjectRepository(ProfessorRepository) private professorRepository: ProfessorRepository,
-    @InjectRepository(EscopoPerfilUsuarioRepository) private escopoPerfilUsuarioRepository: EscopoPerfilUsuarioRepository,
     @InjectRepository(EscolaRepository) private escolaRepository: EscolaRepository,
     private escopoPerfilUsuarioService: EscopoPerfilUsuarioService,
   ) { }
@@ -102,6 +103,78 @@ export class ProfessorService {
           });
       }
     });
+  }
+
+  public listarSemDisciplina(limit: number, offset: number, asc: number, usr_id: number, esc_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      this.escopoPerfilUsuarioService.listarNivelAcessoUsuario(usr_id, esc_id).then((escopoUsuario: string) => {
+        const nomeEscopo = escopoUsuario['nome'];
+        if (nomeEscopo == escopo.GLOBAL) {
+          resolve(this.listarSemDisciplinaGlobal(limit, offset, asc, usr_id));
+        }
+        if (nomeEscopo == escopo.REGIONAL) {
+          resolve(this.listarSemDisciplinaRegional(limit, offset, asc, usr_id, esc_id));
+        }
+        if (nomeEscopo == escopo.LOCAL) {
+          resolve(this.listarSemDisciplinaLocal(limit, offset, asc, usr_id, esc_id))
+        }
+      });
+    })
+  }
+
+
+
+  public listarSemDisciplinaLocal(limit: number, offset: number, asc: number, usr_id: number, esc_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      console.log('Local:', limit, offset, asc, usr_id, esc_id);
+      resolve([]);
+    })
+  }
+
+  public listarSemDisciplinaRegional(limit: number, offset: number, asc: number, usr_id: number, esc_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      console.log('Regional:', limit, offset, asc, usr_id, esc_id);
+      resolve([]);
+    })
+  }
+
+  public listarSemDisciplinaGlobal(limit: number, offset: number, asc: number, usr_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      console.log('Global:', limit, offset, asc, usr_id);
+      resolve([]);
+    })
+  }
+
+  public listarTurmaDisciplina(esc_id: number, usr_id: number, ano: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'dsp.dsp_id_int as dsp_id', 'dsp.dsp_abreviatura_txt as disciplina_abreviada',
+        'sre.sre_id_int as sre_id', 'sre.sre_abreviatura_txt as serie_abreviada',
+        'trm.trm_id_int as trm_id', 'trm.trm_nome_txt as turma',
+        'trn.trn_abreviatura_txt as turno_abreviado', 'ete.ete_abreviatura_txt as etapa_ensino_abreviada'
+      ];
+      this.professorRepository.createQueryBuilder('prf')
+        .select(campos)
+        .innerJoin('prf.professoresDisciplinas', 'prd')
+        .innerJoin('prd.disciplina', 'dsp')
+        .innerJoin('prf.professoresEscolas', 'pre')
+        .innerJoin('prd.diariosProfessores', 'dip')
+        .innerJoin('dip.turma', 'trm')
+        .innerJoin('trm.serie', 'sre')
+        .innerJoin('trm.turno', 'trn')
+        .innerJoin('sre.etapaEnsino', 'ete')
+        .innerJoin('pre.escola', 'esc')
+        .innerJoin('esc.usuariosEscolas', 'use')
+        .where('use.usr_id_int = :usr_id', { usr_id: usr_id })
+        .andWhere('use.esc_id_int = :esc_id', { esc_id: esc_id })
+        .andWhere('extract(year from dip_criacao_dte) = :ano', { ano: ano })
+        .execute()
+        .then(diariosProfessor => {
+          resolve(diariosProfessor);
+        }).catch(reason => {
+          reject(reason);
+        });
+    })
   }
 
 

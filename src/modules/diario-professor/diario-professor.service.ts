@@ -22,13 +22,65 @@ export class DiarioProfessorService {
       const arrayOfTurmas: number[] = dados['arrayOfTurmas'];
       const nomesDiarios: string[] = dados['nomesDiarios'];
       let contaInteracoes = 0;
+      const diariosProfessores = new Array<DiarioProfessor>();
       arrayOfTurmas.forEach((trm_id: number) => {
         this.verificarExistencia(prd_id, trm_id).then(existe => {
           if (!existe) {
             const diarioProfessor = new DiarioProfessor();
             diarioProfessor.prd_id = prd_id;
             diarioProfessor.trm_id = trm_id;
-            diarioProfessor.diario = nomesDiarios[0];
+            diarioProfessor.diario = nomesDiarios[contaInteracoes];
+            diarioProfessor.criacao = new Date()
+            diariosProfessores.push(diarioProfessor);
+            contaInteracoes++
+            if (contaInteracoes == arrayOfTurmas.length) {
+              this.diarioProfessorRepository.save(diariosProfessores).then(novoDiarioProfessor => {
+                resolve();
+              }).catch(reason => {
+                reject(reason);
+              })
+            }
+          } else {
+            contaInteracoes++
+            if (contaInteracoes == arrayOfTurmas.length) {
+              resolve();
+            }
+          }
+        });
+      })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      /* const prd_id = dados['prd_id'];
+      const arrayOfTurmas: number[] = dados['arrayOfTurmas'];
+      const nomesDiarios: string[] = dados['nomesDiarios'];
+      let contaInteracoes = 0;
+      arrayOfTurmas.forEach((trm_id: number) => {
+        this.verificarExistencia(prd_id, trm_id).then(existe => {
+          if (!existe) {
+            const diarioProfessor = new DiarioProfessor();
+            diarioProfessor.prd_id = prd_id;
+            diarioProfessor.trm_id = trm_id;
+            diarioProfessor.diario = nomesDiarios[contaInteracoes];
             diarioProfessor.criacao = new Date()
             this.diarioProfessorRepository.save(diarioProfessor).then(novoDiarioProfessor => {
               contaInteracoes++
@@ -45,7 +97,11 @@ export class DiarioProfessorService {
             }
           }
         });
-      })
+      }) */
+
+
+
+
     })
   }
 
