@@ -1,3 +1,4 @@
+import { ProfessorEscolaRepository } from './../professor-escola/professor-escola.repository';
 import { UsuarioProfessorRepository } from './../usuario-professor/usuario-professor.repository';
 import { EscopoPerfilUsuarioService } from './../escopo-perfil-usuario/escopo-perfil-usuario.service';
 import { ProfessorRepository } from './professor.repository';
@@ -9,6 +10,7 @@ import { EscopoPerfilUsuarioRepository } from '../escopo-perfil-usuario/escopo-p
 import { EscolaRepository } from '../escola/escola.repository';
 import { EscopoPerfilUsuarioModule } from '../escopo-perfil-usuario/escopo-perfil-usuario.module';
 import { DiarioProfessorRepository } from '../diario-professor/diario-professor.repository';
+import { ProfessorDisciplinaRepository } from '../professor-disciplina/professor-disciplina.repository';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { DiarioProfessorRepository } from '../diario-professor/diario-professor.
         EscopoPerfilUsuarioRepository,
         UsuarioProfessorRepository,
         DiarioProfessorRepository,
+        ProfessorDisciplinaRepository,
+        ProfessorEscolaRepository,
         EscolaRepository,
       ]
     )

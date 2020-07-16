@@ -15,4 +15,9 @@ export class BoletimEscolarController {
     return this.boletimEscolarService.lancamentoPeriodoLetivoManual(dados);
   }
 
+  @Post('/inserir')
+  public inserirBoletimEscola(@Body() dados: any[]): Promise<void> {
+    return this.boletimEscolarService.inserirBoletinsEscola(dados);
+  }
+
 }

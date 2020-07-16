@@ -146,6 +146,41 @@ export class BoletimEscolarService {
     })
   }
 
+  public inserirBoletinsEscola(dados: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const anoLetivo: number = dados['ano_letivo'];
+      const dadosEstudantes: any[] = dados['arrayOfEstudantes'];
+      let boletinsInseridos = 0;
+      dadosEstudantes.forEach(dado => {
+        console.log(dado);
+        const boletimEscolar = new BoletimEscolar();
+        boletimEscolar.ano = anoLetivo;
+        boletimEscolar.est_id = dado['id'];
+        boletimEscolar.est_matricula = dado['matricula'];
+        this.procurarBoletim(boletimEscolar).then(boletim => {
+          if (!boletim) {
+            this.boletimEscolaRepository.save(boletimEscolar).then(novoBoletim => {
+              boletinsInseridos++;
+              console.log(novoBoletim);
+              if (dadosEstudantes.length == boletinsInseridos) {
+                resolve();
+              }
+            }).catch(reason => {
+              reject(reason);
+            });
+          } else {
+            boletinsInseridos++;
+            if (dadosEstudantes.length == boletinsInseridos) {
+              resolve();
+            }
+          }
+        }).catch(reason => {
+          reject(reason);
+        });
+      })
+    })
+  }
+
   public procurarBoletim(boletimEscolar: BoletimEscolar): Promise<BoletimEscolar> {
     return new Promise((resolve, reject) => [
       this.boletimEscolaRepository.find({ where: { ano: boletimEscolar.ano, est_id: boletimEscolar.est_id } }).then((boletins) => {

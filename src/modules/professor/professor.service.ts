@@ -12,6 +12,8 @@ import { Escola } from '../escola/escola.entity';
 import { DeleteResult } from 'typeorm';
 import { ProfessorIntegracaoDto } from './dto/professor-integracao.dto';
 import { UsuarioProfessorRepository } from '../usuario-professor/usuario-professor.repository';
+import { ProfessorDisciplinaRepository } from '../professor-disciplina/professor-disciplina.repository';
+import { ProfessorEscolaRepository } from '../professor-escola/professor-escola.repository';
 
 @Injectable()
 export class ProfessorService {
@@ -20,6 +22,9 @@ export class ProfessorService {
   constructor(
     @InjectRepository(ProfessorRepository) private professorRepository: ProfessorRepository,
     @InjectRepository(EscolaRepository) private escolaRepository: EscolaRepository,
+    @InjectRepository(ProfessorDisciplinaRepository) private professorDisciplinaRepository: ProfessorDisciplinaRepository,
+    @InjectRepository(ProfessorEscolaRepository) private professorEscolaRepository: ProfessorEscolaRepository,
+
     private escopoPerfilUsuarioService: EscopoPerfilUsuarioService,
   ) { }
 
@@ -105,6 +110,177 @@ export class ProfessorService {
     });
   }
 
+  public listarSemEscola(): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'distinct prf.prf_id_int as id', 'prf.prf_nome_txt as nome',
+        'prf.prf_email_txt as email', 'prf.prf_matricula_txt as matricula',
+        'prf.prf_cpf_txt as cpf', 'prf.prf_telefone_txt as telefone',
+        '0 as total'
+      ]
+      this.listarProfessorEscolaGlobal().then((prf_ids: number[]) => {
+        this.professorRepository.createQueryBuilder('prf')
+          .select(campos)
+          .where('prf.prf_id_int not in (:...prf_ids)', { prf_ids: prf_ids })
+          .execute()
+          .then((professoresSemEscola: any[]) => {
+            professoresSemEscola = professoresSemEscola.map(professor => {
+              professor['total'] = professoresSemEscola.length;
+              return professor
+            });
+            resolve(professoresSemEscola);
+          }).catch(reason => {
+            reject(reason);
+          });
+      })
+    })
+  }
+
+  public filtrar(valor: string, limit: number, offset: number, esc_id: number, usr_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      this.escopoPerfilUsuarioService.listarNivelAcessoUsuario(usr_id, esc_id).then((escopoUsuario: string) => {
+        const nomeEscopo = escopoUsuario['nome'];
+        if (nomeEscopo == escopo.GLOBAL) {
+          resolve(this.filtrarGlobal(valor, limit, offset));
+        }
+        if (nomeEscopo == escopo.REGIONAL) {
+          resolve(this.filtrarRegional(valor, limit, offset, esc_id));
+        }
+        if (nomeEscopo == escopo.LOCAL) {
+          resolve(this.filtrarLocal(valor, limit, offset, esc_id));
+        }
+      });
+    })
+  }
+
+  public filtrarLocal(valor: string, limit: number, offset: number, esc_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      this.totalFiltrarLocal(valor, esc_id).then(total => {
+        const campos = [
+          'prf.prf_id_int as id', 'prf.prf_nome_txt as nome',
+          'prf.prf_email_txt as email', 'prf.prf_matricula_txt as matricula',
+          'prf.prf_cpf_txt as cpf', 'prf.prf_telefone_txt as telefone',
+          `${total} as total`
+        ];
+        this.professorRepository.createQueryBuilder('prf')
+          .select(campos)
+          .innerJoin('prf.professoresEscolas', 'pre')
+          .innerJoin('pre.escola', 'esc')
+          .where('LOWER(prf_nome_txt) like LOWER(:valor)', { valor: `%${valor}%` })
+          .andWhere('esc.esc_id_int = :esc_id', { esc_id: esc_id })
+          .limit(limit)
+          .offset(offset)
+          .execute()
+          .then((professores: any[]) => {
+            resolve(professores);
+          }).catch(reason => {
+            reject(reason);
+          });
+      })
+    })
+  }
+
+  public totalFiltrarLocal(valor: string, esc_id: number): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this.professorRepository.createQueryBuilder('prf')
+        .select('*')
+        .innerJoin('prf.professoresEscolas', 'pre')
+        .innerJoin('pre.escola', 'esc')
+        .where('LOWER(prf_nome_txt) like LOWER(:valor)', { valor: `%${valor}%` })
+        .andWhere('esc.esc_id_int = :esc_id', { esc_id: esc_id })
+        .execute()
+        .then((professores: any[]) => {
+          resolve(professores.length);
+        }).catch(reason => {
+          reject(reason);
+        });
+    })
+  }
+
+  public filtrarRegional(valor: string, limit: number, offset: number, esc_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      this.pegarIdRegiaoEscolaPorEscolaId(esc_id).then(ree_id => {
+        this.totalFiltrarRegional(valor, ree_id).then(total => {
+          const campos = [
+            'prf.prf_id_int as id', 'prf.prf_nome_txt as nome',
+            'prf.prf_email_txt as email', 'prf.prf_matricula_txt as matricula',
+            'prf.prf_cpf_txt as cpf', 'prf.prf_telefone_txt as telefone',
+            `${total} as total`
+          ];
+          this.professorRepository.createQueryBuilder('prf')
+            .select(campos)
+            .innerJoin('prf.professoresEscolas', 'pre')
+            .innerJoin('pre.escola', 'esc')
+            .where('LOWER(prf_nome_txt) like LOWER(:valor)', { valor: `%${valor}%` })
+            .andWhere('esc.ree_id_int = :ree_id', { ree_id: ree_id })
+            .execute()
+            .then((professores: any[]) => {
+              resolve(professores);
+            }).catch(reason => {
+              reject(reason);
+            });
+        });
+      });
+    })
+  }
+
+  public totalFiltrarRegional(valor: string, ree_id: number): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this.professorRepository.createQueryBuilder('prf')
+        .select('*')
+        .innerJoin('prf.professoresEscolas', 'pre')
+        .innerJoin('pre.escola', 'esc')
+        .where('LOWER(prf_nome_txt) like LOWER(:valor)', { valor: `%${valor}%` })
+        .andWhere('esc.ree_id_int = :ree_id', { ree_id: ree_id })
+        .execute()
+        .then((professores: any[]) => {
+          resolve(professores.length);
+        }).catch(reason => {
+          reject(reason);
+        });
+    })
+  }
+
+  public filtrarGlobal(valor: string, limit: number, offset: number): Promise<any[]> {
+    console.log(valor, limit, offset);
+    return new Promise((resolve, reject) => {
+      this.totalFiltrarGlobal(valor).then(total => {
+        const campos = [
+          'prf_id_int as id', 'prf_nome_txt as nome',
+          'prf_email_txt as email', 'prf_matricula_txt as matricula',
+          'prf_cpf_txt as cpf', 'prf_telefone_txt as telefone',
+          `${total} as total`
+        ];
+        this.professorRepository.createQueryBuilder('prf')
+          .select(campos)
+          .where('LOWER(prf_nome_txt) like LOWER(:valor)', { valor: `%${valor}%` })
+          .limit(limit)
+          .offset(offset)
+          .execute()
+          .then((professores: any[]) => {
+            console.log(professores);
+            resolve(professores);
+          }).catch(reason => {
+            reject(reason);
+          });
+      })
+    })
+  }
+
+  public totalFiltrarGlobal(valor: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this.professorRepository.createQueryBuilder('prf')
+        .select('*')
+        .where('LOWER(prf_nome_txt) like LOWER(:valor)', { valor: `%${valor}%` })
+        .execute()
+        .then((professores: any[]) => {
+          resolve(professores.length);
+        }).catch(reason => {
+          reject(reason);
+        });
+    })
+  }
+
   public listarSemDisciplina(limit: number, offset: number, asc: number, usr_id: number, esc_id: number): Promise<any[]> {
     return new Promise((resolve, reject) => {
       this.escopoPerfilUsuarioService.listarNivelAcessoUsuario(usr_id, esc_id).then((escopoUsuario: string) => {
@@ -113,35 +289,146 @@ export class ProfessorService {
           resolve(this.listarSemDisciplinaGlobal(limit, offset, asc, usr_id));
         }
         if (nomeEscopo == escopo.REGIONAL) {
-          resolve(this.listarSemDisciplinaRegional(limit, offset, asc, usr_id, esc_id));
+          resolve(this.listarSemDisciplinaRegional(limit, offset, asc, esc_id));
         }
         if (nomeEscopo == escopo.LOCAL) {
-          resolve(this.listarSemDisciplinaLocal(limit, offset, asc, usr_id, esc_id))
+          resolve(this.listarSemDisciplinaLocal(limit, offset, asc, esc_id));
         }
+      });
+    })
+  }
+
+  public listarSemDisciplinaLocal(limit: number, offset: number, asc: number, esc_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'distinct prf.prf_id_int as id', 'prf.prf_nome_txt as nome',
+        'prf.prf_email_txt as email', 'prf.prf_matricula_txt as matricula',
+        'prf.prf_cpf_txt as cpf', 'prf.prf_telefone_txt as telefone',
+        '0 as total'
+      ];
+
+      this.listarProfessorDisciplinaGlobal().then((prf_ids) => {
+        this.professorRepository.createQueryBuilder('prf')
+          .select(campos)
+          .innerJoin('prf.professoresEscolas', 'pre')
+          .where('prf.prf_id_int not in (:...prf_ids)', { prf_ids: prf_ids })
+          .andWhere('pre.esc_id_int = :esc_id', { esc_id: esc_id })
+          .limit(limit)
+          .offset(offset)
+          .orderBy('prf.prf_nome_txt', asc ? 'ASC' : 'DESC')
+          .execute()
+          .then((professores: any[]) => {
+            professores = professores.map(professor => {
+              professor['total'] = professores.length;
+              return professor
+            });
+            resolve(professores)
+          }).catch(reason => {
+            reject(reason);
+          });
+      });
+
+    })
+  }
+
+  public listarSemDisciplinaRegional(limit: number, offset: number, asc: number, esc_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'distinct prf.prf_id_int as id', 'prf.prf_nome_txt as nome',
+        'prf.prf_email_txt as email', 'prf.prf_matricula_txt as matricula',
+        'prf.prf_cpf_txt as cpf', 'prf.prf_telefone_txt as telefone',
+        '0 as total'
+      ];
+      this.listarProfessorDisciplinaGlobal().then((prf_ids) => {
+        this.pegarIdRegiaoEscolaPorEscolaId(esc_id).then((ree_id: number) => {
+          this.professorRepository.createQueryBuilder('prf')
+            .select(campos)
+            .innerJoin('prf.professoresEscolas', 'pre')
+            .innerJoin('pre.escola', 'esc')
+            .innerJoin('esc.regiaoEscola', 'ree')
+            .where('prf.prf_id_int not in (:...prf_ids)', { prf_ids: prf_ids })
+            .andWhere('ree.ree_id_int = :ree_id', { ree_id: ree_id })
+            .limit(limit)
+            .offset(offset)
+            .orderBy('prf.prf_nome_txt', asc ? 'ASC' : 'DESC')
+            .execute()
+            .then((professores: any[]) => {
+              professores = professores.map(professor => {
+                professor['total'] = professores.length;
+                return professor
+              });
+              resolve(professores)
+            }).catch(reason => {
+              reject(reason);
+            });
+        });
       });
     })
   }
 
 
 
-  public listarSemDisciplinaLocal(limit: number, offset: number, asc: number, usr_id: number, esc_id: number): Promise<any[]> {
-    return new Promise((resolve, reject) => {
-      console.log('Local:', limit, offset, asc, usr_id, esc_id);
-      resolve([]);
-    })
-  }
-
-  public listarSemDisciplinaRegional(limit: number, offset: number, asc: number, usr_id: number, esc_id: number): Promise<any[]> {
-    return new Promise((resolve, reject) => {
-      console.log('Regional:', limit, offset, asc, usr_id, esc_id);
-      resolve([]);
-    })
-  }
-
   public listarSemDisciplinaGlobal(limit: number, offset: number, asc: number, usr_id: number): Promise<any[]> {
     return new Promise((resolve, reject) => {
-      console.log('Global:', limit, offset, asc, usr_id);
-      resolve([]);
+      const campos = [
+        'distinct prf.prf_id_int as id', 'prf.prf_nome_txt as nome',
+        'prf.prf_email_txt as email', 'prf.prf_matricula_txt as matricula',
+        'prf.prf_cpf_txt as cpf', 'prf.prf_telefone_txt as telefone',
+        '0 as total'
+      ];
+      this.listarProfessorDisciplinaGlobal().then((prf_ids) => {
+        this.professorRepository.createQueryBuilder('prf')
+          .select(campos)
+          .where('prf.prf_id_int not in (:...prf_ids)', { prf_ids: prf_ids })
+          .limit(limit)
+          .offset(offset)
+          .orderBy('prf_nome_txt', asc ? 'ASC' : 'DESC')
+          .execute()
+          .then((professores: any[]) => {
+            professores = professores.map(professor => {
+              professor['total'] = professores.length;
+              return professor
+            });
+            resolve(professores)
+          }).catch(reason => {
+            reject(reason);
+          });
+      });
+    })
+  }
+
+  public listarProfessorDisciplinaGlobal(): Promise<number[]> {
+    return new Promise((resolve, reject) => {
+      this.professorDisciplinaRepository.createQueryBuilder('prd')
+        .select('prf_id_int')
+        .orderBy('')
+        .execute()
+        .then((prf_ids: number[]) => {
+          const retorno = new Array<number>();
+          prf_ids.forEach(prf_id => {
+            retorno.push(prf_id['prf_id_int'])
+          })
+          resolve(retorno);
+        }).catch(reason => {
+          reject(reason);
+        });
+    })
+  }
+
+  public listarProfessorEscolaGlobal(): Promise<number[]> {
+    return new Promise((resolve, reject) => {
+      this.professorEscolaRepository.createQueryBuilder('pre')
+        .select('prf_id_int')
+        .execute()
+        .then((prf_ids: number[]) => {
+          const retorno = new Array<number>();
+          prf_ids.forEach(prf_id => {
+            retorno.push(prf_id['prf_id_int'])
+          })
+          resolve(retorno);
+        }).catch(reason => {
+          reject(reason);
+        });
     })
   }
 
@@ -416,6 +703,8 @@ export class ProfessorService {
       });
     });
   }
+
+
 
 
 }

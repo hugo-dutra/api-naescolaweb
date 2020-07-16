@@ -32,6 +32,16 @@ export class ProfessorController {
     return this.professorService.listarDisciplinas(prf_id);
   }
 
+  @Get('/sem-escola')
+  public listarSemEscola(): Promise<any[]> {
+    return this.professorService.listarSemEscola();
+  }
+
+  @Get('/filtrar/:valor/:limit/:offset/:esc_id/:usr_id')
+  public filtrar(@Param('valor') valor: string, @Param('limit') limit: number, @Param('offset') offset: number, @Param('esc_id') esc_id: number, @Param('usr_id') usr_id: number): Promise<any[]> {
+    return this.professorService.filtrar(valor, limit, offset, esc_id, usr_id);
+  }
+
   @Get('/sem-disciplina/:limit/:offset/:asc/:usr_id/:esc_id')
   public listarSemDisciplina(
     @Param('limit') limit: number, @Param('offset') offset: number,
