@@ -38,7 +38,6 @@ export class PerfilPermissaoService {
         .where('pru_id_int = :pru_id', { pru_id: pru_id })
         .execute()
         .then(deleteResult => {
-          console.log(deleteResult);
           resolve();
         }).catch(reason => {
           reject(reason);

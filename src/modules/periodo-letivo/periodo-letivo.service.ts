@@ -49,7 +49,6 @@ export class PeriodoLetivoService {
         .where('prl_id_int = :prl_id', { prl_id: prl_id })
         .execute()
         .then(periodos => {
-          console.log(periodos);
           resolve(periodos)
         }).catch(reason => {
           reject(reason)

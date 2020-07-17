@@ -253,8 +253,10 @@ export class DiarioProfessorService {
         .execute()
         .then((diariosProfessor: any[]) => {
           const utils = new Utils();
-          diariosProfessor = utils.eliminaValoresRepetidos(diariosProfessor, 'dip_id');
-          resolve(diariosProfessor)
+          diariosProfessor = utils.eliminaValoresRepetidos(diariosProfessor, 'dip_id').sort((a, b) => {
+            return a['diario'] > b['diario'] ? 1 : -1
+          });
+          resolve(diariosProfessor);
         }).catch(reason => {
           reject(reason);
         })

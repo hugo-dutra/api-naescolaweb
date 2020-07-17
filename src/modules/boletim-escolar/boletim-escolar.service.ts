@@ -152,7 +152,6 @@ export class BoletimEscolarService {
       const dadosEstudantes: any[] = dados['arrayOfEstudantes'];
       let boletinsInseridos = 0;
       dadosEstudantes.forEach(dado => {
-        console.log(dado);
         const boletimEscolar = new BoletimEscolar();
         boletimEscolar.ano = anoLetivo;
         boletimEscolar.est_id = dado['id'];
@@ -161,7 +160,6 @@ export class BoletimEscolarService {
           if (!boletim) {
             this.boletimEscolaRepository.save(boletimEscolar).then(novoBoletim => {
               boletinsInseridos++;
-              console.log(novoBoletim);
               if (dadosEstudantes.length == boletinsInseridos) {
                 resolve();
               }

@@ -13,13 +13,11 @@ export class PortariaService {
 
   public inserir(dadosPortaria: any): Promise<any> {
     return new Promise((resolve, reject) => {
-      console.log(dadosPortaria);
       const portaria = new Portaria()
       portaria.esc_id = dadosPortaria['esc_id'];
       portaria.nome = dadosPortaria['nome'];
       this.pegarInepPorEscolaId(portaria.esc_id).then(inep => {
         this.portariaRepository.save(portaria).then(novaPortaria => {
-          console.log(novaPortaria);
           const por_id = novaPortaria.id;
           novaPortaria.codigo_cadastro = `${inep}_${por_id}`;
           this.portariaRepository.createQueryBuilder('por')

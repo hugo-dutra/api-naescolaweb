@@ -204,7 +204,7 @@ export class UsuarioEscolaService {
 
   public excluir(dados: any): Promise<void> {
     return new Promise((resolve, reject) => {
-      console.log(dados);
+      console.log('Usuario escola => excluir', dados);
       resolve();
     })
   }

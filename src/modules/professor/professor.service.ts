@@ -242,7 +242,6 @@ export class ProfessorService {
   }
 
   public filtrarGlobal(valor: string, limit: number, offset: number): Promise<any[]> {
-    console.log(valor, limit, offset);
     return new Promise((resolve, reject) => {
       this.totalFiltrarGlobal(valor).then(total => {
         const campos = [
@@ -258,7 +257,6 @@ export class ProfessorService {
           .offset(offset)
           .execute()
           .then((professores: any[]) => {
-            console.log(professores);
             resolve(professores);
           }).catch(reason => {
             reject(reason);

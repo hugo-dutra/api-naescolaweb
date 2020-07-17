@@ -35,7 +35,6 @@ export class UsuarioProfessorService {
         .where('usr_id_int = :usr_id', { usr_id: dados['usr_id'] })
         .execute()
         .then(deleteResult => {
-          console.log(deleteResult);
           resolve();
         }).catch(reason => {
           reject(reason);

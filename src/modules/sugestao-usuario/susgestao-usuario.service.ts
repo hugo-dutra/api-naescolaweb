@@ -46,7 +46,6 @@ export class SugestaoUsuarioService {
 
   public listarGlobal(data_inicio: Date, data_fim: Date, esc_id: number, statusSugestao: string): Promise<any[]> {
     return new Promise((resolve, reject) => {
-      console.log(data_inicio, data_fim, esc_id, statusSugestao, 'Global');
       const campos = [
         'sus.sus_id_int as sus_id', 'usr.usr_nome_txt as usuario',
         'esc.esc_nome_txt as escola', 'sus.sus_titulo_txt as titulo',
@@ -89,7 +88,6 @@ export class SugestaoUsuarioService {
 
   public listarRegional(data_inicio: Date, data_fim: Date, esc_id: number, statusSugestao: string): Promise<any[]> {
     return new Promise((resolve, reject) => {
-      console.log(data_inicio, data_fim, esc_id, statusSugestao, 'Regional');
       this.escolaRepository.createQueryBuilder()
         .select(['ree_id_int'])
         .where('esc_id_int = :esc_id', { esc_id: esc_id })

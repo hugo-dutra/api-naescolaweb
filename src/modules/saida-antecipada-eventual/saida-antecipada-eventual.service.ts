@@ -118,7 +118,7 @@ export class SaidaAntecipadaEventualService {
 
   public excluir(sae_id: number): Promise<void> {
     return new Promise((resolve, reject) => {
-      console.log(sae_id);
+      console.log('Saida antecipada Service => excluir', sae_id);
       resolve();
     })
   }

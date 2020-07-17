@@ -52,8 +52,6 @@ export class FrequenciaPortariaService {
 
   public inserirFrequenciaDoAplicativo(dados: any): Promise<void> {
     return new Promise((resolve, reject) => {
-      console.log(dados);
-      console.log('inserirFrequenciaDoAplicativo');
       const entradas: any[] = dados['entradas'];
       let frequenciasInseridas = 0;
       entradas.forEach(entrada => {
@@ -90,7 +88,6 @@ export class FrequenciaPortariaService {
 
   public alterarStatusEntregaMensagemEntradaSaida(dados: any[]): Promise<void> {
     return new Promise((resolve, reject) => {
-      console.log(dados);
       if (dados.length == 0) {
         resolve();
       }

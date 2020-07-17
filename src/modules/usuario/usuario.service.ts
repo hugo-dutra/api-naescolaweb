@@ -305,7 +305,7 @@ export class UsuarioService {
 
   public logar(dados: any): Promise<any> {
     return new Promise((resolve, reject) => {
-      console.log(dados);
+      console.log('Usuario service => logar ', dados);
       resolve([]);
     })
   }
@@ -415,7 +415,6 @@ export class UsuarioService {
 
   public listarRegional(limit: number, offset: number, asc: boolean, esc_id: number): Promise<any[]> {
     return new Promise((resolve, reject) => {
-      console.log(limit, offset, asc, esc_id);
       this.escolaRepository.createQueryBuilder('esc')
         .select(['ree_id_int as ree_id'])
         .where('esc_id_int = :esc_id', { esc_id: esc_id })
