@@ -118,8 +118,11 @@ export class SaidaAntecipadaEventualService {
 
   public excluir(sae_id: number): Promise<void> {
     return new Promise((resolve, reject) => {
-      console.log('Saida antecipada Service => excluir', sae_id);
-      resolve();
+      this.saidaAntecipadaEventualRepository.delete(sae_id['sae_id']).then(deleteResult => {
+        resolve();
+      }).catch(reason => {
+        reject(reason);
+      });
     })
   }
 
