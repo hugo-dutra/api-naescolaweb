@@ -468,6 +468,134 @@ export class OcorrenciaDisciplinarService {
     });
   }
 
+  public listarQuantidadePeriodo(esc_id: number, data_inicio: Date, data_fim: Date): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        '0 as quantidade',
+        'date(ocd_data_hora_dtm) as data'
+      ]
+      this.ocorrenciaDisciplinarRespository.createQueryBuilder('ocd')
+        .select(campos)
+        .innerJoin('ocd.estudante', 'est')
+        .where('ocd.ocd_data_hora_dtm >= :data_inicio', { data_inicio: data_inicio })
+        .andWhere('ocd.ocd_data_hora_dtm <= :data_fim', { data_fim: data_fim })
+        .andWhere('est.esc_id_int = :esc_id', { esc_id: esc_id })
+        .orderBy('ocd_data_hora_dtm', 'ASC')
+        .execute()
+        .then((ocorrencias: any[]) => {
+          let result = [];
+          ocorrencias.reduce(function (res, value) {
+            if (!res[value.data]) {
+              res[value.data] = value
+              result.push(res[value.data])
+            }
+            res[value.data].quantidade += 1;
+            return res;
+          }, {});
+          resolve(result)
+        }).catch(reason => {
+          reject(reason)
+        });
+    })
+  }
+
+  public listarQuantidadeTurmaPeriodo(esc_id: number, data_inicio: Date, data_fim: Date): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        '*',
+        '0 as quantidade',
+      ];
+      this.ocorrenciaDisciplinarRespository.createQueryBuilder('ocd')
+        .select(campos)
+        .innerJoin('ocd.estudante', 'est')
+        .innerJoin('est.estudantesTurmas', 'etu')
+        .innerJoin('etu.turma', 'trm')
+        .innerJoin('trm.escola', 'esc')
+        .innerJoin('trm.serie', 'sre')
+        .innerJoin('sre.etapaEnsino', 'ete')
+        .innerJoin('trm.turno', 'trn')
+        .where('esc.esc_id_int = :esc_id', { esc_id: esc_id })
+        .andWhere('date(ocd.ocd_data_hora_dtm) >= :data_inicio', { data_inicio: data_inicio })
+        .andWhere('date(ocd.ocd_data_hora_dtm) <= :data_fim', { data_fim: data_fim })
+        .execute()
+        .then((ocorrencias: any[]) => {
+          let results = [];
+          ocorrencias.reduce(function (res, value) {
+            if (!res[value.trm_id_int]) {
+              res[value.trm_id_int] = value
+              results.push(res[value.trm_id_int])
+            }
+            res[value.trm_id_int].quantidade += 1;
+
+            return res;
+          }, {});
+          results = results.map(result => {
+            return { quantidade: result.quantidade, turma: result.sre_nome_txt + ' ' + result.ete_abreviatura_txt + ' ' + result.trm_nome_txt + ' - ' + result.trn_nome_txt }
+          })
+          resolve(results);
+        }).catch(reason => {
+          reject(reason);
+        })
+    })
+  }
+
+  public listarQuantidadeEstudantePeriodo(trm_id: number, data_inicio: Date, data_fim: Date): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'count(*) as quantidade',
+        'est.est_nome_txt as estudante'
+      ]
+      this.ocorrenciaDisciplinarRespository.createQueryBuilder('ocd')
+        .select(campos)
+        .innerJoin('ocd.estudante', 'est')
+        .innerJoin('est.estudantesTurmas', 'etu')
+        .innerJoin('etu.turma', 'trm')
+        .innerJoin('trm.serie', 'sre')
+        .innerJoin('trm.turno', 'trn')
+        .where('trm.trm_id_int = :trm_id', { trm_id: trm_id })
+        .andWhere('date(ocd.ocd_data_hora_dtm) >= :data_inicio', { data_inicio: data_inicio })
+        .andWhere('date(ocd.ocd_data_hora_dtm) <= :data_fim', { data_fim: data_fim })
+        .addGroupBy('est.est_id_int')
+        .execute()
+        .then((ocorrencias: any[]) => {
+          resolve(ocorrencias);
+        }).catch(reason => {
+          console.log(reason);
+        })
+    })
+  }
+
+  public listarQuantidadeTipoOcorrenciaPeriodo(esc_id: number, data_inicio: Date, data_fim: Date): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      console.log(esc_id, data_inicio, data_fim);
+      const campos = [
+        'count(*) as quantidade',
+        'tod_tipo_ocorrencia_txt as tipo_ocorrencia'
+      ]
+      this.ocorrenciaDisciplinarRespository.createQueryBuilder('ocd')
+        .select(campos)
+        .innerJoin('ocd.tipoOcorrenciaDisciplinar', 'tod')
+        .where('date(ocd.ocd_data_hora_dtm) >= :data_inicio', { data_inicio: data_inicio })
+        .andWhere('date(ocd.ocd_data_hora_dtm) <= :data_fim', { data_fim: data_fim })
+        .andWhere('tod.esc_id_int = :esc_id', { esc_id: esc_id })
+        .groupBy('tod.tod_id_int')
+        .execute()
+        .then((ocorrencias: any[]) => {
+          resolve(ocorrencias);
+        }).catch(reason => {
+          reject(reason)
+        });
+    })
+  }
+
+  public listarQuantidadePeriodoLetivoTurma(prl_id: number, trm_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      console.log('IMPLEMENTAR => OCORRENCIA_DISCIPLINAR_SERVICE => listarQuantidadePeriodoLetivoTurma');
+      console.log(prl_id, trm_id);
+      resolve([]);
+    })
+  }
+
   public listarOcorrenciasVerificadas(esc_id: number, usr_id: number): Promise<number[]> {
     return new Promise((resolve, reject) => {
       this.alertaOcorrenciaVerificadaRepository.createQueryBuilder('aov')

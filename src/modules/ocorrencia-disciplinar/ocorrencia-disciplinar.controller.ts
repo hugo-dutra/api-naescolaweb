@@ -65,5 +65,36 @@ export class OcorrenciaDisciplinarController {
     return this.ocorrenciaDisciplinarService.listarAvaliacaoSocial(trm_id, dataInicio, dataFim, total);
   }
 
+  @Get('/grafico-quantidade-periodo/:esc_id/:data_inicio/:data_fim')
+  public listarQuantidadePeriodo(
+    @Param('esc_id') esc_id: number, @Param('data_inicio') data_inicio: Date, @Param('data_fim') data_fim: Date): Promise<any[]> {
+    return this.ocorrenciaDisciplinarService.listarQuantidadePeriodo(esc_id, data_inicio, data_fim);
+  }
+
+  @Get('/grafico-quantidade-turma-periodo/:esc_id/:data_inicio/:data_fim')
+  public listarQuantidadeTurmaPeriodo(
+    @Param('esc_id') esc_id: number, @Param('data_inicio') data_inicio: Date, @Param('data_fim') data_fim: Date): Promise<any[]> {
+    return this.ocorrenciaDisciplinarService.listarQuantidadeTurmaPeriodo(esc_id, data_inicio, data_fim);
+  }
+
+  @Get('/grafico-quantidade-estudante-periodo/:trm_id/:data_inicio/:data_fim')
+  public listarQuantidadeEstudantePeriodo(
+    @Param('trm_id') trm_id: number, @Param('data_inicio') data_inicio: Date, @Param('data_fim') data_fim: Date): Promise<any[]> {
+    return this.ocorrenciaDisciplinarService.listarQuantidadeEstudantePeriodo(trm_id, data_inicio, data_fim);
+  }
+
+  @Get('/grafico-quantidade-periodo-letivo-turma/:prl_id/:trm_id')
+  public listarQuantidadePeriodoLetivoTurma(
+    @Param('prl_id') prl_id: number, @Param('trm_id') trm_id: number): Promise<any[]> {
+    return this.ocorrenciaDisciplinarService.listarQuantidadePeriodoLetivoTurma(prl_id, trm_id);
+  }
+
+  @Get('/grafico-quantidade-tipo-ocorrencia-periodo/:esc_id/:data_inicio/:data_fim')
+  public listarQuantidadeTipoOcorrenciaPeriodo(
+    @Param('esc_id') esc_id: number, @Param('data_inicio') data_inicio: Date, @Param('data_fim') data_fim: Date): Promise<any[]> {
+    return this.ocorrenciaDisciplinarService.listarQuantidadeTipoOcorrenciaPeriodo(esc_id, data_inicio, data_fim);
+  }
+
+
 }
 

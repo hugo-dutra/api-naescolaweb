@@ -126,7 +126,7 @@ export class TurmaService {
           turmasFiltrado = <Turma[]>turmasFiltrado.map(turma => {
             turma['matriculados'] = matriculados;
             return turma;
-          })
+          }).sort((a, b) => a['serie'] > b['serie'] ? 1 : -1).sort((a, b) => a['nome'] > b['nome'] ? 1 : -1)
           resolve(<Turma[]>turmasFiltrado);
         })
     });
