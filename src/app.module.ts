@@ -71,6 +71,7 @@ import { FrequenciaPortariaModule } from './modules/frequencia-portaria/frequenc
 import { PeriodoLetivoModule } from './modules/periodo-letivo/periodo-letivo.module';
 import { BoletimEscolarModule } from './modules/boletim-escolar/boletim-escolar.module';
 import { AvaliacaoEstudanteModule } from './modules/avaliacao-estudante/avaliacao-estudante.module';
+import { SistemaModule } from './modules/sistema/sistema.module';
 
 
 @Module({
@@ -146,6 +147,7 @@ import { AvaliacaoEstudanteModule } from './modules/avaliacao-estudante/avaliaca
     PeriodoLetivoModule,
     BoletimEscolarModule,
     AvaliacaoEstudanteModule,
+    SistemaModule,
   ],
 })
 export class AppModule { }
