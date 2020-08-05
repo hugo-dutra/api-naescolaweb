@@ -7,6 +7,7 @@ import { OcorrenciaDisciplinarRespository } from './ocorrencia-disciplinar.repos
 import { EstudanteRepository } from '../estudante/estudante.repository';
 import { Utils } from 'src/utils/utils';
 import { TipoOcorrenciaDisciplinarRepository } from '../tipo-ocorrencia-disciplinar/tipo-ocorrencia-disciplinar.repository';
+import { PeriodoLetivoRepository } from '../periodo-letivo/periodo-letivo.repository';
 
 @Injectable()
 export class OcorrenciaDisciplinarService {
@@ -15,6 +16,9 @@ export class OcorrenciaDisciplinarService {
     @InjectRepository(EstudanteRepository) private estudanteRepository: EstudanteRepository,
     @InjectRepository(AlertaOcorrenciaVerificadaRepository) private alertaOcorrenciaVerificadaRepository: AlertaOcorrenciaVerificadaRepository,
     @InjectRepository(TipoOcorrenciaDisciplinarRepository) private tipoOcorrenciaDisciplinarRepository: TipoOcorrenciaDisciplinarRepository,
+    @InjectRepository(PeriodoLetivoRepository) private periodoLetivoRepository: PeriodoLetivoRepository,
+
+
   ) { }
 
   public inserir(dados: any): Promise<OcorrenciaDisciplinar[]> {
@@ -567,7 +571,6 @@ export class OcorrenciaDisciplinarService {
 
   public listarQuantidadeTipoOcorrenciaPeriodo(esc_id: number, data_inicio: Date, data_fim: Date): Promise<any[]> {
     return new Promise((resolve, reject) => {
-      console.log(esc_id, data_inicio, data_fim);
       const campos = [
         'count(*) as quantidade',
         'tod_tipo_ocorrencia_txt as tipo_ocorrencia'
@@ -590,9 +593,39 @@ export class OcorrenciaDisciplinarService {
 
   public listarQuantidadePeriodoLetivoTurma(prl_id: number, trm_id: number): Promise<any[]> {
     return new Promise((resolve, reject) => {
-      console.log('IMPLEMENTAR => OCORRENCIA_DISCIPLINAR_SERVICE => listarQuantidadePeriodoLetivoTurma');
-      console.log(prl_id, trm_id);
-      resolve([]);
+      this.periodoLetivoRepository.createQueryBuilder('prl')
+        .select(['prl_inicio_dte as data_inicio', 'prl_fim_dte as data_fim'])
+        .where('prl_id_int = :prl_id', { prl_id: prl_id })
+        .execute()
+        .then(dados => {
+          const dataInicio = dados[0]['data_inicio'];
+          const dataFim = dados[0]['data_fim'];
+          const campos = [
+            'tod.tod_tipo_ocorrencia_txt as tipo_ocorrencia',
+            'count(ocd.ocd_id_int) as quantidade',
+            'est.est_id_int as est_id'
+          ];
+          this.ocorrenciaDisciplinarRespository.createQueryBuilder('ocd')
+            .select(campos)
+            .innerJoin('ocd.estudante', 'est')
+            .innerJoin('ocd.tipoOcorrenciaDisciplinar', 'tod')
+            .innerJoin('est.estudantesTurmas', 'etu')
+            .innerJoin('etu.turma', 'trm')
+            .where('trm.trm_id_int = :trm_id', { trm_id: trm_id })
+            .andWhere('ocd.ocd_data_hora_dtm >= :dataInicio', { dataInicio: dataInicio })
+            .andWhere('ocd.ocd_data_hora_dtm <= :dataFim', { dataFim: dataFim })
+            .groupBy('tod.tod_id_int')
+            .addGroupBy('est.est_id_int')
+            .orderBy('est.est_nome_txt', 'ASC')
+            .execute()
+            .then((ocorrencias: any[]) => {
+              resolve(ocorrencias);
+            }).catch(reason => {
+              reject(reason);
+            })
+        }).catch(reason => {
+          reject(reason)
+        })
     })
   }
 

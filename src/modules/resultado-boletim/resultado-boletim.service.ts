@@ -26,7 +26,6 @@ export class ResultadoBoletimService {
           }
           if (resultadosBoletins.length == resultadosConsolidados.length) {
             this.resultadoBoletimRepository.save(resultadosBoletins).then(() => {
-              console.log(resultadosBoletins);
               resolve();
             })
           }
@@ -102,6 +101,271 @@ export class ResultadoBoletimService {
       }).catch(reason => {
         reject(reason);
       })
+    })
+  }
+
+  public listarRendimentoTurmaPeriodo(trm_id: number, prl_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'dsp.dsp_abreviatura_txt as disciplina_abv', 'dsp.dsp_nome_txt as disciplina',
+        'reb.reb_nota_num as nota', 'reb.reb_falta_int as faltas',
+        'est.est_id_int as est_id', 'est.est_nome_txt as nome',
+        'est.est_foto_txt as foto', 'prl.prl_periodo_txt as periodo',
+        'prl.prl_inicio_dte as inicio_periodo', 'prl.prl_fim_dte as fim_periodo'
+      ]
+      this.resultadoBoletimRepository.createQueryBuilder('reb')
+        .select(campos)
+        .innerJoin('reb.boletimEscolar', 'bes')
+        .innerJoin('bes.estudante', 'est')
+        .innerJoin('est.estudantesTurmas', 'etu')
+        .innerJoin('etu.turma', 'trm')
+        .innerJoin('reb.disciplina', 'dsp')
+        .innerJoin('reb.periodoLetivo', 'prl')
+        .where('trm.trm_id_int = :trm_id', { trm_id: trm_id })
+        .andWhere('reb.prl_id_int = :prl_id', { prl_id: prl_id })
+        .andWhere('est.esc_id_int = trm.esc_id_int')
+        .andWhere('etu.etu_turma_atual_int = 1')
+        .orderBy('dsp.dsp_nome_txt', 'ASC')
+        .execute()
+        .then((resultados: any[]) => {
+          resultados = resultados.sort((a, b) => a.nome > b.nome ? 1 : -1);
+          resolve(resultados)
+        }).catch(reason => {
+          reject(reason);
+        });
+    })
+  }
+
+  public listarRendimentoAreaConhecimentoTurmaPeriodo(trm_id: number, prl_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'avg(reb.reb_nota_num) as media', 'est.est_id_int as est_id',
+        'est.est_nome_txt as nome', 'arc.arc_nome_txt as area_conhecimento',
+        'arc.arc_abreviatura_txt as area_conhecimento_abv'
+      ]
+      this.resultadoBoletimRepository.createQueryBuilder('reb')
+        .select(campos)
+        .innerJoin('reb.boletimEscolar', 'bes')
+        .innerJoin('reb.disciplina', 'dsp')
+        .innerJoin('dsp.areaConhecimento', 'arc')
+        .innerJoin('bes.estudante', 'est')
+        .innerJoin('est.estudantesTurmas', 'etu')
+        .innerJoin('etu.turma', 'trm')
+        .innerJoin('reb.periodoLetivo', 'prl')
+        .where('trm.trm_id_int = :trm_id', { trm_id: trm_id })
+        .andWhere('prl.prl_id_int = :prl_id', { prl_id: prl_id })
+        .groupBy('est.est_id_int')
+        .addGroupBy('arc.arc_id_int')
+        .orderBy('est.est_id_int', 'ASC')
+        .orderBy('arc.arc_abreviatura_txt', 'ASC')
+        .execute()
+        .then((resultados: any[]) => {
+          resolve(resultados);
+        }).catch(reason => {
+          reject(reason);
+        });
+    })
+  }
+
+  public listarRendimentoFaltasEstudantePeriodo(est_id: number, prl_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'bes.est_id_int as est_id', 'dsp.dsp_abreviatura_txt as disciplina',
+        'reb.reb_nota_num as nota', 'reb.reb_falta_int as falta'
+      ]
+      this.resultadoBoletimRepository.createQueryBuilder('reb')
+        .select(campos)
+        .innerJoin('reb.boletimEscolar', 'bes')
+        .innerJoin('bes.estudante', 'est')
+        .innerJoin('reb.periodoLetivo', 'prl')
+        .innerJoin('reb.disciplina', 'dsp')
+        .where('bes.est_id_int = :est_id', { est_id: est_id })
+        .andWhere('prl.prl_id_int = :prl_id', { prl_id: prl_id })
+        .orderBy('dsp.dsp_abreviatura_txt', 'ASC')
+        .execute()
+        .then((rendimentos: any[]) => {
+          resolve(rendimentos);
+        }).catch(reason => {
+          reject(reason)
+        });
+    })
+  }
+
+  public listarAproveitamentoDisciplinaTurmaPeriodo(trm_id: number, nota_corte: number, prl_id: number, tipo_resultado: string): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      if (tipo_resultado === 'a') {
+        this.listarAprovadosDisciplinaTurmaPeriodo(trm_id, nota_corte, prl_id).then(aprovados => {
+          resolve(aprovados)
+        }).catch(reason => {
+          reject(reason);
+        })
+      }
+      if (tipo_resultado === 'r') {
+        this.listarRecuperadosDisciplinaTurmaPeriodo(trm_id, nota_corte, prl_id).then(recuperacao => {
+          resolve(recuperacao)
+        }).catch(reason => {
+          reject(reason);
+        })
+      }
+    })
+  }
+
+  public listarAproveitamentoProfessorDisciplinaPeriodo(nota_corte: number, prd_id: number, prl_id: number, tipo_resultado: string): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      if (tipo_resultado === 'a') {
+        this.listarAprovadosProfessorDisciplinaPeriodo(prd_id, nota_corte, prl_id).then(aprovados => {
+          resolve(aprovados)
+        }).catch(reason => {
+          reject(reason);
+        })
+      }
+      if (tipo_resultado === 'r') {
+        this.listarRecuperadosProfessorDisciplinaPeriodo(prd_id, nota_corte, prl_id).then(recuperacao => {
+          resolve(recuperacao)
+        }).catch(reason => {
+          reject(reason);
+        })
+      }
+    })
+  }
+
+  public listarAprovadosProfessorDisciplinaPeriodo(prd_id: number, nota_corte: number, prl_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        '0 as quantidade', 'sre.sre_abreviatura_txt as serie',
+        'trm.trm_nome_txt as turma', 'trn.trn_abreviatura_txt as turno',
+        'ete.ete_abreviatura_txt as etapa', 'trm.trm_id_int as trm_id'
+      ];
+      this.resultadoBoletimRepository.createQueryBuilder('reb')
+        .select(campos)
+        .innerJoin('reb.boletimEscolar', 'bes')
+        .innerJoin('bes.estudante', 'est')
+        .innerJoin('est.estudantesTurmas', 'etu')
+        .innerJoin('etu.turma', 'trm')
+        .innerJoin('trm.professoresTurmas', 'prt')
+        .innerJoin('prt.professorDisciplina', 'prd')
+        .innerJoin('trm.serie', 'sre')
+        .innerJoin('trm.turno', 'trn')
+        .innerJoin('reb.periodoLetivo', 'prl')
+        .innerJoin('prd.disciplina', 'dsp')
+        .innerJoin('sre.etapaEnsino', 'ete')
+        .where('reb.dsp_id_int = prd.dsp_id_int')
+        .andWhere('reb.reb_nota_num >= :nota_corte', { nota_corte: nota_corte })
+        .andWhere('prd.prd_id_int = :prd_id', { prd_id: prd_id })
+        .andWhere('prl.prl_id_int = :prl_id', { prl_id: prl_id })
+        .execute()
+        .then((aprovados: any[]) => {
+          let resultados = [];
+          aprovados.reduce((res: any, value: any) => {
+            if (!res[value.trm_id]) {
+              res[value.trm_id] = value;
+              resultados.push(res[value.trm_id])
+            }
+            res[value.trm_id].quantidade += 1;
+            return res;
+          }, {});
+          resolve(resultados);
+        }).catch(reason => {
+          reject(reason);
+        });
+    })
+  }
+
+  public listarRecuperadosProfessorDisciplinaPeriodo(prd_id: number, nota_corte: number, prl_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        '0 as quantidade', 'sre.sre_abreviatura_txt as serie',
+        'trm.trm_nome_txt as turma', 'trn.trn_abreviatura_txt as turno',
+        'ete.ete_abreviatura_txt as etapa', 'trm.trm_id_int as trm_id'
+      ];
+      this.resultadoBoletimRepository.createQueryBuilder('reb')
+        .select(campos)
+        .innerJoin('reb.boletimEscolar', 'bes')
+        .innerJoin('bes.estudante', 'est')
+        .innerJoin('est.estudantesTurmas', 'etu')
+        .innerJoin('etu.turma', 'trm')
+        .innerJoin('trm.professoresTurmas', 'prt')
+        .innerJoin('prt.professorDisciplina', 'prd')
+        .innerJoin('trm.serie', 'sre')
+        .innerJoin('trm.turno', 'trn')
+        .innerJoin('reb.periodoLetivo', 'prl')
+        .innerJoin('prd.disciplina', 'dsp')
+        .innerJoin('sre.etapaEnsino', 'ete')
+        .where('reb.dsp_id_int = prd.dsp_id_int')
+        .andWhere('reb.reb_nota_num < :nota_corte', { nota_corte: nota_corte })
+        .andWhere('prd.prd_id_int = :prd_id', { prd_id: prd_id })
+        .andWhere('prl.prl_id_int = :prl_id', { prl_id: prl_id })
+        .execute()
+        .then((recuperados: any[]) => {
+          let resultados = [];
+          recuperados.reduce((res: any, value: any) => {
+            if (!res[value.trm_id]) {
+              res[value.trm_id] = value;
+              resultados.push(res[value.trm_id])
+            }
+            res[value.trm_id].quantidade += 1;
+            return res;
+          }, {});
+          resolve(resultados);
+        }).catch(reason => {
+          reject(reason);
+        });
+    })
+  }
+
+  public listarAprovadosDisciplinaTurmaPeriodo(trm_id: number, nota_corte: number, prl_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'count(est.est_id_int) as quantidade',
+        'dsp.dsp_abreviatura_txt as disciplina'
+      ]
+      this.resultadoBoletimRepository.createQueryBuilder('reb')
+        .select(campos)
+        .innerJoin('reb.boletimEscolar', 'bes')
+        .innerJoin('bes.estudante', 'est')
+        .innerJoin('est.estudantesTurmas', 'etu')
+        .innerJoin('etu.turma', 'trm')
+        .innerJoin('reb.disciplina', 'dsp')
+        .innerJoin('reb.periodoLetivo', 'prl')
+        .where('trm.trm_id_int = :trm_id', { trm_id: trm_id })
+        .andWhere('reb.reb_nota_num >= :nota_corte', { nota_corte: nota_corte })
+        .andWhere('prl.prl_id_int = :prl_id', { prl_id: prl_id })
+        .groupBy('dsp.dsp_id_int')
+        .execute()
+        .then((notas: any[]) => {
+          console.log(notas);
+          resolve(notas);
+        }).catch(reason => {
+          reject(reason)
+        })
+    })
+  }
+
+  public listarRecuperadosDisciplinaTurmaPeriodo(trm_id: number, nota_corte: number, prl_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'count(est.est_id_int) as quantidade',
+        'dsp.dsp_abreviatura_txt as disciplina'
+      ]
+      this.resultadoBoletimRepository.createQueryBuilder('reb')
+        .select(campos)
+        .innerJoin('reb.boletimEscolar', 'bes')
+        .innerJoin('bes.estudante', 'est')
+        .innerJoin('est.estudantesTurmas', 'etu')
+        .innerJoin('etu.turma', 'trm')
+        .innerJoin('reb.disciplina', 'dsp')
+        .innerJoin('reb.periodoLetivo', 'prl')
+        .where('trm.trm_id_int = :trm_id', { trm_id: trm_id })
+        .andWhere('reb.reb_nota_num < :nota_corte', { nota_corte: nota_corte })
+        .andWhere('prl.prl_id_int = :prl_id', { prl_id: prl_id })
+        .groupBy('dsp.dsp_id_int')
+        .execute()
+        .then((notas: any[]) => {
+          console.log(notas);
+          resolve(notas);
+        }).catch(reason => {
+          reject(reason)
+        });
     })
   }
 
