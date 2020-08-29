@@ -21,6 +21,8 @@ export class UsuarioProfessorService {
           }).catch(reason => {
             reject(reason);
           });
+        } else {
+          resolve();
         }
       }).catch(reason => {
         reject(reason);

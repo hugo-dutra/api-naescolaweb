@@ -3,6 +3,7 @@ import { AreaConhecimento } from './../area-conhecimento/area-conhecimento.entit
 import { ProfessorDisciplina } from './../professor-disciplina/professor-disciplina.entity';
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { EtapaEnsino } from '../etapa-ensino/etapa-ensino.entity';
+import Mensao from '../mensao/mensao.entity';
 
 @Entity('disciplina_dsp')
 export class Disciplina extends BaseEntity {
@@ -28,5 +29,4 @@ export class Disciplina extends BaseEntity {
   @ManyToOne(type => AreaConhecimento, areaConhecimento => areaConhecimento.disciplinas)
   @JoinColumn({ name: 'arc_id_int' })
   areaConhecimento: AreaConhecimento;
-
 }

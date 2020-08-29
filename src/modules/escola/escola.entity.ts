@@ -18,6 +18,7 @@ import { Estudante } from '../estudante/estudante.entity';
 import { Portaria } from '../portaria/portaria.entity';
 import { EntradaPosteriorEstudante } from '../entrada-posterior-estudante/entrada-posterior-estudante.entity';
 import { ProfessorTurma } from '../professor-turma/professor-turma.entity';
+import Mensao from '../mensao/mensao.entity';
 
 @Entity('escola_esc')
 export class Escola extends BaseEntity {
@@ -98,5 +99,8 @@ export class Escola extends BaseEntity {
   professoresTurmas: ProfessorTurma[];
   @OneToMany(type => TipoOcorrenciaDisciplinar, tipoOcorrenciaDisciplinar => tipoOcorrenciaDisciplinar.escola)
   tiposOcorrenciasDisciplinares: TipoOcorrenciaDisciplinar[];
+  @OneToMany(type => Mensao, mensao => mensao.escola)
+  mensoes: Mensao[];
+
 
 }

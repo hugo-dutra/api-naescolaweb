@@ -72,6 +72,7 @@ import { PeriodoLetivoModule } from './modules/periodo-letivo/periodo-letivo.mod
 import { BoletimEscolarModule } from './modules/boletim-escolar/boletim-escolar.module';
 import { AvaliacaoEstudanteModule } from './modules/avaliacao-estudante/avaliacao-estudante.module';
 import { SistemaModule } from './modules/sistema/sistema.module';
+import { MensaoModule } from './modules/mensao/mensao.module';
 
 
 @Module({
@@ -148,6 +149,7 @@ import { SistemaModule } from './modules/sistema/sistema.module';
     BoletimEscolarModule,
     AvaliacaoEstudanteModule,
     SistemaModule,
+    MensaoModule,
   ],
 })
 export class AppModule { }
