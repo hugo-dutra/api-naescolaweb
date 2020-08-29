@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColum
 import { Escola } from '../escola/escola.entity';
 
 @Entity('mensao')
-export default class Mensao {
+export class Mensao {
   /* COLUNAS */
   @PrimaryGeneratedColumn({ name: 'mns_id_int' })
   id: number;

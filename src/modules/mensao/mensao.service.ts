@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import MensaoRepository from './mensao.repository';
+import { MensaoRepository } from './mensao.repository';
 import MensaoDto from './dto/mensao.dto';
 import { DeleteResult } from 'typeorm';
 
