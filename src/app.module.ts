@@ -73,6 +73,7 @@ import { BoletimEscolarModule } from './modules/boletim-escolar/boletim-escolar.
 import { AvaliacaoEstudanteModule } from './modules/avaliacao-estudante/avaliacao-estudante.module';
 import { SistemaModule } from './modules/sistema/sistema.module';
 import { MensaoModule } from './modules/mensao/mensao.module';
+import { TipoMedidaAvaliacaoModule } from './modules/tipo-medida-avaliacao/tipo-medida-avaliacao.module';
 
 
 @Module({
@@ -150,6 +151,7 @@ import { MensaoModule } from './modules/mensao/mensao.module';
     AvaliacaoEstudanteModule,
     SistemaModule,
     MensaoModule,
+    TipoMedidaAvaliacaoModule,
   ],
 })
 export class AppModule { }

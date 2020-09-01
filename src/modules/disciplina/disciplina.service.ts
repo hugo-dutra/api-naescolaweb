@@ -80,13 +80,15 @@ export class DisciplinaService {
       const campos = [
         'dsp.dsp_id_int as id', 'dsp.dsp_nome_txt as nome', 'dsp.dsp_abreviatura_txt as abreviatura',
         'dsp.arc_id_int as arc_id', 'arc.arc_nome_txt as area_conhecimento', 'arc.arc_abreviatura_txt as area_conhecimento_abv',
-        'ete.ete_id_int as ete_id', 'ete.ete_nome_txt as etapa', 'ete.ete_abreviatura_txt as etapa_abrv'
+        'ete.ete_id_int as ete_id', 'ete.ete_nome_txt as etapa', 'ete.ete_abreviatura_txt as etapa_abrv',
+        'dsp.tma_id_int as tma_id', 'tma.tma_nome_txt as tma_nome'
       ];
       this.disciplinaRepository.createQueryBuilder('dsp').select(campos)
         .innerJoin('dsp.areaConhecimento', 'arc')
         .innerJoin('dsp.etapaEnsino', 'ete')
         .innerJoin('ete.series', 'sre')
         .innerJoin('sre.turmas', 'trm')
+        .innerJoin('dsp.tipoMedidaAvaliacao', 'tma')
         .where('dsp.ete_id_int =  ete.ete_id_int')
         .andWhere('trm.esc_id_int = :esc_id', { esc_id: esc_id })
         .orderBy('dsp.dsp_nome_txt', 'ASC').execute()

@@ -7,4 +7,5 @@ export class DisciplinaIntegracaoDto {
   cod_turma: number;
   abreviatura: string;
   ref_cod_curso: number;
+  tma_id: number;
 }

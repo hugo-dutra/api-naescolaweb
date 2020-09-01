@@ -3,6 +3,7 @@ import { AreaConhecimento } from './../area-conhecimento/area-conhecimento.entit
 import { ProfessorDisciplina } from './../professor-disciplina/professor-disciplina.entity';
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { EtapaEnsino } from '../etapa-ensino/etapa-ensino.entity';
+import { TipoMedidaAvaliacao } from '../tipo-medida-avaliacao/tipo-medida-avaliacao.entity';
 
 @Entity('disciplina_dsp')
 export class Disciplina extends BaseEntity {
@@ -17,6 +18,8 @@ export class Disciplina extends BaseEntity {
   ete_id: number;
   @Column({ name: 'arc_id_int', nullable: false })
   arc_id: number;
+  @Column({ name: 'tma_id_int', default: null })
+  tma_id: number;
   /* RELACIONAMENTOS */
   @OneToMany(type => ResultadoBoletim, resultadoBoletim => resultadoBoletim.disciplina)
   resultadosBoletins: ResultadoBoletim[];
@@ -28,4 +31,7 @@ export class Disciplina extends BaseEntity {
   @ManyToOne(type => AreaConhecimento, areaConhecimento => areaConhecimento.disciplinas)
   @JoinColumn({ name: 'arc_id_int' })
   areaConhecimento: AreaConhecimento;
+  @ManyToOne(type => TipoMedidaAvaliacao, tipoMedidaAvaliacao => tipoMedidaAvaliacao.disciplinas)
+  @JoinColumn({ name: 'tma_id_int' })
+  tipoMedidaAvaliacao: TipoMedidaAvaliacao;
 }
