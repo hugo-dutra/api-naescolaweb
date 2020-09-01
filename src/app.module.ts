@@ -72,7 +72,7 @@ import { PeriodoLetivoModule } from './modules/periodo-letivo/periodo-letivo.mod
 import { BoletimEscolarModule } from './modules/boletim-escolar/boletim-escolar.module';
 import { AvaliacaoEstudanteModule } from './modules/avaliacao-estudante/avaliacao-estudante.module';
 import { SistemaModule } from './modules/sistema/sistema.module';
-import { MensaoModule } from './modules/mensao/mensao.module';
+import { MensaoModule } from './modules/mencao/mencao.module';
 import { TipoMedidaAvaliacaoModule } from './modules/tipo-medida-avaliacao/tipo-medida-avaliacao.module';
 
 
