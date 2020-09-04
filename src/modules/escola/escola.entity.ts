@@ -19,6 +19,7 @@ import { Portaria } from '../portaria/portaria.entity';
 import { EntradaPosteriorEstudante } from '../entrada-posterior-estudante/entrada-posterior-estudante.entity';
 import { ProfessorTurma } from '../professor-turma/professor-turma.entity';
 import { Mencao } from '../mencao/mencao.entity';
+import { Conceito } from '../conceito/conceito.entity';
 
 @Entity('escola_esc')
 export class Escola extends BaseEntity {
@@ -101,6 +102,8 @@ export class Escola extends BaseEntity {
   tiposOcorrenciasDisciplinares: TipoOcorrenciaDisciplinar[];
   @OneToMany(type => Mencao, mencao => mencao.escola)
   mencoes: Mencao[];
+  @OneToMany(type => Conceito, conceito => conceito.escola)
+  conceitos: Conceito[];
 
 
 }

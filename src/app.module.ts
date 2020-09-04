@@ -74,6 +74,7 @@ import { AvaliacaoEstudanteModule } from './modules/avaliacao-estudante/avaliaca
 import { SistemaModule } from './modules/sistema/sistema.module';
 import { MensaoModule } from './modules/mencao/mencao.module';
 import { TipoMedidaAvaliacaoModule } from './modules/tipo-medida-avaliacao/tipo-medida-avaliacao.module';
+import { ConceitoModule } from './modules/conceito/conceito.module';
 
 
 @Module({
@@ -152,6 +153,7 @@ import { TipoMedidaAvaliacaoModule } from './modules/tipo-medida-avaliacao/tipo-
     SistemaModule,
     MensaoModule,
     TipoMedidaAvaliacaoModule,
+    ConceitoModule,
   ],
 })
 export class AppModule { }
