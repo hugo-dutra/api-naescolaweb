@@ -1,6 +1,6 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
-export const typeOrmConfig: TypeOrmModuleOptions = {
+export const typeOrmConfig_GCP: TypeOrmModuleOptions = {
   type: 'postgres',
   host: '35.206.89.189',
   port: 5432,
@@ -11,7 +11,7 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   synchronize: true //Em produção, isso deve ficar false após o primeiro deploy.
 }
 
-export const typeOrmConfig_localhost: TypeOrmModuleOptions = {
+export const typeOrmConfig: TypeOrmModuleOptions = {
   type: 'postgres',
   host: 'localhost',
   port: 5432,

@@ -48,60 +48,24 @@ export class DiarioProfessorService {
           }
         });
       })
+    })
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      /* const prd_id = dados['prd_id'];
-      const arrayOfTurmas: number[] = dados['arrayOfTurmas'];
-      const nomesDiarios: string[] = dados['nomesDiarios'];
-      let contaInteracoes = 0;
-      arrayOfTurmas.forEach((trm_id: number) => {
-        this.verificarExistencia(prd_id, trm_id).then(existe => {
-          if (!existe) {
-            const diarioProfessor = new DiarioProfessor();
-            diarioProfessor.prd_id = prd_id;
-            diarioProfessor.trm_id = trm_id;
-            diarioProfessor.diario = nomesDiarios[contaInteracoes];
-            diarioProfessor.criacao = new Date()
-            this.diarioProfessorRepository.save(diarioProfessor).then(novoDiarioProfessor => {
-              contaInteracoes++
-              if (contaInteracoes == arrayOfTurmas.length) {
-                resolve();
-              }
-            }).catch(reason => {
-              reject(reason);
-            })
-          } else {
-            contaInteracoes++
-            if (contaInteracoes == arrayOfTurmas.length) {
-              resolve();
-            }
-          }
-        });
-      }) */
-
-
-
-
+  public transferirDiarioProfessorr(dados: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const dip_id = dados['dip_id'];
+      const prd_id_destino = dados['prd_id_destino'];
+      this.diarioProfessorRepository
+        .createQueryBuilder('dip')
+        .update()
+        .set({ prd_id: prd_id_destino })
+        .where('dip_id_int = :dip_id', { dip_id: dip_id })
+        .execute()
+        .then(() => {
+          resolve()
+        }).catch(reason => {
+          reject(reason)
+        })
     })
   }
 
@@ -121,11 +85,15 @@ export class DiarioProfessorService {
     return new Promise((resolve, reject) => {
       this.professorRepository.createQueryBuilder('prf')
         .select()
-        .innerJoin('prf.professoresDisciplinas', 'prd').innerJoin('prf.professoresEscolas', 'pre')
-        .innerJoin('prd.professoresTurmas', 'prt').innerJoin('prd.disciplina', 'dsp')
-        .innerJoin('prt.turma', 'trm').innerJoin('pre.escola', 'esc')
+        .innerJoin('prf.professoresDisciplinas', 'prd')
+        .innerJoin('prf.professoresEscolas', 'pre')
+        .innerJoin('prd.professoresTurmas', 'prt')
+        .innerJoin('prd.disciplina', 'dsp')
+        .innerJoin('prt.turma', 'trm')
+        .innerJoin('pre.escola', 'esc')
         .where('pre.esc_id_int = :esc_id', { esc_id: esc_id })
-        .getCount().then((totalProfessores: number) => {
+        .getCount()
+        .then((totalProfessores: number) => {
           const campos = [
             'esc.esc_id_int as esc_id', 'prf.prf_id_int as prf_id',
             'prf.prf_nome_txt as professor', 'dsp.dsp_id_int as dsp_id',
@@ -140,17 +108,13 @@ export class DiarioProfessorService {
             .innerJoin('prd.disciplina', 'dsp')
             .innerJoin('prt.turma', 'trm')
             .innerJoin('pre.escola', 'esc')
-            .where('prt.esc_id_int = pre.esc_id_int')
-            .andWhere('prt.trm_id_int = trm.trm_id_int')
-            .andWhere('pre.esc_id_int = :esc_id', { esc_id: esc_id })
+            .where('pre.esc_id_int = :esc_id', { esc_id: esc_id })
             .orderBy('prf.prf_nome_txt', 'ASC')
             .orderBy('dsp.dsp_nome_txt', 'ASC')
-            .limit(limit)
-            .offset(offset)
             .execute()
             .then((professoresHabilitados: any[]) => {
               const utils = new Utils()
-              professoresHabilitados = utils.eliminaValoresRepetidos(professoresHabilitados, 'prd_id')
+              professoresHabilitados = utils.eliminaValoresRepetidos(professoresHabilitados, 'prd_id').slice(offset, limit);
               resolve(professoresHabilitados)
             }).catch(reason => {
               reject(reason);
@@ -165,7 +129,8 @@ export class DiarioProfessorService {
     return new Promise((resolve, reject) => {
       const campos = [
         'dip_diario_txt as diario',
-        'dip_criacao_dte as data'
+        'dip_criacao_dte as data',
+        'dip.dip_id_int as dip_id',
       ]
       this.diarioProfessorRepository
         .createQueryBuilder('dip')

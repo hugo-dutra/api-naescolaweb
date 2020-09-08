@@ -20,6 +20,7 @@ export class DiarioProfessor extends BaseEntity {
   prd_id: number;
   @Column({ name: 'trm_id_int' })
   trm_id: number;
+
   /* RELACIONAMENTOS */
   @ManyToOne(type => ProfessorDisciplina, professorDisciplina => professorDisciplina.diariosProfessores)
   @JoinColumn({ name: 'prd_id_int' })

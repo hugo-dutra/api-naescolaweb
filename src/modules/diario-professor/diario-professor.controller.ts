@@ -32,4 +32,9 @@ export class DiarioProfessorController {
     return this.diarioProfessorService.listarUsuarioEscola(usr_id, esc_id, ano);
   }
 
+  @Post('/transferir-diario-professor')
+  public transferirDiarioProfessorr(@Body() dados: any): Promise<void> {
+    return this.diarioProfessorService.transferirDiarioProfessorr(dados);
+  }
+
 }
