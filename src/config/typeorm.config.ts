@@ -7,9 +7,8 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   username: 'root',
   password: 'Had_71048170187_01',
   database: 'naescola_web',
-  //entities: [`${__dirname}/../**/*.entity.{js,ts}`],
   entities: [`${__dirname}/../**/*.entity.{js,ts}`],
-  synchronize: true //Em produção, isso deve ficar true após o primeiro deploy.
+  synchronize: true //Em produção, isso deve ficar false após o primeiro deploy.
 }
 
 export const typeOrmConfig_localhost: TypeOrmModuleOptions = {
@@ -20,7 +19,7 @@ export const typeOrmConfig_localhost: TypeOrmModuleOptions = {
   password: 'had_71048170187',
   database: 'naescola_web',
   entities: [`${__dirname}/../**/*.entity.{js,ts}`],
-  synchronize: true //Em produção, isso deve ficar true após o primeiro deploy.
+  synchronize: true //Em produção, isso deve ficar false após o primeiro deploy.
 }
 
 export const jwtConfig = {
