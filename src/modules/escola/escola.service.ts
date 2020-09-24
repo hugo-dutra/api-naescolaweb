@@ -1,3 +1,7 @@
+import { PerfilPermissaoRepository } from './../perfil-permissao/perfil-permissao.repository';
+import { PermissaoAcessoRepository } from './../permissao-acesso/permissao-acesso.repository';
+import { UsuarioEscolaRespository } from './../usuario-escola/usuario-escola.repository';
+import { PerfilUsuarioRepository } from './../perfil-usuario/perfil-usuario.repository';
 import { EscolaRepository } from './escola.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,9 +15,14 @@ export class EscolaService {
     @InjectRepository(EscolaRepository) private escolaRepository: EscolaRepository,
     @InjectRepository(RegiaoEscolaRepository) private regiaoEscolaRepository: RegiaoEscolaRepository,
     @InjectRepository(DiretorEscolaRepository) private diretorEscolaRepository: DiretorEscolaRepository,
+    @InjectRepository(PerfilUsuarioRepository) private perfilUsuarioRepository: PerfilUsuarioRepository,
+    @InjectRepository(UsuarioEscolaRespository) private usuarioEscolaRespository: UsuarioEscolaRespository,
+    @InjectRepository(PermissaoAcessoRepository) private permissaoAcessoRepository: PermissaoAcessoRepository,
+    @InjectRepository(PerfilPermissaoRepository) private perfilPermissaoRepository: PerfilPermissaoRepository,
+
   ) { }
 
-  public inserir(escolaDto: any): Promise<any> {
+  public inserir(escolaDto: any, usr_id: number): Promise<any> {
     return new Promise((resolve, reject) => {
       const escola = new Escola();
       escola.assinatura_gestor = escolaDto['assinatura_gestor'];
@@ -31,7 +40,45 @@ export class EscolaService {
       this.verificarExistenciaPorInep(escola.inep).then(existe => {
         if (!existe) {
           this.escolaRepository.save(escola).then(novaEscola => {
-            resolve();
+            const { id, nome } = novaEscola;
+            const esc_id = id;
+            const novoPerfil = { perfil_usuario: `Diretor ${nome}`, epu_id: 3, esc_id: id }
+            this.perfilUsuarioRepository.save(novoPerfil).then(novoPerfil => {
+              const { id } = novoPerfil;
+              const usuarioEscola = {
+                status_ativo: 1,
+                pru_id: id,
+                usr_id: usr_id,
+                esc_id: esc_id
+              }
+              this.usuarioEscolaRespository.save(usuarioEscola).then(novoUsuarioEscola => {
+                const { pru_id } = novoUsuarioEscola
+                this.permissaoAcessoRepository.createQueryBuilder('pac')
+                  .select('pac.pac_id_int as id')
+                  .execute()
+                  .then((permissoesRetornadas: any[]) => {
+                    const perfisPermissoes = permissoesRetornadas.map(permissao => {
+                      const { id } = permissao;
+                      return { pac_id: id, pru_id: pru_id };
+                    })
+                    this.perfilPermissaoRepository.save(perfisPermissoes).then(novosPerfilsPermissoes => {
+                      console.log(novosPerfilsPermissoes);
+                      resolve()
+                    }).catch(reason => {
+                      reject(reason);
+                    })
+
+                  }).catch(reason => {
+                    reject(reason);
+                  })
+              }).catch(reason => {
+                reject(reason);
+              })
+
+            }).catch(reason => {
+              reject(reason);
+            })
+
           }).catch(reason => {
             reject(reason);
           });

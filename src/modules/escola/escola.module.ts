@@ -5,9 +5,20 @@ import { EscolaService } from './escola.service';
 import { EscolaController } from './escola.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EscolaRepository } from './escola.repository';
+import { PerfilUsuarioRepository } from '../perfil-usuario/perfil-usuario.repository';
+import { UsuarioEscolaRespository } from '../usuario-escola/usuario-escola.repository';
+import { PermissaoAcessoRepository } from '../permissao-acesso/permissao-acesso.repository';
+import { PerfilPermissaoRepository } from '../perfil-permissao/perfil-permissao.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([EscolaRepository, RegiaoEscolaRepository, DiretorEscolaRepository])],
+  imports: [TypeOrmModule.forFeature([
+    EscolaRepository,
+    RegiaoEscolaRepository,
+    DiretorEscolaRepository,
+    PerfilUsuarioRepository,
+    UsuarioEscolaRespository,
+    PermissaoAcessoRepository,
+    PerfilPermissaoRepository])],
   providers: [EscolaService],
   controllers: [EscolaController],
   exports: [EscolaService],

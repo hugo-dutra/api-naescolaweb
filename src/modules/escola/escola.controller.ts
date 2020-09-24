@@ -6,8 +6,9 @@ export class EscolaController {
   constructor(private escolaService: EscolaService) { }
 
   @Post()
-  public inserir(@Body() escola: any): Promise<any> {
-    return this.escolaService.inserir(escola);
+  public inserir(@Body() dados: any): Promise<any> {
+    const { escola, usr_id } = dados;
+    return this.escolaService.inserir(escola, usr_id);
   }
 
   @Get('/email-usuario/:email')

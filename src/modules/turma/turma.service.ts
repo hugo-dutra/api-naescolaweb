@@ -208,6 +208,8 @@ export class TurmaService {
    * @param esc_id Id da escola
    */
   public listarTurmasPorEscola(limit: number, offset: number, asc: boolean, esc_id: number): Promise<TurmaPorEscolaDto[]> {
+    console.log(limit, offset, asc, esc_id);
+
     return new Promise((resolve, reject) => {
       let total = 0;
       this.turmaRepository.createQueryBuilder('trm').getCount().then((count: number) => {
@@ -219,6 +221,7 @@ export class TurmaService {
           .innerJoin('trm.escola', 'esc')
           .innerJoin('sre.etapaEnsino', 'ete')
           .orderBy(new Turma().nome, 'ASC')
+          .where('esc.esc_id_int = :esc_id', { esc_id: esc_id })
           .limit(limit)
           .offset(offset)
           .getRawMany()

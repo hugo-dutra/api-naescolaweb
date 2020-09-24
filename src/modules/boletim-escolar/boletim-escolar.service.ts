@@ -83,6 +83,9 @@ export class BoletimEscolarService {
   }
 
   public lancamentoPeriodoLetivoManual(dados: any[]): Promise<void> {
+
+    console.log(dados);
+
     return new Promise((resolve, reject) => {
       let contaNotasInseridas = 0;
       const arrayResultadosBoletins = new Array<ResultadoBoletim>()
