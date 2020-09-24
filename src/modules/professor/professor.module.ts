@@ -22,6 +22,8 @@ import { ProfessorDisciplinaRepository } from '../professor-disciplina/professor
         DiarioProfessorRepository,
         ProfessorDisciplinaRepository,
         ProfessorEscolaRepository,
+        DiarioProfessorRepository,
+        UsuarioProfessorRepository,
         EscolaRepository,
       ]
     )

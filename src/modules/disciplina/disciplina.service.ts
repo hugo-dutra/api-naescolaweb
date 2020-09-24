@@ -76,14 +76,18 @@ export class DisciplinaService {
   }
 
   public listar(esc_id: number): Promise<Disciplina[]> {
+
     return new Promise((resolve, reject) => {
+
       const campos = [
         'dsp.dsp_id_int as id', 'dsp.dsp_nome_txt as nome', 'dsp.dsp_abreviatura_txt as abreviatura',
         'dsp.arc_id_int as arc_id', 'arc.arc_nome_txt as area_conhecimento', 'arc.arc_abreviatura_txt as area_conhecimento_abv',
         'ete.ete_id_int as ete_id', 'ete.ete_nome_txt as etapa', 'ete.ete_abreviatura_txt as etapa_abrv',
         'dsp.tma_id_int as tma_id', 'tma.tma_nome_txt as tma_nome'
       ];
-      this.disciplinaRepository.createQueryBuilder('dsp').select(campos)
+
+      this.disciplinaRepository.createQueryBuilder('dsp')
+        .select(campos)
         .innerJoin('dsp.areaConhecimento', 'arc')
         .innerJoin('dsp.etapaEnsino', 'ete')
         .innerJoin('ete.series', 'sre')
@@ -93,11 +97,13 @@ export class DisciplinaService {
         .andWhere('trm.esc_id_int = :esc_id', { esc_id: esc_id })
         .orderBy('dsp.dsp_nome_txt', 'ASC').execute()
         .then((disciplinas: any[]) => {
+          console.log(disciplinas);
           const disciplinasComDistinct = <Disciplina[]>this.utils.eliminaValoresRepetidos(disciplinas, 'id');
           resolve(disciplinasComDistinct);
         }).catch((reason: any) => {
           reject(reason)
         })
+
     })
   }
 

@@ -24,7 +24,7 @@ export class ProfessorService {
     @InjectRepository(EscolaRepository) private escolaRepository: EscolaRepository,
     @InjectRepository(ProfessorDisciplinaRepository) private professorDisciplinaRepository: ProfessorDisciplinaRepository,
     @InjectRepository(ProfessorEscolaRepository) private professorEscolaRepository: ProfessorEscolaRepository,
-
+    @InjectRepository(UsuarioProfessorRepository) private usuarioProfessorRepository: UsuarioProfessorRepository,
     private escopoPerfilUsuarioService: EscopoPerfilUsuarioService,
   ) { }
 
@@ -432,35 +432,52 @@ export class ProfessorService {
 
   public listarTurmaDisciplina(esc_id: number, usr_id: number, ano: number): Promise<any[]> {
     return new Promise((resolve, reject) => {
+
       const campos = [
         'dsp.dsp_id_int as dsp_id', 'dsp.dsp_abreviatura_txt as disciplina_abreviada',
         'sre.sre_id_int as sre_id', 'sre.sre_abreviatura_txt as serie_abreviada',
         'trm.trm_id_int as trm_id', 'trm.trm_nome_txt as turma',
-        'trn.trn_abreviatura_txt as turno_abreviado', 'ete.ete_abreviatura_txt as etapa_ensino_abreviada'
+        'trn.trn_abreviatura_txt as turno_abreviado', 'ete.ete_abreviatura_txt as etapa_ensino_abreviada',
+        'dsp.tma_id_int as tma_id', 'tma.tma_nome_txt as tipo_medida_avaliacao'
       ];
-      this.professorRepository.createQueryBuilder('prf')
-        .select(campos)
-        .innerJoin('prf.professoresDisciplinas', 'prd')
-        .innerJoin('prd.disciplina', 'dsp')
-        .innerJoin('prf.professoresEscolas', 'pre')
-        .innerJoin('prd.diariosProfessores', 'dip')
-        .innerJoin('dip.turma', 'trm')
-        .innerJoin('trm.serie', 'sre')
-        .innerJoin('trm.turno', 'trn')
-        .innerJoin('sre.etapaEnsino', 'ete')
-        .innerJoin('pre.escola', 'esc')
-        .innerJoin('esc.usuariosEscolas', 'use')
-        .where('use.usr_id_int = :usr_id', { usr_id: usr_id })
-        .andWhere('use.esc_id_int = :esc_id', { esc_id: esc_id })
-        .andWhere('extract(year from dip_criacao_dte) = :ano', { ano: ano })
-        .execute()
-        .then(diariosProfessor => {
-          resolve(diariosProfessor);
-        }).catch(reason => {
-          reject(reason);
-        });
+
+      this.listarProfessorIdPorUsuarioId(usr_id).then(prf_id => {
+        this.professorRepository.createQueryBuilder('prf')
+          .select(campos)
+          .innerJoin('prf.professoresDisciplinas', 'prd')
+          .innerJoin('prd.disciplina', 'dsp')
+          .innerJoin('prd.professoresTurmas', 'prt')
+          .innerJoin('prt.turma', 'trm')
+          .innerJoin('trm.serie', 'sre')
+          .innerJoin('trm.turno', 'trn')
+          .innerJoin('dsp.tipoMedidaAvaliacao', 'tma')
+          .innerJoin('sre.etapaEnsino', 'ete')
+          .where('prf.prf_id_int = :prf_id', { prf_id: prf_id })
+          .execute()
+          .then(diariosProfessor => {
+            console.clear();
+            console.log(diariosProfessor);
+            resolve(diariosProfessor);
+          }).catch(reason => {
+            reject(reason);
+          });
+      })
+
     })
   }
+
+  public listarProfessorIdPorUsuarioId(usr_id: number): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this.usuarioProfessorRepository.findOne({ usr_id: usr_id }).then(usuarioProfessor => {
+        const { prf_id } = usuarioProfessor;
+        resolve(prf_id);
+      }).catch(reason => {
+        reject(reason);
+      })
+    })
+  }
+
+
 
 
   public listar(limit: number, offset: number, asc: boolean, usr_id: number, esc_id: number): Promise<Professor[]> {
