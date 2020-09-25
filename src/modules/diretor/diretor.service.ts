@@ -234,13 +234,17 @@ export class DiretorService {
         const dir_ids = diretoresEscolas.map(diretorEscola => {
           return diretorEscola.dir_id;
         });
-        this.diretorRepositoty.createQueryBuilder('dir')
-          .select(campos).andWhere('dir.dir_id_int not in (:...dir_ids)', { dir_ids: dir_ids })
-          .execute().then((diretoresSemEscola: any[]) => {
-            resolve(diretoresSemEscola)
-          }).catch((reason: any) => {
-            reject(reason);
-          });
+        if (dir_ids.length > 0) {
+          this.diretorRepositoty.createQueryBuilder('dir')
+            .select(campos).andWhere('dir.dir_id_int not in (:...dir_ids)', { dir_ids: dir_ids })
+            .execute().then((diretoresSemEscola: any[]) => {
+              resolve(diretoresSemEscola)
+            }).catch((reason: any) => {
+              reject(reason);
+            });
+        } else {
+          resolve([]);
+        }
       }).catch((reason: any) => {
         reject(reason);
       });

@@ -7,6 +7,7 @@ import { DeleteResult } from 'typeorm';
 import { Utils } from '../../utils/utils';
 import { TurnoService } from '../turno/turno.service';
 import { TurmaIntegracaoNomeDto } from './dto/turma-integracao-nomes.dto';
+import { EstudanteTurmaRepository } from '../estudante-turma/estudante-turma.repository';
 
 
 @Injectable()
@@ -121,16 +122,45 @@ export class TurmaService {
         .addGroupBy('etu.etu_id_int')
         .addGroupBy('est.est_id_int')
         .getRawMany().then((turmas: any[]) => {
-          const matriculados = turmas.length;
           let turmasFiltrado = this.utils.eliminaValoresRepetidos(turmas, 'id');
-          turmasFiltrado = <Turma[]>turmasFiltrado.map(turma => {
-            turma['matriculados'] = matriculados;
-            return turma;
-          }).sort((a, b) => a['serie'] > b['serie'] ? 1 : -1).sort((a, b) => a['nome'] > b['nome'] ? 1 : -1)
-          resolve(<Turma[]>turmasFiltrado);
+          this.contarQuantidadeEstudantesMatriculados(esc_id).then(matriculadosPorTurma => {
+            turmasFiltrado = <Turma[]>turmasFiltrado.map(turma => {
+              const { matriculados } = matriculadosPorTurma.find(mat => mat['trm_id'] === turma['id'])
+              turma['matriculados'] = matriculados;
+              return turma;
+            }).sort((a, b) => a['serie'] > b['serie'] ? 1 : -1)
+              .sort((a, b) => a['nome'] > b['nome'] ? 1 : -1)
+            console.log(turmasFiltrado);
+            resolve(<Turma[]>turmasFiltrado);
+          }).catch(reason => {
+            reject(reason);
+          })
         })
     });
   }
+
+
+  public contarQuantidadeEstudantesMatriculados(esc_id: number): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const campos = [
+        'trm.trm_id_int as trm_id',
+        'count(trm.trm_id_int) as matriculados'
+      ]
+      this.turmaRepository.createQueryBuilder('trm')
+        .select(campos)
+        .innerJoin('trm.estudantesTurmas', 'etu')
+        .where('trm.esc_id_int = :esc_id', { esc_id: esc_id })
+        .andWhere('etu.etu_turma_atual_int = 1')
+        .groupBy('trm.trm_id_int')
+        .execute()
+        .then(matriculados => {
+          resolve(matriculados)
+        }).catch(reason => {
+          reject(reason)
+        })
+    })
+  }
+
 
   public listarTurmasPorTurno(trn_id: number, esc_id: number, ano: number): Promise<Turma[]> {
     return new Promise((resolve, reject) => {
@@ -334,8 +364,6 @@ export class TurmaService {
         }).catch((reason: any) => {
           reject(reason);
         });
-
-
     })
   }
 

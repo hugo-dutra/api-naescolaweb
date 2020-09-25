@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TurmaRepository } from './turma.repository';
 import { TurnoRepository } from '../turno/turno.repository';
 import { TurnoService } from '../turno/turno.service';
+import { EstudanteTurmaRepository } from '../estudante-turma/estudante-turma.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TurmaRepository, TurnoRepository])],

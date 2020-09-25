@@ -523,14 +523,14 @@ export class EstudanteService {
         'trm.trm_nome_txt as turma', 'sre.sre_abreviatura_txt as serie',
         'trn.trn_abreviatura_txt as turno'
       ];
-
+      if (valor.trim().length === 0) resolve([]);
       let outrosEstudantes = [];
       this.estudanteRepository.createQueryBuilder('est').select(campos)
         .innerJoin('est.estudantesTurmas', 'etu')
         .innerJoin('etu.turma', 'trm')
         .innerJoin('trm.serie', 'sre')
         .innerJoin('trm.turno', 'trn')
-        .where('LOWER(est.est_nome_txt) like LOWER(:valor)', { valor: `%${valor}% ` })
+        .where('LOWER(est.est_nome_txt) like LOWER(:valor)', { valor: `%${valor}%` })
         .andWhere('est.esc_id_int = :esc_id', { esc_id: esc_id })
         .orderBy('est.est_nome_txt', 'ASC')
         .limit(limit)
@@ -572,11 +572,79 @@ export class EstudanteService {
                   }
                 });
               });
-              resolve(consolidadas);
+
+              if (ocorrencias.length === 0) {
+                resolve(outrosEstudantes)
+              } else {
+                resolve(consolidadas);
+              }
+
             }).catch(reason => {
               reject(reason);
             });
         })
+
+
+
+
+      /*  let outrosEstudantes = [];
+       this.estudanteRepository.createQueryBuilder('est').select(campos)
+         .innerJoin('est.estudantesTurmas', 'etu')
+         .innerJoin('etu.turma', 'trm')
+         .innerJoin('trm.serie', 'sre')
+         .innerJoin('trm.turno', 'trn')
+         .where('LOWER(est.est_nome_txt) like LOWER(:valor)', { valor: `%${valor}% ` })
+         .andWhere('est.esc_id_int = :esc_id', { esc_id: esc_id })
+         .orderBy('est.est_nome_txt', 'ASC')
+         .limit(limit)
+         .offset(offset)
+         .execute()
+         .then((estudantes: any[]) => {
+           outrosEstudantes = estudantes;
+         }).then(() => {
+           this.estudanteRepository.createQueryBuilder('est').select(campos)
+             .innerJoin('est.ocorrenciasDisciplinares', 'ocd')
+             .innerJoin('est.estudantesTurmas', 'etu')
+             .innerJoin('etu.turma', 'trm')
+             .innerJoin('trm.serie', 'sre')
+             .innerJoin('trm.turno', 'trn')
+             .where('LOWER(est.est_nome_txt) like LOWER(:valor)', { valor: `%${valor}%` })
+             .andWhere('est.esc_id_int = :esc_id', { esc_id: esc_id })
+             .orderBy('est.est_nome_txt', 'ASC')
+             .limit(limit)
+             .offset(offset)
+             .execute()
+             .then((ocorrencias: any[]) => {
+               let consolidadas = [];
+               ocorrencias.reduce((res, value) => {
+                 if (!res[value.id]) {
+                   res[value.id] = value;
+                   consolidadas.push(res[value.id])
+                 }
+                 res[value.id].ocorrencia += 1;
+                 return res;
+               }, {});
+               consolidadas = consolidadas.map(consolidada => {
+                 consolidada.total = consolidadas.length;
+                 return consolidada;
+               });
+               consolidadas.forEach(consolidada => {
+                 outrosEstudantes.forEach(outroEstudante => {
+                   if (outroEstudante.id != consolidada.id) {
+                     consolidadas.push(outroEstudante);
+                   }
+                 });
+               });
+               resolve(consolidadas);
+             }).catch(reason => {
+               reject(reason);
+             });
+         })
+  */
+
+
+
+
     })
   }
 
