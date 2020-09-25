@@ -37,6 +37,7 @@ export class EscolaService {
       escola.ree_id = parseInt(escolaDto['ree_id']);
       escola.ren_id = parseInt(escolaDto['ren_id']);
       escola.telefone = escolaDto['telefone'];
+
       this.verificarExistenciaPorInep(escola.inep).then(existe => {
         if (!existe) {
           this.escolaRepository.save(escola).then(novaEscola => {

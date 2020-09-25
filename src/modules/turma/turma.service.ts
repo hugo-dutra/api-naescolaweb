@@ -198,8 +198,6 @@ export class TurmaService {
     })
   }
 
-
-
   /**
    * Lista turmas por escola
    * @param limit Quantidade
@@ -208,39 +206,42 @@ export class TurmaService {
    * @param esc_id Id da escola
    */
   public listarTurmasPorEscola(limit: number, offset: number, asc: boolean, esc_id: number): Promise<TurmaPorEscolaDto[]> {
-    console.log(limit, offset, asc, esc_id);
-
     return new Promise((resolve, reject) => {
       let total = 0;
-      this.turmaRepository.createQueryBuilder('trm').getCount().then((count: number) => {
-        total = count;
-      }).then(() => {
-        this.turmaRepository.createQueryBuilder('trm').select(['*'])
-          .innerJoin('trm.serie', 'sre')
-          .innerJoin('trm.turno', 'trn')
-          .innerJoin('trm.escola', 'esc')
-          .innerJoin('sre.etapaEnsino', 'ete')
-          .orderBy(new Turma().nome, 'ASC')
-          .where('esc.esc_id_int = :esc_id', { esc_id: esc_id })
-          .limit(limit)
-          .offset(offset)
-          .getRawMany()
-          .then((campos: TurmaPorEscolaDto[]) => {
-            const camposMapeados = campos.map((campo: TurmaPorEscolaDto) => {
-              const campoMapeado = new TurmaPorEscolaDto();
-              campoMapeado.ano = campo['trm_ano_int']; campoMapeado.esc_id = campo['esc_id_int']; campoMapeado.escola = campo['esc_nome_txt'];
-              campoMapeado.etapa = campo['ete_abreviatura_txt']; campoMapeado.id = campo['trm_id_int']; campoMapeado.nome = campo['trm_nome_txt'];
-              campoMapeado.serie = campo['sre_nome_txt']; campoMapeado.sre_id = campo['sre_id_int']; campoMapeado.total = total;
-              campoMapeado.trn_id = campo['trn_id_int']; campoMapeado.turno = campo['trn_nome_txt'];
-              return campoMapeado;
-            });
-            resolve(camposMapeados);
-          }).catch((reason: any) => {
-            reject(reason);
-          })
-      }).catch((reason: any) => {
-        reject(reason);
-      });
+      this.turmaRepository.createQueryBuilder('trm').innerJoin('trm.serie', 'sre')
+        .innerJoin('trm.turno', 'trn')
+        .innerJoin('trm.escola', 'esc')
+        .innerJoin('sre.etapaEnsino', 'ete')
+        .orderBy(new Turma().nome, 'ASC')
+        .where('esc.esc_id_int = :esc_id', { esc_id: esc_id }).getCount().then((count: number) => {
+          total = count;
+        }).then(() => {
+          this.turmaRepository.createQueryBuilder('trm').select(['*'])
+            .innerJoin('trm.serie', 'sre')
+            .innerJoin('trm.turno', 'trn')
+            .innerJoin('trm.escola', 'esc')
+            .innerJoin('sre.etapaEnsino', 'ete')
+            .orderBy(new Turma().nome, 'ASC')
+            .where('esc.esc_id_int = :esc_id', { esc_id: esc_id })
+            .limit(limit)
+            .offset(offset)
+            .getRawMany()
+            .then((campos: TurmaPorEscolaDto[]) => {
+              const camposMapeados = campos.map((campo: TurmaPorEscolaDto) => {
+                const campoMapeado = new TurmaPorEscolaDto();
+                campoMapeado.ano = campo['trm_ano_int']; campoMapeado.esc_id = campo['esc_id_int']; campoMapeado.escola = campo['esc_nome_txt'];
+                campoMapeado.etapa = campo['ete_abreviatura_txt']; campoMapeado.id = campo['trm_id_int']; campoMapeado.nome = campo['trm_nome_txt'];
+                campoMapeado.serie = campo['sre_nome_txt']; campoMapeado.sre_id = campo['sre_id_int']; campoMapeado.total = total;
+                campoMapeado.trn_id = campo['trn_id_int']; campoMapeado.turno = campo['trn_nome_txt'];
+                return campoMapeado;
+              });
+              resolve(camposMapeados);
+            }).catch((reason: any) => {
+              reject(reason);
+            })
+        }).catch((reason: any) => {
+          reject(reason);
+        });
     });
   }
 
