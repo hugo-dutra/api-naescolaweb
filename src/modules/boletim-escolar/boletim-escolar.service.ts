@@ -83,9 +83,7 @@ export class BoletimEscolarService {
   }
 
   public lancamentoPeriodoLetivoManual(dados: any[]): Promise<void> {
-
     console.log(dados);
-
     return new Promise((resolve, reject) => {
       let contaNotasInseridas = 0;
       const arrayResultadosBoletins = new Array<ResultadoBoletim>()
@@ -101,7 +99,7 @@ export class BoletimEscolarService {
               resultadoBoletim.bes_id = novoBoletim.id
               resultadoBoletim.dsp_id = dadoEstudante.dsp_id
               resultadoBoletim.falta = dadoEstudante.faltas;
-              resultadoBoletim.nota = dadoEstudante.nota;
+              resultadoBoletim.nota = dadoEstudante.resultado.res_id;
               resultadoBoletim.prl_id = dadoEstudante.prl_id
               arrayResultadosBoletins.push(resultadoBoletim)
             })
@@ -110,7 +108,7 @@ export class BoletimEscolarService {
             resultadoBoletim.bes_id = boletim.id;
             resultadoBoletim.dsp_id = dadoEstudante.dsp_id;
             resultadoBoletim.falta = dadoEstudante.faltas;
-            resultadoBoletim.nota = dadoEstudante.nota;
+            resultadoBoletim.nota = dadoEstudante.resultado.res_id;
             resultadoBoletim.prl_id = dadoEstudante.prl_id;
             arrayResultadosBoletins.push(resultadoBoletim)
           }

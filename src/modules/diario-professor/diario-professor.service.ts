@@ -198,7 +198,8 @@ export class DiarioProfessorService {
       const campos = [
         'dip.dip_id_int as dip_id', 'dip.dip_diario_txt as diario',
         'dip.prd_id_int as prd_id', 'dip.trm_id_int as trm_id',
-        'dip.dip_criacao_dte as data_criacao', 'dsp.dsp_nome_txt as disciplina'
+        'dip.dip_criacao_dte as data_criacao', 'dsp.dsp_nome_txt as disciplina',
+        'tma.tma_id_int as tma_id', 'tma.tma_nome_txt as tma_nome'
       ];
 
       this.usuarioProfessorRepository
@@ -209,6 +210,7 @@ export class DiarioProfessorService {
         .innerJoin('prf.professoresDisciplinas', 'prd')
         .innerJoin('prd.diariosProfessores', 'dip')
         .innerJoin('prd.disciplina', 'dsp')
+        .innerJoin('dsp.tipoMedidaAvaliacao', 'tma')
         .innerJoin('prd.professoresTurmas', 'prt')
         .innerJoin('prt.turma', 'trm')
         .innerJoin('trm.serie', 'sre')
@@ -221,6 +223,8 @@ export class DiarioProfessorService {
           diariosProfessor = utils.eliminaValoresRepetidos(diariosProfessor, 'dip_id').sort((a, b) => {
             return a['diario'] > b['diario'] ? 1 : -1
           });
+          console.clear();
+          console.log(diariosProfessor)
           resolve(diariosProfessor);
         }).catch(reason => {
           reject(reason);
