@@ -21,6 +21,7 @@ import { ProfessorTurma } from '../professor-turma/professor-turma.entity';
 import { Mencao } from '../mencao/mencao.entity';
 import { Conceito } from '../conceito/conceito.entity';
 import { MetricaLivre } from '../metrica-livre/metrica-livre.entity';
+import { Nota } from '../nota/nota.entity';
 
 @Entity('escola_esc')
 export class Escola extends BaseEntity {
@@ -107,6 +108,8 @@ export class Escola extends BaseEntity {
   conceitos: Conceito[];
   @OneToMany(type => MetricaLivre, metricaLivre => metricaLivre.escola)
   metricasLivres: MetricaLivre[];
+  @OneToMany(type => Nota, nota => nota.escola)
+  notas: Nota[];
 
 
 }

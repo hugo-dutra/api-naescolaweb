@@ -76,6 +76,7 @@ import { MensaoModule } from './modules/mencao/mencao.module';
 import { TipoMedidaAvaliacaoModule } from './modules/tipo-medida-avaliacao/tipo-medida-avaliacao.module';
 import { ConceitoModule } from './modules/conceito/conceito.module';
 import { MetricaLivreModule } from './modules/metrica-livre/metrica-livre.module';
+import { NotaModule } from './modules/nota/nota.module';
 
 
 @Module({
@@ -156,6 +157,7 @@ import { MetricaLivreModule } from './modules/metrica-livre/metrica-livre.module
     TipoMedidaAvaliacaoModule,
     ConceitoModule,
     MetricaLivreModule,
+    NotaModule,
   ],
 })
 export class AppModule { }
